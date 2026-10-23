@@ -1,106 +1,174 @@
 
 import { supabase } from "./config.js";
 
+// ELEMENTOS DEL FORMULARIO
 const formulario = document.getElementById("loginForm");
 const mensaje = document.getElementById("mensaje");
 const boton = document.getElementById("btnIngresar");
 
-// Verificar que Supabase responda
-async function probarConexion() {
-  try {
-    const { data, error } = await supabase.auth.getSession();
+// MOSTRAR MENSAJES
+function mostrarMensaje(texto, color = "red") {
+    mensaje.textContent = texto;
+    mensaje.style.color = color;
+}
 
-    if (error) {
-      console.error("Error de Supabase:", error.message);
-    } else {
-      console.log("Supabase responde correctamente");
-      console.log("Sesión activa:", !!data.session);
+// CONSULTAR PERFIL Y ABRIR PANTALLA CORRESPONDIENTE
+async function abrirPanel(usuario) {
+
+    const { data: perfil, error } = await supabase
+        .from("perfiles")
+        .select("nombre, rol, activo")
+        .eq("id", usuario.id)
+        .single();
+
+    if (error || !perfil) {
+        console.error("Error al consultar perfil:", error);
+        throw new Error(
+            "No se encontró tu perfil en Supabase."
+        );
     }
-  } catch (error) {
-    console.error("Error de conexión:", error);
-  }
+
+    if (!perfil.activo) {
+        throw new Error(
+            "Tu cuenta está desactivada. Contacta al administrador."
+        );
+    }
+
+    if (perfil.rol === "administrador") {
+
+        mostrarMensaje(
+            "Bienvenido, " + perfil.nombre,
+            "green"
+        );
+
+        window.location.replace("administrador.html");
+        return;
+    }
+
+    if (perfil.rol === "empleado") {
+
+        mostrarMensaje(
+            "Bienvenido, " + perfil.nombre,
+            "green"
+        );
+
+        window.location.replace("empleado.html");
+        return;
+    }
+
+    throw new Error("Tu cuenta no tiene un rol autorizado.");
+}
+
+// COMPROBAR CONEXIÓN CON SUPABASE
+async function probarConexion() {
+
+    try {
+
+        const { data, error } =
+            await supabase.auth.getSession();
+
+        if (error) {
+            console.error(
+                "Error de Supabase:",
+                error.message
+            );
+            return;
+        }
+
+        console.log("Conexión con Supabase correcta");
+        console.log("Sesión activa:", !!data.session);
+
+    } catch (error) {
+
+        console.error(
+            "Error de conexión:",
+            error.message
+        );
+    }
 }
 
 probarConexion();
 
-// Iniciar sesión
+// INICIAR SESIÓN
 formulario.addEventListener("submit", async (evento) => {
-  evento.preventDefault();
 
-  const correo = document.getElementById("correo").value.trim();
-  const password = document.getElementById("password").value;
+    evento.preventDefault();
 
-  boton.disabled = true;
-  boton.textContent = "Verificando...";
-  mensaje.textContent = "";
+    const correo = document
+        .getElementById("correo")
+        .value.trim();
 
-  try {
-    // Autenticación con Supabase
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: correo,
-      password: password
-    });
+    const password = document
+        .getElementById("password")
+        .value;
 
-    if (error) {
-      console.error("Error de autenticación:", error.message);
+    boton.disabled = true;
+    boton.textContent = "Verificando...";
+    mostrarMensaje("Comprobando credenciales...", "#64748b");
 
-      if (error.message === "Invalid API key") {
-        throw new Error("La clave de Supabase no es válida.");
-      }
+    try {
 
-      if (error.message === "Email not confirmed") {
-        throw new Error("El correo todavía no está confirmado.");
-      }
+        const { data, error } =
+            await supabase.auth.signInWithPassword({
+                email: correo,
+                password: password
+            });
 
-      throw new Error("Correo o contraseña incorrectos.");
+        if (error) {
+
+            console.error(
+                "Error de autenticación:",
+                error.message
+            );
+
+            if (error.message === "Invalid API key") {
+                throw new Error(
+                    "La clave pública de Supabase no es válida."
+                );
+            }
+
+            if (error.message === "Email not confirmed") {
+                throw new Error(
+                    "El correo todavía no está confirmado."
+                );
+            }
+
+            if (error.message === "Invalid login credentials") {
+                throw new Error(
+                    "Correo o contraseña incorrectos."
+                );
+            }
+
+            throw new Error(error.message);
+        }
+
+        if (!data.user) {
+            throw new Error(
+                "No se pudo identificar al usuario."
+            );
+        }
+
+        mostrarMensaje(
+            "Credenciales correctas. Verificando permisos...",
+            "#64748b"
+        );
+
+        // REDIRECCIÓN SEGÚN EL ROL
+        await abrirPanel(data.user);
+
+    } catch (error) {
+
+        console.error("Error de acceso:", error);
+
+        // Evitar conservar una sesión sin autorización
+        await supabase.auth.signOut();
+
+        mostrarMensaje(error.message);
+
+    } finally {
+
+        boton.disabled = false;
+        boton.textContent = "Ingresar al sistema";
     }
 
-    if (!data.user) {
-      throw new Error("No se pudo identificar al usuario.");
-    }
-
-    // Consultar el perfil del usuario
-    const { data: perfil, error: errorPerfil } = await supabase
-      .from("perfiles")
-      .select("nombre, rol, activo")
-      .eq("id", data.user.id)
-      .single();
-
-    if (errorPerfil || !perfil) {
-      console.error("Error de perfil:", errorPerfil);
-      await supabase.auth.signOut();
-      throw new Error("No se pudo verificar el perfil del usuario.");
-    }
-
-    // Comprobar si la cuenta está activa
-    if (!perfil.activo) {
-      await supabase.auth.signOut();
-      throw new Error("Esta cuenta está desactivada.");
-    }
-
-    // Comprobar rol
-    if (!["administrador", "empleado"].includes(perfil.rol)) {
-      await supabase.auth.signOut();
-      throw new Error("Rol no autorizado.");
-    }
-
-    console.log("Inicio de sesión correcto");
-    console.log("Usuario:", perfil.nombre);
-    console.log("Rol:", perfil.rol);
-
-    mensaje.style.color = "green";
-    mensaje.textContent = "Bienvenido, " + perfil.nombre;
-
-    // Abrir el panel principal
-    window.location.replace("dashboard.html");
-
-  } catch (error) {
-    console.error("Error del login:", error);
-    mensaje.style.color = "red";
-    mensaje.textContent = error.message;
-
-  } finally {
-    boton.disabled = false;
-    boton.textContent = "Ingresar al sistema";
-  }
 });

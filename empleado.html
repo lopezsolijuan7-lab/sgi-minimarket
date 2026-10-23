@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Empleado | SGI MINIMARKET</title>
+  <link rel="stylesheet" href="css/inventario.css">
+</head>
+<body>
+  <div class="aplicacion">
+    <aside class="menu-lateral">
+      <h2>🏪 SGI MINIMARKET</h2>
+      <p>Sistema de Gestión de Inventario</p>
+      <hr>
+      <nav>
+        <a href="#inicio">🏠 Inicio</a>
+        <a href="#productos">📦 Productos</a>
+        <a href="#registro">➕ Registrar producto</a>
+      </nav>
+      <button id="cerrar-sesion" class="boton-salir">
+        Cerrar sesión
+      </button>
+    </aside>
+
+    <main class="contenido">
+      <header class="cabecera" id="inicio">
+        <div>
+          <h1>Panel del empleado</h1>
+          <p id="nombre-usuario">Verificando usuario...</p>
+        </div>
+        <span class="etiqueta">Empleado</span>
+      </header>
+
+      <section class="estadisticas">
+        <article class="tarjeta">
+          <h3>Productos registrados</h3>
+          <strong id="total-productos">0</strong>
+        </article>
+        <article class="tarjeta">
+          <h3>Unidades disponibles</h3>
+          <strong id="total-unidades">0</strong>
+        </article>
+        <article class="tarjeta">
+          <h3>Productos con stock bajo</h3>
+          <strong id="stock-bajo">0</strong>
+        </article>
+      </section>
+
+      <section class="panel" id="registro">
+        <h2>Registrar nuevo producto</h2>
+        <form id="formulario-producto" class="formulario">
+          <label>Código
+            <input id="codigo" required maxlength="30">
+          </label>
+          <label>Nombre
+            <input id="nombre" required maxlength="120">
+          </label>
+          <label>Categoría
+            <select id="categoria" required>
+              <option value="">Seleccionar categoría</option>
+              <option>Abarrotes</option>
+              <option>Bebidas</option>
+              <option>Lácteos</option>
+              <option>Limpieza</option>
+              <option>Higiene personal</option>
+              <option>Otros</option>
+            </select>
+          </label>
+          <label>Precio (S/)
+            <input id="precio" type="number" min="0" step="0.01" required>
+          </label>
+          <label>Cantidad
+            <input id="stock" type="number" min="0" step="1" required>
+          </label>
+          <label>Stock mínimo
+            <input id="stock-minimo" type="number" min="0" step="1" value="5" required>
+          </label>
+          <button class="boton-principal" type="submit">
+            Guardar producto
+          </button>
+        </form>
+        <p id="mensaje-producto" role="status"></p>
+      </section>
+
+      <section class="panel" id="productos">
+        <h2>Inventario de productos</h2>
+        <input id="buscar" placeholder="Buscar por nombre, código o categoría...">
+        <div class="tabla-contenedor">
+          <table>
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-productos"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="js/empleado.js"></script>
+</body>
+</html>

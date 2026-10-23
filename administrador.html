@@ -1,0 +1,467 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SGI MINIMARKET | Administración</title>
+
+  <link rel="stylesheet" href="css/inventario.css">
+  <link rel="stylesheet" href="css/admin-profesional.css">
+</head>
+
+<body class="admin-body">
+  <div class="admin-layout">
+
+    <!-- MENÚ LATERAL -->
+    <aside class="admin-sidebar">
+
+      <div class="admin-brand">
+        <span class="brand-icon">🛒</span>
+        <div>
+          <strong>SGI MINIMARKET</strong>
+          <small>Gestión de Inventario</small>
+        </div>
+      </div>
+
+      <div class="menu-label">MENÚ PRINCIPAL</div>
+
+      <nav class="admin-nav">
+        <a href="#inicio" class="active">
+          ▦ <span>Panel de control</span>
+        </a>
+
+        <a href="#productos">
+          ▣ <span>Productos</span>
+        </a>
+
+        <a href="#registro">
+          ＋ <span>Registrar producto</span>
+        </a>
+
+        <a href="#categorias">
+          ◫ <span>Categorías</span>
+        </a>
+
+        <a href="#alertas">
+          ⚠ <span>Alertas de stock</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="sidebar-user">
+          <div class="avatar">A</div>
+          <div>
+            <strong>Administrador</strong>
+            <small>Control general</small>
+          </div>
+        </div>
+
+        <button id="cerrar-sesion" class="logout-btn">
+          ↪ Cerrar sesión
+        </button>
+      </div>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="admin-main" id="inicio">
+
+      <!-- BARRA SUPERIOR -->
+      <header class="admin-topbar">
+        <div class="topbar-title">
+          <span class="topbar-mark">▦</span>
+          <span>Sistema de Gestión de Inventario</span>
+        </div>
+
+        <div class="topbar-right">
+          <span id="fecha-actual"></span>
+          <span class="role-badge">Administrador</span>
+        </div>
+      </header>
+
+      <div class="admin-content">
+
+        <!-- BIENVENIDA -->
+        <section class="welcome">
+          <div>
+            <p class="eyebrow">PANEL ADMINISTRATIVO</p>
+            <h1>Centro de control</h1>
+
+            <p id="nombre-usuario">
+              Verificando sesión...
+            </p>
+
+            <p>
+              Supervisa los productos, existencias,
+              ventas y valor del inventario.
+            </p>
+          </div>
+
+          <a href="#registro" class="quick-add">
+            ＋ Nuevo producto
+          </a>
+        </section>
+
+        <!-- ESTADÍSTICAS -->
+        <section class="kpi-grid">
+
+          <article class="kpi-card kpi-blue">
+            <div class="kpi-icon">📦</div>
+            <div>
+              <span>Productos registrados</span>
+              <strong id="total-productos">0</strong>
+              <small>Referencias del inventario</small>
+            </div>
+          </article>
+
+          <article class="kpi-card kpi-green">
+            <div class="kpi-icon">🛒</div>
+            <div>
+              <span>Unidades disponibles</span>
+              <strong id="total-unidades">0</strong>
+              <small>Existencias actuales</small>
+            </div>
+          </article>
+
+          <article class="kpi-card kpi-orange">
+            <div class="kpi-icon">⚠</div>
+            <div>
+              <span>Productos con stock bajo</span>
+              <strong id="stock-bajo">0</strong>
+              <small>Requieren reposición</small>
+            </div>
+          </article>
+
+          <article class="kpi-card kpi-purple">
+            <div class="kpi-icon">S/</div>
+            <div>
+              <span>Valor del inventario</span>
+              <strong id="valor-inventario">
+                S/ 0.00
+              </strong>
+              <small>Valor al precio registrado</small>
+            </div>
+          </article>
+
+        </section>
+
+        <!-- GRÁFICOS -->
+        <section class="charts-grid">
+
+          <!-- GRÁFICO CIRCULAR -->
+          <article class="admin-card">
+
+            <div class="section-heading">
+              <div>
+                <h2>📊 Distribución del inventario</h2>
+                <p>
+                  Porcentaje de unidades por categoría
+                </p>
+              </div>
+
+              <span class="mini-tag">
+                Datos reales
+              </span>
+            </div>
+
+            <div class="donut-layout">
+
+              <div id="grafico-dona" class="donut-chart">
+                <div class="donut-center">
+                  <strong id="dona-total">0</strong>
+                  <span>Unidades</span>
+                </div>
+              </div>
+
+              <div
+                id="leyenda-categorias"
+                class="donut-legend"
+              >
+                Cargando categorías...
+              </div>
+
+            </div>
+          </article>
+
+          <!-- PRODUCTOS MÁS VENDIDOS -->
+          <article class="admin-card">
+
+            <div class="section-heading">
+              <div>
+                <h2>🏆 Productos más vendidos</h2>
+                <p>
+                  Clasificación según las ventas registradas
+                </p>
+              </div>
+
+              <span class="mini-tag">Ventas</span>
+            </div>
+
+            <div
+              id="grafico-vendidos"
+              class="horizontal-chart"
+            >
+              Cargando información...
+            </div>
+
+          </article>
+        </section>
+
+        <!-- ALERTAS DE REPOSICIÓN -->
+        <section class="admin-card" id="alertas">
+
+          <div class="section-heading">
+            <div>
+              <h2>⚠ Alertas de reposición</h2>
+              <p>
+                Productos que alcanzaron su stock mínimo
+                o se encuentran agotados
+              </p>
+            </div>
+
+            <span
+              id="contador-alertas"
+              class="alert-counter"
+            >
+              0 alertas
+            </span>
+          </div>
+
+          <div
+            id="lista-alertas"
+            class="alerts-list"
+          >
+            Cargando alertas...
+          </div>
+
+        </section>
+
+        <!-- GESTIÓN DE PRODUCTOS -->
+        <section class="admin-card" id="productos">
+
+          <div class="section-heading">
+            <div>
+              <h2>📦 Gestión de productos</h2>
+              <p>
+                Consulta, edita y administra
+                los productos del minimarket
+              </p>
+            </div>
+
+            <a href="#registro" class="section-link">
+              ＋ Registrar
+            </a>
+          </div>
+
+          <input
+            id="buscar"
+            class="admin-search"
+            type="search"
+            placeholder="Buscar por código, nombre o categoría..."
+          >
+
+          <div class="table-scroll">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Producto</th>
+                  <th>Categoría</th>
+                  <th>Precio</th>
+                  <th>Stock</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+
+              <tbody id="tabla-productos">
+              </tbody>
+            </table>
+          </div>
+
+        </section>
+
+        <!-- REGISTRAR PRODUCTOS -->
+        <section class="admin-card" id="registro">
+
+          <div class="section-heading">
+            <div>
+              <h2 id="titulo-formulario">
+                Registrar producto
+              </h2>
+
+              <p>
+                Ingresa la información de la mercadería
+              </p>
+            </div>
+          </div>
+
+          <form
+            id="formulario-producto"
+            class="admin-form"
+          >
+
+            <label>
+              Código del producto
+              <input
+                id="codigo"
+                maxlength="30"
+                required
+                placeholder="PRD002"
+              >
+            </label>
+
+            <label>
+              Nombre del producto
+              <input
+                id="nombre"
+                maxlength="120"
+                required
+                placeholder="Ej.: Leche Gloria 1 L"
+              >
+            </label>
+
+            <label>
+              Categoría
+              <select id="categoria" required>
+                <option value="">
+                  Seleccionar categoría
+                </option>
+
+                <option value="Abarrotes">
+                  Abarrotes
+                </option>
+
+                <option value="Lácteos">
+                  Lácteos
+                </option>
+
+                <option value="Bebidas">
+                  Bebidas
+                </option>
+
+                <option value="Galletas">
+                  Galletas
+                </option>
+
+                <option value="Limpieza">
+                  Limpieza
+                </option>
+
+                <option value="Higiene">
+                  Higiene
+                </option>
+
+                <option value="Otros">
+                  Otros
+                </option>
+              </select>
+            </label>
+
+            <label>
+              Precio (S/)
+              <input
+                id="precio"
+                type="number"
+                min="0"
+                step="0.01"
+                required
+              >
+            </label>
+
+            <label>
+              Cantidad disponible
+              <input
+                id="stock"
+                type="number"
+                min="0"
+                step="1"
+                required
+              >
+            </label>
+
+            <label>
+              Stock mínimo para reposición
+              <input
+                id="stock-minimo"
+                type="number"
+                min="0"
+                step="1"
+                value="5"
+                required
+              >
+            </label>
+
+            <div class="form-actions">
+
+              <button
+                type="submit"
+                id="guardar-producto"
+                class="save-btn"
+              >
+                Guardar producto
+              </button>
+
+              <button
+                type="button"
+                id="cancelar-edicion"
+                class="cancel-btn"
+                hidden
+              >
+                Cancelar edición
+              </button>
+
+            </div>
+
+          </form>
+
+          <p
+            id="mensaje-producto"
+            class="form-message"
+            role="status"
+          ></p>
+
+        </section>
+
+        <!-- RESUMEN DE CATEGORÍAS -->
+        <section class="admin-card" id="categorias">
+
+          <div class="section-heading">
+            <div>
+              <h2>📋 Resumen por categoría</h2>
+              <p>
+                Cantidad de productos y existencias
+                por categoría
+              </p>
+            </div>
+          </div>
+
+          <div
+            id="resumen-categorias"
+            class="category-summary"
+          ></div>
+
+        </section>
+
+        <!-- PIE DE PÁGINA -->
+        <footer class="admin-footer">
+          SGI MINIMARKET · Sistema de Gestión de Inventario
+        </footer>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ARCHIVOS JAVASCRIPT -->
+  <script
+    type="module"
+    src="js/administrador.js"
+  ></script>
+
+  <script
+    type="module"
+    src="js/admin-panel.js"
+  ></script>
+
+</body>
+</html>
