@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Empleado | SGI MINIMARKET</title>
+<link href="css/inventario.css" rel="stylesheet"/>
+<meta content="#073c34" name="theme-color"/><link href="app.webmanifest" rel="manifest"/><link href="icons/sgi-192.png" rel="icon"/></head>
+<body>
+<div class="aplicacion">
+<aside class="menu-lateral">
+<h2>🏪 SGI MINIMARKET</h2>
+<p>Sistema de Gestión de Inventario</p>
+<hr/>
+<nav>
+<a href="#inicio">🏠 Inicio</a>
+<a href="#productos">📦 Productos</a>
+
+<a href="#movimientos">⇄ Movimientos</a>
+</nav>
+<button class="boton-salir" id="cerrar-sesion">
+        Cerrar sesión
+      </button>
+</aside>
+<main class="contenido">
+<header class="cabecera" id="inicio">
+<div>
+<h1>Panel del empleado</h1>
+<p id="nombre-usuario">Verificando usuario...</p>
+</div>
+<span class="etiqueta">Empleado</span>
+</header>
+<section class="panel selector-sede">
+<label for="selector-sucursal">Sucursal autorizada</label>
+<select aria-label="Sucursal" id="selector-sucursal"></select>
+<strong id="sucursal-actual">Cargando...</strong>
+</section>
+<section class="estadisticas">
+<article class="tarjeta">
+<h3>Productos registrados</h3>
+<strong id="total-productos">0</strong>
+</article>
+<article class="tarjeta">
+<h3>Unidades disponibles</h3>
+<strong id="total-unidades">0</strong>
+</article>
+<article class="tarjeta">
+<h3>Productos con stock bajo</h3>
+<strong id="stock-bajo">0</strong>
+</article>
+</section>
+
+<section class="panel" id="movimientos">
+<h2>⇄ Registrar entrada o salida</h2>
+<p>Selecciona un artículo existente. Supabase actualiza el stock y guarda el movimiento de tu sucursal.</p>
+<form class="formulario" id="formulario-movimiento">
+<label>Producto<select id="movimiento-producto" required=""></select></label>
+<label>Tipo<select id="movimiento-tipo" required="">
+<option value="entrada">Entrada</option><option value="salida">Salida</option></select></label>
+<label>Cantidad<input id="movimiento-cantidad" min="1" required="" step="1" type="number"/></label>
+<label>Motivo<input id="movimiento-motivo" maxlength="200" placeholder="Motivo (opcional)"/></label>
+<button class="boton-principal" type="submit">Registrar movimiento</button>
+</form>
+<p class="form-message" id="mensaje-movimiento" role="status"></p>
+<h3>Historial reciente</h3>
+<div class="tabla-contenedor"><table><thead><tr>
+<th>Fecha</th><th>Sucursal</th><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Stock</th><th>Motivo</th>
+</tr></thead><tbody id="tabla-movimientos"></tbody></table></div>
+</section>
+<section class="panel" id="productos">
+<h2>Inventario de productos</h2>
+<input id="buscar" placeholder="Buscar por nombre, código o categoría..."/>
+<div class="tabla-contenedor">
+<table>
+<thead>
+<tr>
+<th>Código</th>
+<th>Producto</th>
+<th>Categoría</th>
+<th>Precio</th>
+<th>Sucursal</th>
+<th>Stock</th>
+<th>Estado</th>
+</tr>
+</thead>
+<tbody id="tabla-productos"></tbody>
+</table>
+</div>
+</section>
+</main>
+</div>
+<script src="js/empleado.js" type="module"></script>
+<script src="js/pwa.js" type="module"></script></body>
+</html>

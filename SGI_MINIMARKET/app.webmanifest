@@ -1,0 +1,17 @@
+{
+  "name": "SGI Minimarket - Gestión de Inventario",
+  "short_name": "SGI Minimarket",
+  "description": "Aplicación web de inventario y sucursales para personal autorizado.",
+  "id": "./index.html",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#073c34",
+  "lang": "es-PE",
+  "icons": [
+    {"src":"icons/sgi-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"icons/sgi-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}

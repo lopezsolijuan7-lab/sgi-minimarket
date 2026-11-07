@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#073c34">
+  <meta name="description" content="Sistema de Gestión de Inventario SGI Minimarket: productos, sucursales y movimientos.">
+  <link rel="manifest" href="app.webmanifest">
+  <link rel="icon" type="image/png" href="icons/sgi-192.png">
+  <link rel="stylesheet" href="css/style.css">
+  <title>Iniciar sesión | SGI Minimarket</title>
+</head>
+<body class="pagina-login">
+  <main class="login-layout">
+    <section class="presentacion" aria-label="Sistema de Gestión de Inventario SGI Minimarket">
+      <div class="presentacion-contenido">
+        <div class="marca"><span class="marca-icono" aria-hidden="true">🛒</span><h1>SGI <span>MINIMARKET</span></h1></div>
+        <div class="presentacion-etiqueta">Inventario multisucursal</div>
+        <h2>Todo tu inventario, en un solo lugar.</h2>
+        <p class="frase">Consulta las existencias, registra movimientos y supervisa los productos de cada sucursal.</p>
+        <div class="funciones">
+          <div class="funcion"><span aria-hidden="true">📦</span><div><h3>Catálogo organizado</h3><p>Productos y categorías centralizados.</p></div></div>
+          <div class="funcion"><span aria-hidden="true">📊</span><div><h3>Stock por sucursal</h3><p>Entradas, salidas y alertas de reposición.</p></div></div>
+          <div class="funcion"><span aria-hidden="true">🔐</span><div><h3>Acceso protegido</h3><p>Permisos diferenciados para cada empleado.</p></div></div>
+        </div>
+      </div>
+    </section>
+    <section class="login-container" aria-labelledby="titulo-login">
+      <div class="login-interior">
+        <div class="logo" aria-hidden="true">🛒</div>
+        <p class="login-marca">SGI <span>MINIMARKET</span></p>
+        <p class="subtitulo">Sistema de Gestión de Inventario</p>
+        <h2 id="titulo-login">Iniciar sesión</h2>
+        <p class="login-descripcion">Ingresa con tu cuenta autorizada de Supabase.</p>
+        <form id="loginForm" autocomplete="on">
+          <label for="correo">Correo electrónico</label>
+          <input id="correo" name="email" type="email" placeholder="correo@empresa.com" autocomplete="username" inputmode="email" required>
+          <label for="password">Contraseña</label>
+          <div class="password-container">
+            <input id="password" name="password" type="password" placeholder="Ingresa tu contraseña" autocomplete="current-password" required>
+            <button id="mostrarPassword" type="button" class="mostrar-password" aria-label="Mostrar contraseña" aria-pressed="false">Mostrar</button>
+          </div>
+          <button type="submit" id="btnIngresar">Ingresar al sistema</button>
+          <p id="mensaje" role="status" aria-live="polite"></p>
+        </form>
+        <div class="aviso-seguridad">🔒 Uso exclusivo para personal autorizado</div>
+        <p class="pie">SGI Minimarket © 2026 · Aplicación web</p>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="js/login.js"></script>
+  <script type="module" src="js/pwa.js"></script>
+</body>
+</html>

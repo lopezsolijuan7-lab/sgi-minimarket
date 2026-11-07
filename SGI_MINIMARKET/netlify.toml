@@ -1,0 +1,13 @@
+# Sitio web estático: no se necesita npm ni un comando de build.
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/service-worker.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "no-cache"

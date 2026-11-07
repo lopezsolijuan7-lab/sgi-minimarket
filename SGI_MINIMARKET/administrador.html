@@ -1,0 +1,342 @@
+
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SGI MINIMARKET | Administración</title>
+<link href="css/inventario.css" rel="stylesheet"/>
+<link href="css/admin-profesional.css" rel="stylesheet"/>
+<meta content="#073c34" name="theme-color"/><link href="app.webmanifest" rel="manifest"/><link href="icons/sgi-192.png" rel="icon"/></head>
+<body class="admin-body">
+<div class="admin-layout">
+<!-- MENÚ LATERAL -->
+<aside class="admin-sidebar">
+<div class="admin-brand">
+<span class="brand-icon">🛒</span>
+<div>
+<strong>SGI MINIMARKET</strong>
+<small>Gestión de Inventario</small>
+</div>
+</div>
+<div class="menu-label">MENÚ PRINCIPAL</div>
+<nav class="admin-nav">
+<a class="active" href="#inicio">
+          ▦ <span>Panel de control</span>
+</a>
+<a href="#productos">
+          ▣ <span>Productos</span>
+</a>
+<a href="#registro">
+          ＋ <span>Registrar producto</span>
+</a>
+<a href="#categorias">
+          ◫ <span>Categorías</span>
+</a>
+<a href="#alertas">
+          ⚠ <span>Alertas de stock</span>
+</a>
+<a href="#movimientos">⇄ <span>Entradas y salidas</span></a>
+<a href="#administracion-sucursales" id="nav-sucursales">🏪 <span>Gestión de sucursales</span></a>
+</nav>
+<div class="sidebar-bottom">
+<div class="sidebar-user">
+<div class="avatar">A</div>
+<div>
+<strong id="admin-sidebar-rol">Administrador</strong>
+<small id="admin-sidebar-descripcion">Control general</small>
+</div>
+</div>
+<button class="logout-btn" id="cerrar-sesion">
+          ↪ Cerrar sesión
+        </button>
+</div>
+</aside>
+<!-- CONTENIDO PRINCIPAL -->
+<main class="admin-main" id="inicio">
+<!-- BARRA SUPERIOR -->
+<header class="admin-topbar">
+<div class="topbar-title">
+<span class="topbar-mark">▦</span>
+<span>Sistema de Gestión de Inventario</span>
+</div>
+<div class="topbar-right">
+<span id="fecha-actual"></span>
+<span class="role-badge" id="tipo-admin">Administrador</span>
+</div>
+</header>
+<div class="admin-content">
+<section class="selector-sede">
+<label for="selector-sucursal">Sucursal seleccionada</label>
+<select aria-label="Sucursal" id="selector-sucursal"></select>
+<strong id="sucursal-actual">Cargando...</strong>
+</section>
+<!-- BIENVENIDA -->
+<section class="welcome">
+<div>
+<p class="eyebrow">PANEL ADMINISTRATIVO</p>
+<h1>Centro de control</h1>
+<p id="nombre-usuario">
+              Verificando sesión...
+            </p>
+<p>
+              Supervisa los productos, existencias,
+              sucursales y valor del inventario.
+            </p>
+</div>
+<a class="quick-add" href="#registro">
+            ＋ Nuevo producto
+          </a>
+</section>
+<!-- ESTADÍSTICAS -->
+<section class="kpi-grid">
+<article class="kpi-card kpi-blue">
+<div class="kpi-icon">📦</div>
+<div>
+<span>Productos registrados</span>
+<strong id="total-productos">0</strong>
+<small>Referencias del inventario</small>
+</div>
+</article>
+<article class="kpi-card kpi-green">
+<div class="kpi-icon">🛒</div>
+<div>
+<span>Unidades disponibles</span>
+<strong id="total-unidades">0</strong>
+<small>Existencias actuales</small>
+</div>
+</article>
+<article class="kpi-card kpi-orange">
+<div class="kpi-icon">⚠</div>
+<div>
+<span>Productos con stock bajo</span>
+<strong id="stock-bajo">0</strong>
+<small>Requieren reposición</small>
+</div>
+</article>
+<article class="kpi-card kpi-purple">
+<div class="kpi-icon">S/</div>
+<div>
+<span>Valor del inventario</span>
+<strong id="valor-inventario">
+                S/ 0.00
+              </strong>
+<small>Valor al precio registrado</small>
+</div>
+</article>
+</section>
+<!-- GRÁFICOS -->
+<section class="charts-grid">
+<!-- GRÁFICO CIRCULAR -->
+<article class="admin-card">
+<div class="section-heading">
+<div>
+<h2>📊 Distribución del inventario</h2>
+<p>
+                  Porcentaje de unidades por categoría
+                </p>
+</div>
+<span class="mini-tag">
+                Datos reales
+              </span>
+</div>
+<div class="donut-layout">
+<div class="donut-chart" id="grafico-dona">
+<div class="donut-center">
+<strong id="dona-total">0</strong>
+<span>Unidades</span>
+</div>
+</div>
+<div class="donut-legend" id="leyenda-categorias">
+                Cargando categorías...
+              </div>
+</div>
+</article>
+<!-- PRODUCTOS MÁS VENDIDOS -->
+<article class="admin-card">
+<div class="section-heading">
+<div>
+<h2>Módulo de ventas (planificado)</h2>
+<p>
+                  Clasificación según las ventas registradas
+                </p>
+</div>
+<span class="mini-tag">Ventas</span>
+</div>
+<div class="horizontal-chart" id="grafico-vendidos">
+              Cargando información...
+            </div>
+</article>
+</section>
+<!-- ALERTAS DE REPOSICIÓN -->
+<section class="admin-card" id="alertas">
+<div class="section-heading">
+<div>
+<h2>⚠ Alertas de reposición</h2>
+<p>
+                Productos que alcanzaron su stock mínimo
+                o se encuentran agotados
+              </p>
+</div>
+<span class="alert-counter" id="contador-alertas">
+              0 alertas
+            </span>
+</div>
+<div class="alerts-list" id="lista-alertas">
+            Cargando alertas...
+          </div>
+</section>
+<!-- GESTIÓN DE PRODUCTOS -->
+<section class="admin-card" id="productos">
+<div class="section-heading">
+<div>
+<h2>📦 Gestión de productos</h2>
+<p>
+                Consulta, edita y administra
+                los productos del minimarket
+              </p>
+</div>
+<a class="section-link" href="#registro">
+              ＋ Registrar
+            </a>
+</div>
+<input class="admin-search" id="buscar" placeholder="Buscar por código, nombre o categoría..." type="search"/>
+<div class="table-scroll">
+<table class="admin-table">
+<thead>
+<tr>
+<th>Código</th>
+<th>Producto</th>
+<th>Categoría</th>
+<th>Precio</th>
+<th>Sucursal</th>
+<th>Stock</th>
+<th>Estado</th>
+<th>Acciones</th>
+</tr>
+</thead>
+<tbody id="tabla-productos">
+</tbody>
+</table>
+</div>
+</section>
+<!-- REGISTRAR PRODUCTOS -->
+<section class="admin-card" id="registro">
+<div class="section-heading">
+<div>
+<h2 id="titulo-formulario">
+                Registrar producto
+              </h2>
+<p>
+                Catálogo general; el stock inicial se guarda solo en la sucursal seleccionada
+              </p>
+</div>
+</div>
+<form class="admin-form" id="formulario-producto">
+<label>
+              Código del producto
+              <input id="codigo" maxlength="30" placeholder="PRD002" required=""/>
+</label>
+<label>
+              Nombre del producto
+              <input id="nombre" maxlength="120" placeholder="Ej.: Leche Gloria 1 L" required=""/>
+</label>
+<label>
+              Categoría
+              <select id="categoria" required=""><option value="">Seleccionar categoría</option></select>
+</label>
+<label>
+              Precio (S/)
+              <input id="precio" min="0" required="" step="0.01" type="number"/>
+</label>
+<label>
+              Stock inicial de la sucursal seleccionada
+              <input id="stock" min="0" required="" step="1" type="number"/>
+</label>
+<label>
+              Stock mínimo para reposición
+              <input id="stock-minimo" min="0" required="" step="1" type="number" value="5"/>
+</label>
+<div class="form-actions">
+<button class="save-btn" id="guardar-producto" type="submit">
+                Guardar producto
+              </button>
+<button class="cancel-btn" hidden="" id="cancelar-edicion" type="button">
+                Cancelar edición
+              </button>
+</div>
+</form>
+<p class="form-message" id="mensaje-producto" role="status"></p>
+</section>
+<!-- SPRINT 2: movimientos atómicos por sucursal -->
+<section class="admin-card" id="movimientos">
+<div class="section-heading"><div><h2>⇄ Entradas y salidas de inventario</h2>
+<p>Selecciona una sede concreta. Los movimientos actualizan el stock y guardan historial.</p>
+</div></div>
+<form class="admin-form" id="formulario-movimiento">
+<label>Producto existente<select id="movimiento-producto" required=""></select></label>
+<label>Tipo<select id="movimiento-tipo" required="">
+<option value="entrada">Entrada</option><option value="salida">Salida</option>
+</select></label>
+<label>Cantidad<input id="movimiento-cantidad" min="1" required="" step="1" type="number"/></label>
+<label class="campo-ancho">Motivo (opcional)<input id="movimiento-motivo" maxlength="200" placeholder="Recepción, devolución, merma..."/></label>
+<div class="form-actions"><button class="save-btn" type="submit">Registrar movimiento</button></div>
+</form>
+<p class="form-message" id="mensaje-movimiento" role="status"></p>
+<h3>Últimos 40 movimientos</h3>
+<div class="table-scroll"><table class="admin-table"><thead><tr>
+<th>Fecha</th><th>Sucursal</th><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Stock</th><th>Motivo</th>
+</tr></thead><tbody id="tabla-movimientos"></tbody></table></div>
+</section>
+<!-- Solo el administrador general puede crear sedes y asignar empleados. -->
+<section class="admin-card" hidden="" id="administracion-sucursales">
+<div class="section-heading"><div><h2>🏪 Gestión de sucursales y usuarios</h2>
+<p>Crea sucursales y asigna una sucursal a cada empleado ya registrado en Supabase Auth y en public.usuarios.</p></div></div>
+<h3>Crear sucursal</h3>
+<form class="admin-form" id="formulario-sucursal">
+<label>Código<input id="sucursal-codigo" maxlength="20" placeholder="NORTE" required=""/></label>
+<label>Nombre<input id="sucursal-nombre" maxlength="120" placeholder="Sucursal Norte" required=""/></label>
+<label>Dirección<input id="sucursal-direccion" maxlength="250" placeholder="Dirección (opcional)"/></label>
+<div class="form-actions"><button class="save-btn" type="submit">Crear sucursal</button></div>
+</form>
+<div class="table-scroll"><table class="admin-table"><thead><tr>
+<th>Código</th><th>Sucursal</th><th>Dirección</th><th>Estado</th>
+</tr></thead><tbody id="tabla-sucursales"></tbody></table></div>
+<h3>Asignar una sucursal al empleado</h3>
+<form class="admin-form" id="formulario-asignacion">
+<label>Usuario<select id="asignacion-usuario" required=""></select></label>
+<label>Sucursal<select id="asignacion-sucursal" required=""></select></label>
+
+<div class="form-actions"><button class="save-btn" type="submit">Guardar asignación</button></div>
+</form>
+<p class="form-message" id="mensaje-sucursales" role="status"></p>
+<div class="table-scroll"><table class="admin-table"><thead><tr>
+<th>Usuario</th><th>Sucursal</th><th>Rol</th><th>Estado</th>
+</tr></thead><tbody id="tabla-asignaciones"></tbody></table></div>
+</section>
+<!-- RESUMEN DE CATEGORÍAS -->
+<section class="admin-card" id="categorias">
+<div class="section-heading">
+<div>
+<h2>📋 Resumen por categoría</h2>
+<p>
+                Cantidad de productos y existencias
+                por categoría
+              </p>
+</div>
+</div>
+<div class="category-summary" id="resumen-categorias"></div>
+</section>
+<!-- PIE DE PÁGINA -->
+<footer class="admin-footer">
+          SGI MINIMARKET · Sistema de Gestión de Inventario
+        </footer>
+</div>
+</main>
+</div>
+<!-- ARCHIVOS JAVASCRIPT -->
+<script src="js/administrador.js" type="module"></script>
+<script src="js/admin-panel.js" type="module"></script>
+<script src="js/pwa.js" type="module"></script></body>
+</html>
