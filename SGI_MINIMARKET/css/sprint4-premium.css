@@ -415,3 +415,219 @@ body.s4-premium .s4-route-heading p {color:#7590a6;}
   .s4-history-filters {padding:12px;}
   .s4-history-filters .s4-dia-label {flex:1 1 100%;}
 }
+
+
+/* ================================================================
+   Sprint 4 · Modelo VERDE seleccionado por el equipo.
+   Estilo exclusivo del administrador; conserva calendario y funciones.
+   ================================================================ */
+body.admin-body.s4-premium {
+  --s4-ink:#183128;
+  --s4-navy:#003e2d;
+  --s4-mint:#03a84e;
+  --s4-sky:#0f9569;
+  --s4-shadow:0 4px 18px rgba(28,75,46,.075);
+  background:#f7faf8;
+  color:#19372a;
+}
+body.admin-body.s4-premium .admin-main {
+  background:linear-gradient(128deg,#fff 0%,#fbfdfb 60%,#f5fbf6 100%);
+}
+body.admin-body.s4-premium .admin-sidebar {
+  background:
+    radial-gradient(ellipse 110% 43% at 2% 100%,rgba(9,184,99,.40),transparent 68%),
+    radial-gradient(ellipse 100% 35% at 100% 7%,rgba(26,149,102,.10),transparent 75%),
+    linear-gradient(160deg,#06412c,#003c28 63%,#003826);
+  border-right:1px solid rgba(40,168,110,.15);
+}
+body.admin-body.s4-premium .admin-brand {padding:8px 6px 28px;}
+body.admin-body.s4-premium .admin-brand small {color:#c3e6d1;}
+body.admin-body.s4-premium .menu-label {color:#c2e4cb;}
+body.admin-body.s4-premium .admin-nav a {
+  color:#ebfff2;
+  border-radius:10px;
+  padding:14px 15px;
+}
+body.admin-body.s4-premium .admin-nav a.active {
+  background:linear-gradient(110deg,#15c65a,#02a54c);
+  box-shadow:0 5px 15px rgba(0,37,20,.14);
+  border-left:3px solid #a3ffc0;
+}
+body.admin-body.s4-premium .admin-nav a:hover {background:rgba(60,214,116,.20);}
+body.admin-body.s4-premium .sidebar-user {
+  background:rgba(9,132,72,.22);
+  border:1px solid rgba(66,205,116,.50);
+}
+body.admin-body.s4-premium .avatar {background:linear-gradient(140deg,#8bea78,#36bd61);color:#075a31;}
+body.admin-body.s4-premium .logout-btn {
+  background:transparent;
+  border:1px solid #a7e4b9;
+  color:#fff;
+}
+body.admin-body.s4-premium .logout-btn:hover {background:#11663f;}
+body.admin-body.s4-premium .admin-topbar {
+  background:#fff;
+  backdrop-filter:none;
+  box-shadow:none;
+  border-bottom:1px solid #e2eae4;
+}
+body.admin-body.s4-premium .topbar-title {color:#18281d;}
+body.admin-body.s4-premium .topbar-mark {color:#05a449;}
+body.admin-body.s4-premium .role-badge {
+  background:#e4f9e9;
+  border:0;
+  color:#187d3d;
+}
+body.admin-body.s4-premium .selector-sede {
+  background:#fff;
+  border:1px solid #dfe8e1;
+  border-radius:13px;
+  box-shadow:none;
+}
+body.admin-body.s4-premium .selector-sede select {
+  border:1px solid #c9d8cd;
+  box-shadow:none;
+  border-radius:9px;
+}
+body.admin-body.s4-premium .selector-sede strong {color:#108149;}
+body.admin-body.s4-premium .welcome {
+  margin-bottom:15px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  flex-wrap:wrap;
+}
+body.admin-body.s4-premium .welcome h1 {color:#172b1c;}
+body.admin-body.s4-premium .welcome h1::after {display:none;}
+body.admin-body.s4-premium .welcome .eyebrow {color:#537867;}
+body.admin-body.s4-premium .welcome p {color:#62736a;}
+body.admin-body.s4-premium .s4-welcome-actions {
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+body.admin-body.s4-premium .s4-welcome-actions > a {
+  flex-shrink:0;
+  min-height:44px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:12px 15px;
+  border-radius:10px;
+  text-decoration:none;
+  font-size:12px;
+  font-weight:800;
+}
+body.admin-body.s4-premium .quick-add.s4-button-primary {
+  color:#fff;
+  background:linear-gradient(120deg,#008a3e,#006c35);
+  border:1px solid #008547;
+  box-shadow:0 6px 14px rgba(0,108,55,.13);
+  transform:none;
+}
+body.admin-body.s4-premium .s4-welcome-outline {
+  color:#066e3f;
+  background:#fff;
+  border:1px solid #137d40;
+  box-shadow:none;
+}
+body.admin-body.s4-premium .s4-welcome-outline:hover {background:#e8f8ed;}
+body.admin-body.s4-premium .s4-welcome-link {
+  color:#006c36;
+  padding-left:8px;
+}
+body.admin-body.s4-premium .s4-welcome-link:hover {text-decoration:underline;}
+body.admin-body.s4-premium .s4-admin-toolbar {
+  background:linear-gradient(115deg,#f4fcf6,#e8f8ed);
+  border:1px solid #bde8ce;
+  border-radius:14px;
+  box-shadow:none;
+  padding:16px;
+}
+body.admin-body.s4-premium .s4-toolbar-icon {
+  background:#d6f7e0;
+  color:#08793b;
+  border:1px solid #c2eacf;
+}
+body.admin-body.s4-premium .s4-toolbar-heading strong {color:#244435;}
+body.admin-body.s4-premium .s4-toolbar-heading small {color:#66816f;}
+body.admin-body.s4-premium .s4-calendar-form input[type="date"] {border-color:#c2d9c8;}
+body.admin-body.s4-premium .s4-button-secondary {
+  background:linear-gradient(120deg,#069a49,#037d3e);
+  color:white;
+  box-shadow:none;
+}
+body.admin-body.s4-premium .s4-button-quiet {
+  color:#35654a;
+  background:#fff;
+  border:1px solid #d2e5d5;
+}
+body.admin-body.s4-premium .s4-button-outline {
+  color:#0d703e;
+  background:white;
+  border:1px solid #8ec8a3;
+}
+body.admin-body.s4-premium .s4-calendar-status {color:#537a60;}
+body.admin-body.s4-premium .kpi-card,
+body.admin-body.s4-premium .admin-card {
+  background:white;
+  border:1px solid #e1ebe3;
+  border-radius:15px;
+  box-shadow:0 5px 18px rgba(26,71,43,.055);
+}
+body.admin-body.s4-premium .kpi-card {
+  min-height:145px;
+  border-left:4px solid #10b54a;
+  padding:19px;
+}
+body.admin-body.s4-premium .kpi-card::before,
+body.admin-body.s4-premium .kpi-card::after {display:none;}
+body.admin-body.s4-premium .kpi-card .kpi-icon {
+  background:#e5f9e9;
+  color:#0c8f46;
+  border-radius:12px;
+  box-shadow:none;
+}
+body.admin-body.s4-premium .kpi-card strong {color:#172c1f;}
+body.admin-body.s4-premium .kpi-card span {color:#3f5949;}
+body.admin-body.s4-premium .kpi-card small {color:#76917c;}
+body.admin-body.s4-premium .charts-grid .admin-card,
+body.admin-body.s4-premium .s4-insight-card {
+  background:white;
+}
+body.admin-body.s4-premium .admin-card h2 {color:#16321f;}
+body.admin-body.s4-premium .section-heading p {color:#7b8c80;}
+body.admin-body.s4-premium .mini-tag {
+  color:#138340;
+  background:#e2f9e8;
+  border:0;
+}
+body.admin-body.s4-premium .donut-chart {box-shadow:none;}
+body.admin-body.s4-premium .s4-bar-pista {background:#e8eee9;}
+body.admin-body.s4-premium .s4-bar-relleno {box-shadow:none;}
+body.admin-body.s4-premium .s4-text-link {color:#04813f;}
+body.admin-body.s4-premium .s4-card-kicker {color:#0c8b40 !important;}
+body.admin-body.s4-premium .s4-compare-track {background:#e8f1eb;}
+body.admin-body.s4-premium .s4-quick-primary {background:#038d43;}
+body.admin-body.s4-premium input:focus-visible,
+body.admin-body.s4-premium select:focus-visible,
+body.admin-body.s4-premium button:focus-visible,
+body.admin-body.s4-premium a:focus-visible {
+  outline:3px solid #6dda96;
+}
+@media(max-width:1320px) {
+  body.admin-body.s4-premium .s4-welcome-actions {
+    justify-content:flex-start;
+  }
+}
+@media(max-width:700px) {
+  body.admin-body.s4-premium .s4-welcome-actions {width:100%;gap:7px;}
+  body.admin-body.s4-premium .s4-welcome-actions > a {
+    flex:1 1 calc(50% - 7px);
+    padding:11px 12px;
+    text-align:center;
+  }
+}
