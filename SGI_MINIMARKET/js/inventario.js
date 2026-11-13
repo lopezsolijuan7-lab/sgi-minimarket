@@ -188,7 +188,10 @@ export async function iniciarInventario(rolVista) {
     if (!cuerpo) return;
     cuerpo.replaceChildren();
     const ids = sedesPermitidas().map(s=>Number(s.id));
-    if (!ids.length) return;
+    if (!ids.length) {
+      document.dispatchEvent(new CustomEvent('sgi:movimientos-actualizados', {detail:{movimientos:[]}}));
+      return;
+    }
     let consulta = supabase.from('movimientos_inventario')
       .select('id,sucursal_id,producto_id,tipo,cantidad,stock_anterior,stock_nuevo,motivo,creado_en')
       .order('creado_en',{ascending:false}).limit(40);
@@ -213,6 +216,14 @@ export async function iniciarInventario(rolVista) {
       const fila=document.createElement('tr');
       const td=crearCelda(fila,'No se han registrado movimientos todavía.');td.colSpan=7;cuerpo.append(fila);
     }
+    // Únicamente los últimos 40 registros autorizados por RLS y la sede activa.
+    const movimientosVista = (data || []).map(m => ({...m,
+      producto_nombre:nombreProducto.get(Number(m.producto_id)) || 'Producto archivado',
+      sucursal_nombre:nombreSede.get(Number(m.sucursal_id)) || 'Sucursal'
+    }));
+    document.dispatchEvent(new CustomEvent('sgi:movimientos-actualizados', {
+      detail:{movimientos:movimientosVista}
+    }));
   }
 
   async function cargarDatos() {
