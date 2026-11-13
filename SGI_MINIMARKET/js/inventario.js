@@ -183,47 +183,116 @@ export async function iniciarInventario(rolVista) {
     }
   }
 
+  // El calendario filtra solo movimientos. Las existencias siguen siendo actuales.
+  let filtroFechas = {desde:null, hasta:null};
+  let movimientosVisibles = [];
+  let versionConsultaMovimientos = 0;
+
   async function cargarMovimientos() {
+    const version = ++versionConsultaMovimientos;
     const cuerpo = $('tabla-movimientos');
     if (!cuerpo) return;
     cuerpo.replaceChildren();
-    const ids = sedesPermitidas().map(s=>Number(s.id));
+    const ids = sedesPermitidas().map(s => Number(s.id));
     if (!ids.length) {
-      document.dispatchEvent(new CustomEvent('sgi:movimientos-actualizados', {detail:{movimientos:[]}}));
+      movimientosVisibles = [];
+      document.dispatchEvent(new CustomEvent('sgi:movimientos-actualizados', {
+        detail:{movimientos:[], limite:0, filtrado:false}
+      }));
       return;
     }
+    const filtrado = Boolean(filtroFechas.desde && filtroFechas.hasta);
+    const limite = filtrado ? 500 : 40;
     let consulta = supabase.from('movimientos_inventario')
       .select('id,sucursal_id,producto_id,tipo,cantidad,stock_anterior,stock_nuevo,motivo,creado_en')
-      .order('creado_en',{ascending:false}).limit(40);
+      .order('creado_en',{ascending:false}).limit(limite);
     if (sucursalSeleccionada === 'todas') consulta = consulta.in('sucursal_id',ids);
     else consulta = consulta.eq('sucursal_id',sedeActiva());
+    if (filtrado) {
+      // Medianoche local de la fecha escogida -> ISO UTC para PostgreSQL timestamptz.
+      const inicio = new Date(filtroFechas.desde + 'T00:00:00');
+      const finExclusivo = new Date(filtroFechas.hasta + 'T00:00:00');
+      finExclusivo.setDate(finExclusivo.getDate() + 1);
+      consulta = consulta.gte('creado_en',inicio.toISOString())
+        .lt('creado_en',finExclusivo.toISOString());
+    }
     const {data,error} = await consulta;
-    if (error) throw error;
-    const nombreProducto = new Map(catalogo.map(p=>[Number(p.id),p.nombre]));
-    const nombreSede = new Map(sedesPermitidas().map(s=>[Number(s.id),s.nombre]));
-    for (const movimiento of data || []) {
-      const fila=document.createElement('tr');
-      crearCelda(fila,new Date(movimiento.creado_en).toLocaleString('es-PE'));
-      crearCelda(fila,nombreSede.get(Number(movimiento.sucursal_id))||'—');
-      crearCelda(fila,nombreProducto.get(Number(movimiento.producto_id))||'Producto archivado');
-      crearCelda(fila,movimiento.tipo === 'entrada' ? 'Entrada' : 'Salida');
-      crearCelda(fila,movimiento.cantidad);
-      crearCelda(fila,`${movimiento.stock_anterior} → ${movimiento.stock_nuevo}`);
-      crearCelda(fila,movimiento.motivo||'—');
-      cuerpo.append(fila);
+    if (version !== versionConsultaMovimientos) return;
+    if (error) {
+      movimientosVisibles = [];
+      const fila = document.createElement('tr');
+      const td = crearCelda(fila,'No se pudieron consultar los movimientos: ' + error.message);
+      td.colSpan = 7; cuerpo.append(fila);
+      document.dispatchEvent(new CustomEvent('sgi:movimientos-actualizados', {
+        detail:{movimientos:[], limite, filtrado, error:true}
+      }));
+      return;
     }
-    if (!data?.length) {
-      const fila=document.createElement('tr');
-      const td=crearCelda(fila,'No se han registrado movimientos todavía.');td.colSpan=7;cuerpo.append(fila);
-    }
-    // Únicamente los últimos 40 registros autorizados por RLS y la sede activa.
-    const movimientosVista = (data || []).map(m => ({...m,
+    const nombreProducto = new Map(catalogo.map(p => [Number(p.id),p.nombre]));
+    const nombreSede = new Map(sedesPermitidas().map(s => [Number(s.id),s.nombre]));
+    movimientosVisibles = (data || []).map(m => ({...m,
       producto_nombre:nombreProducto.get(Number(m.producto_id)) || 'Producto archivado',
       sucursal_nombre:nombreSede.get(Number(m.sucursal_id)) || 'Sucursal'
     }));
+    for (const movimiento of movimientosVisibles) {
+      const fila = document.createElement('tr');
+      crearCelda(fila,new Date(movimiento.creado_en).toLocaleString('es-PE'));
+      crearCelda(fila,movimiento.sucursal_nombre);
+      crearCelda(fila,movimiento.producto_nombre);
+      crearCelda(fila,movimiento.tipo === 'entrada' ? 'Entrada' : 'Salida');
+      crearCelda(fila,movimiento.cantidad);
+      crearCelda(fila,String(movimiento.stock_anterior) + ' → ' + String(movimiento.stock_nuevo));
+      crearCelda(fila,movimiento.motivo || '—');
+      cuerpo.append(fila);
+    }
+    if (!movimientosVisibles.length) {
+      const fila = document.createElement('tr');
+      const td = crearCelda(fila,filtrado
+        ? 'No hay movimientos registrados durante las fechas seleccionadas.'
+        : 'No se han registrado movimientos todavía.');
+      td.colSpan = 7; cuerpo.append(fila);
+    }
+    if ($('s4-historial-titulo')) $('s4-historial-titulo').textContent =
+      filtrado ? 'Movimientos en el período seleccionado' : 'Últimos 40 movimientos';
+    if ($('s4-resumen-consulta')) $('s4-resumen-consulta').textContent =
+      'Mostrando ' + movimientosVisibles.length + ' registro(s) de la sucursal seleccionada. ' +
+      'Máximo ' + limite + ' por consulta.';
     document.dispatchEvent(new CustomEvent('sgi:movimientos-actualizados', {
-      detail:{movimientos:movimientosVista}
+      detail:{movimientos:movimientosVisibles, limite, filtrado}
     }));
+  }
+
+  function exportarMovimientosCsv() {
+    if (!vistaAdmin) return;
+    const estado = $('s4-filtro-estado');
+    if (!movimientosVisibles.length) {
+      if (estado) estado.textContent = 'No hay movimientos visibles para exportar.';
+      return;
+    }
+    const campos = ['Fecha','Sucursal','Producto','Tipo','Cantidad','Stock anterior','Stock nuevo','Motivo'];
+    const escapar = valor => {
+      let texto = String(valor ?? '');
+      // Evita fórmulas cuando se abre el CSV en una hoja de cálculo.
+      if (/^\s*[=+\-@]/.test(texto)) texto = "'" + texto;
+      return '"' + texto.replace(/"/g,'""') + '"';
+    };
+    const filas = movimientosVisibles.map(m => [
+      new Date(m.creado_en).toLocaleString('es-PE'),m.sucursal_nombre,
+      m.producto_nombre,m.tipo,m.cantidad,m.stock_anterior,m.stock_nuevo,m.motivo || ''
+    ]);
+    const csv = '\uFEFF' + [campos,...filas].map(fila => fila.map(escapar).join(';')).join('\r\n');
+    const url = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+    const enlace = document.createElement('a');
+    enlace.href = url;
+    enlace.download = 'sgi-minimarket-movimientos-' +
+      new Date().toISOString().slice(0,10) + '.csv';
+    document.body.append(enlace);
+    enlace.click();
+    enlace.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+    if (estado) estado.textContent = 'CSV preparado con ' + filas.length +
+      ' movimientos visibles. El historial consultado está limitado a ' +
+      (filtroFechas.desde ? '500' : '40') + ' registros.';
   }
 
   async function cargarDatos() {
@@ -293,6 +362,15 @@ export async function iniciarInventario(rolVista) {
       tablaAsignaciones.append(fila);
     }
   }
+
+  document.addEventListener('sgi:filtro-fechas', async evento => {
+    const datos = evento.detail || {};
+    if ((datos.desde && !datos.hasta) || (!datos.desde && datos.hasta)) return;
+    if (datos.desde && datos.hasta && datos.desde > datos.hasta) return;
+    filtroFechas = {desde:datos.desde || null, hasta:datos.hasta || null};
+    if (contexto) await cargarMovimientos();
+  });
+  document.addEventListener('sgi:exportar-movimientos',exportarMovimientosCsv);
 
   if ($('buscar')) $('buscar').addEventListener('input',mostrarProductos);
   if ($('cancelar-edicion')) $('cancelar-edicion').addEventListener('click',reiniciarFormulario);
