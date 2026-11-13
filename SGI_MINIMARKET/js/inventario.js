@@ -187,6 +187,44 @@ export async function iniciarInventario(rolVista) {
   let filtroFechas = {desde:null, hasta:null};
   let movimientosVisibles = [];
   let versionConsultaMovimientos = 0;
+  let filtroTipoMovimiento = 'todos';
+
+  // Este filtro solo modifica las filas ya consultadas para el empleado.
+  // El gráfico y la consulta por calendario conservan todos los tipos.
+  function aplicarFiltroTipoMovimiento() {
+    if (vistaAdmin) return;
+    const cuerpo = $('tabla-movimientos');
+    if (!cuerpo) return;
+    cuerpo.querySelector('.s4-filtro-tipo-vacio')?.remove();
+    let visibles = 0;
+    for (const fila of cuerpo.querySelectorAll('tr[data-s4-tipo-movimiento]')) {
+      const mostrar = filtroTipoMovimiento === 'todos' ||
+        fila.dataset.s4TipoMovimiento === filtroTipoMovimiento;
+      fila.hidden = !mostrar;
+      if (mostrar) visibles += 1;
+    }
+    if (!visibles && movimientosVisibles.length) {
+      const fila = document.createElement('tr');
+      fila.className = 's4-filtro-tipo-vacio';
+      const td = crearCelda(fila, filtroTipoMovimiento === 'entrada'
+        ? 'No hay entradas en los movimientos consultados.'
+        : 'No hay salidas en los movimientos consultados.');
+      td.colSpan = 8;
+      cuerpo.append(fila);
+    }
+    for (const boton of document.querySelectorAll('[data-s4-filtro-tipo]')) {
+      const activo = boton.dataset.s4FiltroTipo === filtroTipoMovimiento;
+      boton.classList.toggle('s4-tipo-activo',activo);
+      boton.setAttribute('aria-pressed',String(activo));
+    }
+    if ($('s4-resumen-consulta')) {
+      const etiqueta = filtroTipoMovimiento === 'todos' ? 'movimientos'
+        : filtroTipoMovimiento === 'entrada' ? 'entradas' : 'salidas';
+      $('s4-resumen-consulta').textContent = 'Mostrando ' + visibles + ' ' + etiqueta +
+        ' de ' + movimientosVisibles.length + ' movimientos consultados. Máximo ' +
+        (filtroFechas.desde ? '500' : '40') + ' registros por consulta.';
+    }
+  }
 
   async function cargarMovimientos() {
     const version = ++versionConsultaMovimientos;
@@ -236,6 +274,7 @@ export async function iniciarInventario(rolVista) {
     }));
     for (const movimiento of movimientosVisibles) {
       const fila = document.createElement('tr');
+      if (!vistaAdmin) fila.dataset.s4TipoMovimiento = movimiento.tipo;
       crearCelda(fila,new Date(movimiento.creado_en).toLocaleString('es-PE'));
       crearCelda(fila,movimiento.sucursal_nombre);
       crearCelda(fila,movimiento.producto_nombre);
@@ -266,6 +305,7 @@ export async function iniciarInventario(rolVista) {
     if ($('s4-resumen-consulta')) $('s4-resumen-consulta').textContent =
       'Mostrando ' + movimientosVisibles.length + ' registro(s) de la sucursal seleccionada. ' +
       'Máximo ' + limite + ' por consulta.';
+    if (!vistaAdmin) aplicarFiltroTipoMovimiento();
     document.dispatchEvent(new CustomEvent('sgi:movimientos-actualizados', {
       detail:{movimientos:movimientosVisibles, limite, filtrado}
     }));
@@ -364,9 +404,17 @@ export async function iniciarInventario(rolVista) {
       mostrarProductos();
       actualizarIndicadores();
       await cargarMovimientos();
+      const fechaConsulta = $('s4-ultima-actualizacion');
+      if (fechaConsulta) {
+        fechaConsulta.textContent = 'Última consulta: ' +
+          new Date().toLocaleString('es-PE', {dateStyle:'short', timeStyle:'short'}) +
+          ' · Sucursal autorizada';
+      }
+      return true;
     } catch(error) {
       informar('Error al consultar Supabase: '+error.message,true, vistaAdmin?'mensaje-producto':'mensaje-movimiento');
       console.error('Error SGI:',error);
+      return false;
     }
   }
 
@@ -415,6 +463,37 @@ export async function iniciarInventario(rolVista) {
   const ultimaBoleta = $('s4-boleta-ultima');
   if (ultimaBoleta) ultimaBoleta.addEventListener('click', () =>
     abrirBoletaMovimiento(ultimaBoleta.dataset.movimientoId,ultimaBoleta));
+
+  // Filtro de entradas y salidas sobre el historial cargado (solo empleado).
+  if (!vistaAdmin) {
+    for (const boton of document.querySelectorAll('[data-s4-filtro-tipo]')) {
+      boton.addEventListener('click', () => {
+        const tipo = boton.dataset.s4FiltroTipo;
+        if (!['todos','entrada','salida'].includes(tipo)) return;
+        filtroTipoMovimiento = tipo;
+        aplicarFiltroTipoMovimiento();
+      });
+    }
+  }
+
+  const botonActualizar = $('s4-actualizar-datos');
+  if (botonActualizar) {
+    botonActualizar.addEventListener('click', async () => {
+      if (!contexto || botonActualizar.disabled) return;
+      botonActualizar.disabled = true;
+      botonActualizar.textContent = '↻ Actualizando...';
+      try {
+        const actualizado = await cargarDatos();
+        if (!actualizado && $('s4-ultima-actualizacion')) {
+          $('s4-ultima-actualizacion').textContent =
+            'No se pudo actualizar. Revisa el mensaje del módulo Movimientos.';
+        }
+      } finally {
+        botonActualizar.disabled = false;
+        botonActualizar.textContent = '↻ Actualizar datos';
+      }
+    });
+  }
 
   if ($('buscar')) $('buscar').addEventListener('input',mostrarProductos);
   if ($('cancelar-edicion')) $('cancelar-edicion').addEventListener('click',reiniciarFormulario);
