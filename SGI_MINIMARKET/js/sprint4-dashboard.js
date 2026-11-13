@@ -50,10 +50,16 @@
     }
   }
 
-  function actualizarInventario(registros) {
+  function actualizarInventario(registros, categoriasCatalogo) {
     const datos = Array.isArray(registros) ? registros : [];
+    // Categorías de catálogo no implica tener stock en la sucursal.
     const categorias = $('s4-total-categorias');
-    if (categorias) categorias.textContent = formato.format(new Set(datos.map(p => p.categoria)).size);
+    if (categorias) {
+      const total = Array.isArray(categoriasCatalogo)
+        ? categoriasCatalogo.filter(c => c.activo).length
+        : new Set(datos.map(p => p.categoria)).size;
+      categorias.textContent = formato.format(total);
+    }
     pintarAlertas($('s4-alertas-resumen'), datos, 3);
     pintarAlertas($('s4-alertas-empleado'), datos);
   }
@@ -143,7 +149,8 @@
     pintarActividad(datos);
   }
 
-  document.addEventListener('sgi:inventario-actualizado', e => actualizarInventario(e.detail?.registros));
+  document.addEventListener('sgi:inventario-actualizado', e =>
+    actualizarInventario(e.detail?.registros, e.detail?.categorias));
   document.addEventListener('sgi:movimientos-actualizados', e =>
     actualizarMovimientos(e.detail?.movimientos, e.detail || {}));
 })();
