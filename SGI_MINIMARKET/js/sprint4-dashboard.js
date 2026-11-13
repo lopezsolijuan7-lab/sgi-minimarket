@@ -19,8 +19,13 @@
     destino.replaceChildren(elemento('p', 's4-empty-state', mensaje));
   }
 
-  function pintarAlertas(destino, registros, limite) {
+  function pintarAlertas(destino, registros, limite, sinInventario = false) {
     if (!destino) return;
+    if (sinInventario) {
+      mensajeVacio(destino,
+        'Esta sucursal todavía no tiene existencias registradas. Registra una entrada para comenzar el control de stock mínimo.');
+      return;
+    }
     const bajos = registros.filter(p => numero(p.stock) <= numero(p.stock_minimo))
       .sort((a, b) => numero(a.stock) - numero(b.stock));
     destino.replaceChildren();
@@ -60,8 +65,9 @@
         : new Set(datos.map(p => p.categoria)).size;
       categorias.textContent = formato.format(total);
     }
-    pintarAlertas($('s4-alertas-resumen'), datos, 3);
-    pintarAlertas($('s4-alertas-empleado'), datos);
+    const sinInventario = document.body.classList.contains('empleado-body') && datos.length === 0;
+    pintarAlertas($('s4-alertas-resumen'), datos, 3, sinInventario);
+    pintarAlertas($('s4-alertas-empleado'), datos, undefined, sinInventario);
   }
 
   function pintarComparacion(movimientos) {
