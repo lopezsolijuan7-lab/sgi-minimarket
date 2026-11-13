@@ -339,10 +339,11 @@
 <div class="form-actions"><button class="save-btn" type="submit">Registrar movimiento</button></div>
 </form>
 <p class="form-message" id="mensaje-movimiento" role="status"></p>
+<button type="button" class="s4-ver-boleta-ultima" id="s4-boleta-ultima" hidden>🧾 Ver boleta del último movimiento</button>
 <h3 id="s4-historial-titulo">Últimos 40 movimientos</h3>
 <p id="s4-resumen-consulta" class="s4-dashboard-note" role="status">Consultando movimientos...</p>
 <div class="table-scroll"><table class="admin-table"><thead><tr>
-<th>Fecha</th><th>Sucursal</th><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Stock</th><th>Motivo</th>
+<th>Fecha</th><th>Sucursal</th><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Stock</th><th>Motivo</th><th>Boleta interna</th>
 </tr></thead><tbody id="tabla-movimientos"></tbody></table></div>
 </section>
 <!-- Solo el administrador general puede crear sedes y asignar empleados. -->
@@ -398,5 +399,40 @@
 <script src="js/sprint4-navegacion.js" defer></script>
 <script src="js/sprint4-graficos.js" defer></script>
 <script src="js/sprint4-dashboard.js" defer></script>
-<script src="js/sprint4-calendario.js" defer></script></body>
+<!-- Sprint 4: boleta de movimiento de inventario. No es comprobante de venta. -->
+<dialog id="s4-boleta-dialog" class="s4-boleta-dialog" aria-labelledby="s4-boleta-titulo">
+  <article class="s4-boleta-hoja">
+    <header class="s4-boleta-encabezado">
+      <div class="s4-boleta-logo" aria-hidden="true">▦</div>
+      <div><strong class="s4-boleta-marca">SGI MINIMARKET</strong>
+        <p>Gestión de inventario</p></div>
+    </header>
+    <h2 id="s4-boleta-titulo">Comprobante interno de inventario</h2>
+    <p class="s4-boleta-aviso">Documento interno de control. No es una boleta de venta ni comprobante tributario SUNAT.</p>
+    <dl class="s4-boleta-datos">
+      <div><dt>N.º de movimiento</dt><dd id="s4-boleta-numero">—</dd></div>
+      <div><dt>Fecha y hora</dt><dd id="s4-boleta-fecha">—</dd></div>
+      <div><dt>Sucursal</dt><dd id="s4-boleta-sucursal">—</dd></div>
+      <div><dt>Operación</dt><dd id="s4-boleta-tipo" class="s4-boleta-tipo">—</dd></div>
+    </dl>
+    <div class="s4-boleta-producto">
+      <span>Producto</span>
+      <strong id="s4-boleta-producto">—</strong>
+      <small>Código: <span id="s4-boleta-codigo">—</span></small>
+    </div>
+    <dl class="s4-boleta-datos s4-boleta-cantidades">
+      <div><dt>Cantidad registrada</dt><dd id="s4-boleta-cantidad">—</dd></div>
+      <div><dt>Stock anterior</dt><dd id="s4-boleta-anterior">—</dd></div>
+      <div class="s4-boleta-nuevo"><dt>Stock nuevo</dt><dd id="s4-boleta-nuevo">—</dd></div>
+      <div><dt>Motivo</dt><dd id="s4-boleta-motivo">—</dd></div>
+    </dl>
+    <p class="s4-boleta-pie">Emitido por SGI MINIMARKET a partir del movimiento registrado en Supabase.</p>
+    <div class="s4-boleta-botones">
+      <button type="button" id="s4-boleta-imprimir" class="s4-boleta-boton-principal">🖨 Imprimir / Guardar PDF</button>
+      <button type="button" id="s4-boleta-cerrar" class="s4-boleta-boton-secundario">Cerrar</button>
+    </div>
+  </article>
+</dialog>
+<script src="js/sprint4-calendario.js" defer></script>
+<script src="js/sprint4-boleta.js" defer></script></body>
 </html>
