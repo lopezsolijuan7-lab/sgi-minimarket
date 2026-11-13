@@ -103,7 +103,17 @@ export async function iniciarInventario(rolVista) {
     if (!cuerpo) return;
     cuerpo.replaceChildren();
     const busqueda = String($('buscar')?.value || '').trim().toLocaleLowerCase('es');
-    const filtrados = registros.filter(p => [p.codigo,p.nombre,p.categoria,p.sucursal_nombre]
+    // Catálogo global visible para el empleado; solo el inventario de su sucursal
+    // determina el stock. Nunca se copian existencias de otras sucursales.
+    const base = vistaAdmin ? registros : catalogo.filter(p => p.activo).map(p => {
+      const registrado = registros.find(r => Number(r.id) === Number(p.id));
+      if (registrado) return registrado;
+      const sede = sedesPermitidas().find(item => Number(item.id) === sedeActiva());
+      return {...p, categoria: categorias.find(c => Number(c.id) === Number(p.categoria_id))?.nombre || 'Sin categoría',
+        sucursal_id:sedeActiva(),sucursal_nombre:sede?.nombre || 'Sucursal',
+        stock:0,stock_minimo:0,sinInventario:true};
+    });
+    const filtrados = base.filter(p => [p.codigo,p.nombre,p.categoria,p.sucursal_nombre]
       .some(campo => String(campo || '').toLocaleLowerCase('es').includes(busqueda)));
     for (const producto of filtrados) {
       const fila = document.createElement('tr');
@@ -112,10 +122,12 @@ export async function iniciarInventario(rolVista) {
       crearCelda(fila, producto.categoria);
       crearCelda(fila, dinero(producto.precio));
       crearCelda(fila, producto.sucursal_nombre);
-      crearCelda(fila, producto.stock);
-      const estado = crearCelda(fila, producto.stock === 0 ? 'Agotado' :
-        (producto.stock <= producto.stock_minimo ? 'Stock bajo' : 'Disponible'));
-      estado.className = producto.stock <= producto.stock_minimo ? 'estado-bajo' : 'estado-normal';
+      crearCelda(fila, producto.sinInventario ? '—' : producto.stock);
+      const estado = crearCelda(fila, producto.sinInventario ? 'Pendiente de ingreso' :
+        (producto.stock === 0 ? 'Agotado' :
+        (producto.stock <= producto.stock_minimo ? 'Stock bajo' : 'Disponible')));
+      estado.className = producto.sinInventario ? 's4-estado-pendiente' :
+        (producto.stock <= producto.stock_minimo ? 'estado-bajo' : 'estado-normal');
       if (vistaAdmin) {
         const td = document.createElement('td');
         const editar = document.createElement('button');
@@ -152,17 +164,33 @@ export async function iniciarInventario(rolVista) {
     }
     if (!filtrados.length) {
       const fila = document.createElement('tr');
-      const td = crearCelda(fila, 'No hay productos con existencias registradas en la sucursal seleccionada.');
+      const td = crearCelda(fila, 'No hay productos que coincidan con tu búsqueda.');
       td.colSpan = vistaAdmin ? 8 : 7;
       cuerpo.append(fila);
     }
   }
 
   function actualizarIndicadores() {
-    if ($('total-productos')) $('total-productos').textContent = String(new Set(registros.map(p => p.id)).size);
+    if ($('total-productos')) $('total-productos').textContent = String(
+      vistaAdmin ? new Set(registros.map(p => p.id)).size : catalogo.filter(p => p.activo).length);
     if ($('total-unidades')) $('total-unidades').textContent = String(registros.reduce((s,p) => s + p.stock, 0));
     if ($('stock-bajo')) $('stock-bajo').textContent = String(registros.filter(p => p.stock <= p.stock_minimo).length);
-    document.dispatchEvent(new CustomEvent('sgi:inventario-actualizado', { detail:{registros} }));
+    const aviso = $('s4-estado-inventario-sede');
+    if (aviso) {
+      const sinInventario = registros.length === 0;
+      aviso.hidden = !sinInventario;
+      if (sinInventario) {
+        const sucursal = sedesPermitidas().find(item => Number(item.id) === sedeActiva());
+        const nombre = sucursal?.nombre || 'Tu sucursal';
+        const cuantos = catalogo.filter(p => p.activo).length;
+        if ($('s4-estado-inventario-detalle')) {
+          $('s4-estado-inventario-detalle').textContent =
+            nombre + ' no tiene todavía entradas ni existencias registradas. ' +
+            'Hay ' + cuantos + ' productos en el catálogo general para seleccionar y registrar la primera entrada.';
+        }
+      }
+    }
+    document.dispatchEvent(new CustomEvent('sgi:inventario-actualizado', { detail:{registros,catalogo,categorias} }));
   }
   function cargarSelects() {
     const selectCategoria = $('categoria');
