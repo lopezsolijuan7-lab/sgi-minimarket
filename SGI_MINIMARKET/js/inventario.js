@@ -186,7 +186,7 @@ export async function iniciarInventario(rolVista) {
         if ($('s4-estado-inventario-detalle')) {
           $('s4-estado-inventario-detalle').textContent =
             nombre + ' no tiene todavía entradas ni existencias registradas. ' +
-            'Hay ' + cuantos + ' productos en el catálogo general para seleccionar y registrar la primera entrada.';
+            'Hay ' + cuantos + ' productos en el catálogo general. El administrador debe crear una orden de compra y tú puedes confirmar la recepción cuando llegue la mercadería.';
         }
       }
     }
