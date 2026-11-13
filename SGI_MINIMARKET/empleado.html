@@ -8,8 +8,9 @@
 <title>Empleado | SGI MINIMARKET</title>
 <link href="css/inventario.css" rel="stylesheet"/>
 <link href="css/sprint4-ui.css" rel="stylesheet"/>
+<link href="css/sprint4-premium.css" rel="stylesheet"/>
 <meta content="#073c34" name="theme-color"/><link href="app.webmanifest" rel="manifest"/><link href="icons/sgi-192.png" rel="icon"/></head>
-<body class="empleado-body">
+<body class="empleado-body s4-premium">
 <div class="aplicacion">
 <aside class="menu-lateral">
 <h2>🏪 SGI MINIMARKET</h2>
@@ -75,13 +76,25 @@
   <article class="panel s4-insight-card">
     <div class="s4-insight-heading">
       <div><p class="s4-card-kicker">MOVIMIENTOS</p><h2>Entradas y salidas</h2>
-        <p>Unidades movilizadas en el historial reciente de tu sucursal</p></div>
+        <p>Consulta las operaciones registradas en tu sucursal por fecha</p></div>
       <span class="s4-tag-neutral">Datos reales</span>
     </div>
+    <div class="s4-employee-calendar" aria-label="Filtros de fecha">
+      <div class="s4-periodos" role="group" aria-label="Período de movimientos">
+        <button type="button" data-s4-periodo="hoy" aria-pressed="false">Hoy</button>
+        <button type="button" data-s4-periodo="7dias" aria-pressed="false">7 días</button>
+        <button type="button" data-s4-periodo="30dias" aria-pressed="false">30 días</button>
+        <button type="button" data-s4-periodo="todos" aria-pressed="true">Todos</button>
+      </div>
+      <label class="s4-dia-label" for="s4-dia-empleado">📅 Fecha específica
+        <input id="s4-dia-empleado" type="date" aria-label="Consultar movimientos de un día"/>
+      </label>
+    </div>
+    <p id="s4-filtro-estado" class="s4-calendar-status" role="status" aria-live="polite">Mostrando los movimientos más recientes de tu sucursal.</p>
     <div id="s4-grafico-movimientos" class="s4-compare-chart" aria-live="polite">
       <p class="s4-empty-state">Consultando movimientos...</p>
     </div>
-    <p class="s4-dashboard-note">Se muestran hasta 40 movimientos recientes; no representa todo el historial.</p>
+    <p class="s4-dashboard-note" id="s4-nota-movimientos">Se muestran hasta 40 movimientos recientes; no representa todo el historial.</p>
   </article>
   <article class="panel s4-insight-card">
     <div class="s4-insight-heading">
@@ -130,7 +143,8 @@
 <button class="boton-principal" type="submit">Registrar movimiento</button>
 </form>
 <p class="form-message" id="mensaje-movimiento" role="status"></p>
-<h3>Historial reciente</h3>
+<h3 id="s4-historial-titulo">Últimos 40 movimientos</h3>
+<p id="s4-resumen-consulta" class="s4-dashboard-note" role="status">Consultando movimientos...</p>
 <div class="tabla-contenedor"><table><thead><tr>
 <th>Fecha</th><th>Sucursal</th><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Stock</th><th>Motivo</th>
 </tr></thead><tbody id="tabla-movimientos"></tbody></table></div>
@@ -160,5 +174,6 @@
 <script src="js/empleado.js" type="module"></script>
 <script src="js/pwa.js" type="module"></script>
 <script src="js/sprint4-navegacion.js" defer></script>
-<script src="js/sprint4-dashboard.js" defer></script></body>
+<script src="js/sprint4-dashboard.js" defer></script>
+<script src="js/sprint4-calendario.js" defer></script></body>
 </html>
