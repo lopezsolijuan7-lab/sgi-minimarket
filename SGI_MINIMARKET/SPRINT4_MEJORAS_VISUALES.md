@@ -29,15 +29,37 @@
 - `administrador.html`
 - `empleado.html`
 - `css/sprint4-ui.css`
+- `css/sprint4-premium.css`
 - `js/inventario.js`
 - `js/sprint4-navegacion.js`
 
-**Archivo nuevo:** `js/sprint4-dashboard.js`.
+**Archivos nuevos:** `js/sprint4-dashboard.js`, `js/sprint4-calendario.js` y `css/sprint4-premium.css`.
 
 ## Límites de la visualización
 - El gráfico de movimientos resume hasta 40 registros recientes, no todo el histórico de ventas o movimientos.
 - El inventario visible y sus indicadores dependen de la sucursal seleccionada y de las políticas de seguridad de Supabase.
 - Las alertas visibles **todavía no envían correos**. La integración de notificaciones con Resend se planificará después de validar el diseño.
+
+## Diseño premium y calendario funcional (nueva iteración)
+- Se creó `css/sprint4-premium.css` para aproximar el **modelo azul oscuro y turquesa elegido**, con menús, tarjetas y botones consistentes y adaptables.
+- Administrador: selector nativo de **Desde / Hasta**, botón **Actualizar** y opción **Ver todos**. El filtro consulta por `creado_en` en Supabase y modifica la tabla, el resumen de entradas/salidas y la lista de últimos movimientos.
+- Administrador: botón **Exportar CSV**, que descarga exclusivamente los registros de movimientos cargados y autorizados de la vista actual, con protección básica contra fórmulas de hoja de cálculo.
+- Empleado: controles **Hoy / 7 días / 30 días / Todos** y selector de **fecha exacta** tanto en el inicio como en el módulo de movimientos; ambos grupos permanecen sincronizados.
+- Se creó `js/sprint4-calendario.js` y se adaptaron `js/inventario.js` y `js/sprint4-dashboard.js` para filtrar movimientos reales y actualizar los gráficos.
+- Los indicadores de productos, unidades y valor de inventario describen **existencias actuales**, y **no** se recalculan como un inventario histórico al cambiar las fechas.
+- **Límites por consulta:** sin filtro se consultan los últimos 40 movimientos; con fechas, hasta 500 movimientos del intervalo. El CSV exporta solo los registros cargados, no toda la base de datos.
+- La selección se interpreta según la **zona horaria del navegador** y se envía a Supabase como intervalo de fecha/hora UTC.
+- No se envían correos y no se ha cambiado ningún despliegue de producción.
+
+## Pruebas adicionales del calendario (pendientes de verificación con sesión real)
+1. Seleccionar dos fechas válidas, pulsar **Actualizar** y comparar tabla, actividad reciente y gráfico.
+2. Seleccionar fechas invertidas: el formulario debe avisar, sin consultar.
+3. Probar un período sin registros: debe aparecer un mensaje vacío, sin datos inventados.
+4. Pulsar **Ver todos**: debe recuperar los movimientos más recientes.
+5. Exportar CSV como administrador y verificar que las filas coinciden con la consulta.
+6. En empleado, probar **Hoy**, **7 días**, **30 días**, **Todos** y una **fecha exacta**; verificar que ambos filtros estén sincronizados.
+7. Comprobar cambios de sucursal (si el usuario tiene más de una), permisos y visualización móvil.
+8. Probar gráficos, formularios y enlaces existentes con ambas cuentas.
 
 ## Validación pendiente en el navegador
 1. Iniciar sesión como administrador y como empleado con cuentas autorizadas.
