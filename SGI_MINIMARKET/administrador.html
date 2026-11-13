@@ -9,8 +9,9 @@
 <link href="css/inventario.css" rel="stylesheet"/>
 <link href="css/admin-profesional.css" rel="stylesheet"/>
 <link href="css/sprint4-ui.css" rel="stylesheet"/>
+<link href="css/sprint4-premium.css" rel="stylesheet"/>
 <meta content="#073c34" name="theme-color"/><link href="app.webmanifest" rel="manifest"/><link href="icons/sgi-192.png" rel="icon"/></head>
-<body class="admin-body">
+<body class="admin-body s4-premium">
 <div class="admin-layout">
 <!-- MENÚ LATERAL -->
 <aside class="admin-sidebar">
@@ -87,9 +88,30 @@
               sucursales y valor del inventario.
             </p>
 </div>
-<a class="quick-add" href="#registro">
-            ＋ Nuevo producto
-          </a>
+</section>
+<!-- Barra de herramientas Sprint 4: selector de fechas, exportación y acceso a productos -->
+<section class="s4-admin-toolbar" aria-label="Herramientas y calendario de movimientos">
+  <div class="s4-toolbar-heading">
+    <span class="s4-toolbar-icon" aria-hidden="true">▦</span>
+    <div><strong>Calendario de movimientos</strong>
+      <small>Consulta operaciones por fechas y exporta el resultado visible</small></div>
+  </div>
+  <form class="s4-calendar-form" id="s4-filtro-form">
+    <label for="s4-fecha-desde">Desde
+      <input id="s4-fecha-desde" name="desde" type="date" required aria-label="Fecha inicial del historial"/>
+    </label>
+    <label for="s4-fecha-hasta">Hasta
+      <input id="s4-fecha-hasta" name="hasta" type="date" required aria-label="Fecha final del historial"/>
+    </label>
+    <button type="submit" class="s4-button s4-button-secondary">Actualizar</button>
+    <button type="button" class="s4-button s4-button-quiet" id="s4-limpiar-filtro">Ver todos</button>
+  </form>
+  <div class="s4-toolbar-actions">
+    <button type="button" class="s4-button s4-button-outline" id="s4-exportar-movimientos">↓ Exportar CSV</button>
+    <a class="quick-add s4-button-primary" href="#registro">＋ Nuevo producto</a>
+  </div>
+  <p id="s4-filtro-estado" class="s4-calendar-status" role="status" aria-live="polite">Mostrando los movimientos más recientes de la sucursal seleccionada.</p>
+</section>
 </section>
 <!-- ESTADÍSTICAS -->
 <section class="kpi-grid">
@@ -173,7 +195,7 @@
     <div id="s4-grafico-movimientos" class="s4-compare-chart" aria-live="polite">
       <p class="s4-empty-state">Consultando movimientos...</p>
     </div>
-    <p class="s4-dashboard-note">Resumen basado en un máximo de 40 movimientos de la sede seleccionada.</p>
+    <p class="s4-dashboard-note" id="s4-nota-movimientos">Resumen basado en un máximo de 40 movimientos de la sede seleccionada.</p>
   </article>
   <article class="admin-card s4-insight-card">
     <div class="section-heading">
@@ -313,7 +335,8 @@
 <div class="form-actions"><button class="save-btn" type="submit">Registrar movimiento</button></div>
 </form>
 <p class="form-message" id="mensaje-movimiento" role="status"></p>
-<h3>Últimos 40 movimientos</h3>
+<h3 id="s4-historial-titulo">Últimos 40 movimientos</h3>
+<p id="s4-resumen-consulta" class="s4-dashboard-note" role="status">Consultando movimientos...</p>
 <div class="table-scroll"><table class="admin-table"><thead><tr>
 <th>Fecha</th><th>Sucursal</th><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Stock</th><th>Motivo</th>
 </tr></thead><tbody id="tabla-movimientos"></tbody></table></div>
@@ -370,5 +393,6 @@
 <script src="js/pwa.js" type="module"></script>
 <script src="js/sprint4-navegacion.js" defer></script>
 <script src="js/sprint4-graficos.js" defer></script>
-<script src="js/sprint4-dashboard.js" defer></script></body>
+<script src="js/sprint4-dashboard.js" defer></script>
+<script src="js/sprint4-calendario.js" defer></script></body>
 </html>
