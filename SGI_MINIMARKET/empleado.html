@@ -87,10 +87,10 @@
         <button type="button" data-s4-periodo="todos" aria-pressed="true">Todos</button>
       </div>
       <label class="s4-dia-label" for="s4-dia-empleado">📅 Fecha específica
-        <input id="s4-dia-empleado" type="date" aria-label="Consultar movimientos de un día"/>
+        <input id="s4-dia-empleado" class="s4-day-calendar" type="date" aria-label="Consultar movimientos de un día"/>
       </label>
     </div>
-    <p id="s4-filtro-estado" class="s4-calendar-status" role="status" aria-live="polite">Mostrando los movimientos más recientes de tu sucursal.</p>
+    <p id="s4-filtro-estado" data-s4-filtro-estado class="s4-calendar-status" role="status" aria-live="polite">Mostrando los movimientos más recientes de tu sucursal.</p>
     <div id="s4-grafico-movimientos" class="s4-compare-chart" aria-live="polite">
       <p class="s4-empty-state">Consultando movimientos...</p>
     </div>
@@ -143,6 +143,19 @@
 <button class="boton-principal" type="submit">Registrar movimiento</button>
 </form>
 <p class="form-message" id="mensaje-movimiento" role="status"></p>
+<div class="s4-history-filters">
+  <strong>📅 Calendario del historial</strong>
+  <div class="s4-periodos" role="group" aria-label="Período del historial">
+    <button type="button" data-s4-periodo="hoy" aria-pressed="false">Hoy</button>
+    <button type="button" data-s4-periodo="7dias" aria-pressed="false">7 días</button>
+    <button type="button" data-s4-periodo="30dias" aria-pressed="false">30 días</button>
+    <button type="button" data-s4-periodo="todos" aria-pressed="true">Todos</button>
+  </div>
+  <label class="s4-dia-label" for="s4-dia-historial">Día exacto
+    <input id="s4-dia-historial" class="s4-day-calendar" type="date" aria-label="Día del historial de movimientos"/>
+  </label>
+  <p data-s4-filtro-estado class="s4-calendar-status" role="status" aria-live="polite">Mostrando los movimientos más recientes de tu sucursal.</p>
+</div>
 <h3 id="s4-historial-titulo">Últimos 40 movimientos</h3>
 <p id="s4-resumen-consulta" class="s4-dashboard-note" role="status">Consultando movimientos...</p>
 <div class="tabla-contenedor"><table><thead><tr>
