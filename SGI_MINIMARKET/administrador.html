@@ -88,8 +88,14 @@
               sucursales y valor del inventario.
             </p>
 </div>
+<div class="s4-welcome-actions" aria-label="Acciones principales del administrador">
+  <a class="quick-add s4-button-primary" href="#registro">＋ Nuevo producto</a>
+  <a class="s4-button s4-welcome-outline" data-s4-tipo="entrada" href="#movimientos">⇧ Registrar entrada</a>
+  <a class="s4-button s4-welcome-outline" data-s4-tipo="salida" href="#movimientos">⇄ Registrar salida</a>
+  <a class="s4-welcome-link" href="#movimientos">Ver movimientos ›</a>
+</div>
 </section>
-<!-- Barra de herramientas Sprint 4: selector de fechas, exportación y acceso a productos -->
+<!-- Barra de herramientas Sprint 4: selector de fechas, exportación de movimientos -->
 <section class="s4-admin-toolbar" aria-label="Herramientas y calendario de movimientos">
   <div class="s4-toolbar-heading">
     <span class="s4-toolbar-icon" aria-hidden="true">▦</span>
@@ -108,7 +114,6 @@
   </form>
   <div class="s4-toolbar-actions">
     <button type="button" class="s4-button s4-button-outline" id="s4-exportar-movimientos">↓ Exportar CSV</button>
-    <a class="quick-add s4-button-primary" href="#registro">＋ Nuevo producto</a>
   </div>
   <p id="s4-filtro-estado" class="s4-calendar-status" role="status" aria-live="polite">Mostrando los movimientos más recientes de la sucursal seleccionada.</p>
 </section>
