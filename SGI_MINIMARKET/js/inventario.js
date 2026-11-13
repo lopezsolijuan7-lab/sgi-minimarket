@@ -186,7 +186,7 @@ export async function iniciarInventario(rolVista) {
         if ($('s4-estado-inventario-detalle')) {
           $('s4-estado-inventario-detalle').textContent =
             nombre + ' no tiene todavía entradas ni existencias registradas. ' +
-            'Hay ' + cuantos + ' productos en el catálogo general. El administrador debe crear una orden de compra y tú puedes confirmar la recepción cuando llegue la mercadería.';
+            'Hay ' + cuantos + ' productos en el catálogo general para seleccionar y registrar la primera entrada.';
         }
       }
     }
@@ -487,6 +487,16 @@ export async function iniciarInventario(rolVista) {
     if (contexto) await cargarMovimientos();
   });
   document.addEventListener('sgi:exportar-movimientos',exportarMovimientosCsv);
+  // Ventas y recepciones actualizan inventario, indicadores e historial sin recargar.
+  // Solo consulta: esta señal NO registra una operación ni altera existencias.
+  let actualizandoPorModulo = false;
+  document.addEventListener('sgi:solicitar-actualizacion', async () => {
+    if (!contexto || actualizandoPorModulo) return;
+    actualizandoPorModulo = true;
+    try { await cargarDatos(); }
+    finally { actualizandoPorModulo = false; }
+  });
+
 
   const ultimaBoleta = $('s4-boleta-ultima');
   if (ultimaBoleta) ultimaBoleta.addEventListener('click', () =>
