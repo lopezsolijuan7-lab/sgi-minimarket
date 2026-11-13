@@ -1,38 +1,40 @@
-# SGI MINIMARKET — Estado técnico (versión web y base de datos)
+# SGI MINIMARKET — Seguimiento de Sprints y entrega sprint4_02
+Actualizado: 13/11/2026 · Rama: `sprint4_02`
 
-Este documento conserva los estados acordados: Sprint 0 **realizado**, Sprint 1 **realizado**, Sprint 2 **en desarrollo** y Sprint 3 **planificado**.
+Esta versión integra el contenido aportado en `SGI_Minimarket_Sprint4_02.zip` con las correcciones previamente verificadas en `sprint4-mejorado`. Se preservaron los módulos ya corregidos. No debe confundirse un archivo SQL en GitHub con un despliegue o una migración ejecutada en Supabase.
 
 ## Sprint 0 — Planificación
-- Proyecto de gestión de inventario de minimarket.
-- Roles: Product Owner, Scrum Master y equipo Developer/QA.
-- Tecnología de la web: HTML/CSS/JavaScript; Supabase (Auth y PostgreSQL), GitHub, Netlify.
-- Se documenta la operación multisucursal en el diseño actual, sin atribuirle implementación retrospectiva en el sprint original.
+Se definieron el problema de inventario multisucursal, objetivos, alcance, historias de usuario, roles Scrum, backlog, herramientas y planificación. El diseño tecnológico evolucionó durante el desarrollo desde la propuesta original hacia HTML, CSS, JavaScript y Supabase.
 
-## Sprint 1 — Usuarios y acceso
-- Se conserva inicio de sesión con Supabase Auth.
-- Base vigente: `public.usuarios` con `rol` = administrador/empleado, `activo` y `sucursal_id`.
-- Administrador general: `sucursal_id = NULL`; empleado: una sucursal asignada.
-- Paneles `administrador.html` y `empleado.html`.
-- Se eliminaron referencias de ejecución a `perfiles` y `usuarios_sucursales`.
+## Sprint 1 — Acceso de usuarios
+Inicio de sesión con Supabase Auth, perfiles en `public.usuarios` y redirección a administrador o empleado. El rol se valida en servidor. Cada empleado tiene una única sucursal autorizada; el administrador general gestiona sedes.
 
-## Sprint 2 — Control de inventario (en desarrollo)
-- `productos` almacena catálogo global, con `categoria_id`.
-- `inventarios` mantiene `stock` y `stock_minimo` por sucursal.
-- `movimientos_inventario` registra entradas/salidas y trazabilidad; web usa RPC `registrar_movimiento`.
-- El administrador dispone de panel de indicadores y alertas.
-- La captura de los productos PRD040–PRD050 es parte de una carga de 50 productos de prueba; para comprobar el total se requiere contar los registros en Supabase.
-- Falta validar realmente las funciones SQL, las políticas RLS desde usuarios autenticados, la independencia entre dos sucursales y el despliegue Netlify.
+## Sprint 2 — Inventario
+Catálogo de productos y categorías, stock separado por sucursal, entradas, salidas, stock mínimo y alertas visuales. La operación se apoya en funciones RPC con validación de permisos y stock no negativo. Las cifras del panel dependen de los registros existentes y de los permisos de la cuenta.
 
-## Sprint 3 — Proveedores y abastecimiento (planificado)
-- La estructura de `proveedores` y `productos_proveedores` existe.
-- Los formularios de gestión y recepción de mercadería no se presentan como terminados.
+## Sprint 3 — Proveedores y abastecimiento
+Se incorporaron módulos de proveedores, órdenes de compra y recepción de mercadería; se admite recepción parcial, daño y faltantes mediante funciones SQL transaccionales. El proyecto anterior utilizaba `proveedores` y `productos_proveedores`; la integración agregó `recepciones_compra` y `detalle_recepciones`. La creación de tablas no significa que existan compras registradas.
 
-## Cambios de interfaz en este paquete
-- Portada: `img/minimarket.jpg`, sin decoraciones de anime.
-- Diseño responsivo en PC y móvil.
-- Manifest y servicio de caché para recursos visuales estáticos (preparación PWA; el inventario exige conexión).
+## Sprint 4 — Interfaz, reportes y módulos comerciales
+- Panel de administrador y empleado con navegación por módulos, indicadores, gráficos y estados vacíos correctos.
+- Filtros por fecha, calendario, consulta del historial y exportación CSV para abrir en Excel.
+- Boleta **interna de movimientos**, imprimible o guardable como PDF mediante el navegador. No es comprobante tributario SUNAT.
+- Panel de empleados que conserva consulta de productos, registro manual de movimientos y alertas.
+- Registro de ventas por empleado, formas de pago, consulta de ventas, puntos de caja y recepción de mercadería, integrados en la rama `sprint4-mejorado` y heredados por `sprint4_02`.
+- El catálogo es común, pero las existencias y permisos pertenecen a cada sucursal.
 
-## Antes de ejecutar el sistema
-- No volver a ejecutar el archivo de creación de tablas anterior (resguardado en `sql/historico/`).
-- Ejecutar **solo el complemento** `sql/03_compatibilidad_web.sql` tras respaldo y verificación de tablas.
-- Probar la aplicación publicada con perfiles reales en Supabase; el código no prueba por sí mismo los permisos RLS.
+## Sprint 5 — Pruebas y entrega
+Queda la validación integral en navegador con ambas cuentas, pruebas de roles/RLS, stock insuficiente, compras y recepciones parciales, ventas, reintentos, reportes, dispositivos móviles, respaldo y manual de usuario.
+
+## Estado verificado de la integración
+- Los módulos SQL `04_compras_recepciones.sql`, `05_cajas_consultas.sql` y la versión corregida de `06_ventas_empleado.sql` se instalaron anteriormente en el proyecto Supabase conectado.
+- Se probó una transacción simulada de compra, recepción, venta y movimiento en Supabase. El ensayo se ejecutó dentro de una transacción con `ROLLBACK`; no se conservaron ventas o compras ficticias.
+- **No** se ha validado el recorrido completo con una sesión real en Netlify para esta nueva rama.
+- El ZIP recibido incluía una vista de empleado sin `selector-sucursal`, `formulario-movimiento` ni `tabla-productos`: su prueba de estructura fallaba. En esta rama se retuvo la versión reparada, evitando esa regresión.
+- La integración no cambia `main`, `sprint3`, `sprint4` ni la configuración de Netlify.
+
+## Documentación técnica
+- `SPRINT4_02_INTEGRACION_ZIP.md`: contenido del ZIP y decisiones de integración.
+- `ACTUALIZACION_SUPABASE_SPRINT3_4.md`: estructura de base de datos y scripts.
+- `ESTADO_INTEGRACION_SPRINT4_MEJORADO.md`: histórico de la iteración anterior, no reemplaza el estado aquí descrito.
+- `tests/`: scripts de verificación estática; no sustituyen las pruebas funcionales con usuarios autenticados.
