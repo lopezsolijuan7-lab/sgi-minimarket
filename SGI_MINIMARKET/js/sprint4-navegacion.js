@@ -42,7 +42,7 @@
     evento.preventDefault();
     // Los accesos rápidos abren el módulo correspondiente con el tipo elegido.
     // No registran movimientos: el formulario de Supabase sigue siendo obligatorio.
-    if (destino === 'movimientos' && admin) {
+    if (destino === 'movimientos' && (admin || empleado)) {
       const tipo = enlace.dataset.s4Tipo;
       if (tipo === 'entrada' || tipo === 'salida') {
         const selector = document.getElementById('movimiento-tipo');
