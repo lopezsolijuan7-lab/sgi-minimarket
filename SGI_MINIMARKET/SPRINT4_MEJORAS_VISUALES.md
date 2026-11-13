@@ -108,3 +108,11 @@ Se añadieron tres mejoras solicitadas al sistema sin ampliar permisos ni modifi
 7. No cambiar la rama de producción en Netlify hasta concluir estas pruebas.
 
 > Nota: los archivos fueron actualizados en GitHub `sprint4`. La validación funcional con sesión real todavía no está concluida.
+
+## Publicación de prueba en Netlify — rama sprint4
+- Se habilitó en la configuración de Netlify la rama adicional `sprint4` para obtener una publicación de prueba, manteniendo `sprint3` como rama de producción.
+- Después de habilitar una rama que ya existía en GitHub, un nuevo commit en dicha rama permite iniciar su primer despliegue mediante la integración Git con Netlify.
+- Este cambio de documentación genera ese nuevo commit sin afectar código, datos, permisos ni el sitio principal.
+- La publicación por Netlify se debe comprobar en **Deploys** antes de anunciar que ya funciona por Internet.
+- Verificar en la URL de la rama: inicio de sesión, panel administrador/empleado, calendario, boletas, filtros y exportación; confirmar la sucursal autorizada.
+- Los avisos automáticos de correo con Resend todavía no forman parte de esta versión.
