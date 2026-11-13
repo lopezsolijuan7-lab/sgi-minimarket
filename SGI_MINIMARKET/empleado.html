@@ -20,6 +20,7 @@
 <a href="#productos">📦 Productos</a>
 
 <a href="#movimientos">⇄ Movimientos</a>
+<a href="#alertas">⚠ Alertas de stock</a>
 </nav>
 <button class="boton-salir" id="cerrar-sesion">
         Cerrar sesión
@@ -52,6 +53,69 @@
 <h3>Productos con stock bajo</h3>
 <strong id="stock-bajo">0</strong>
 </article>
+<article class="tarjeta s4-tarjeta-categorias">
+<h3>Categorías disponibles</h3>
+<strong id="s4-total-categorias">0</strong>
+</article>
+</section>
+
+<section class="s4-home-widgets s4-quick-strip" aria-label="Acciones rápidas">
+  <div>
+    <p class="s4-card-kicker">ACCESOS RÁPIDOS</p>
+    <h2>Tu trabajo, a un clic</h2>
+    <p>Consulta productos o registra entradas y salidas en tu sucursal autorizada.</p>
+  </div>
+  <div class="s4-quick-actions">
+    <a class="s4-quick-action s4-quick-primary" href="#movimientos">＋ Registrar movimiento</a>
+    <a class="s4-quick-action s4-quick-outline" href="#productos">▣ Consultar productos</a>
+  </div>
+</section>
+
+<section class="s4-home-widgets s4-dashboard-grid" aria-label="Resumen de operaciones">
+  <article class="panel s4-insight-card">
+    <div class="s4-insight-heading">
+      <div><p class="s4-card-kicker">MOVIMIENTOS</p><h2>Entradas y salidas</h2>
+        <p>Unidades movilizadas en el historial reciente de tu sucursal</p></div>
+      <span class="s4-tag-neutral">Datos reales</span>
+    </div>
+    <div id="s4-grafico-movimientos" class="s4-compare-chart" aria-live="polite">
+      <p class="s4-empty-state">Consultando movimientos...</p>
+    </div>
+    <p class="s4-dashboard-note">Se muestran hasta 40 movimientos recientes; no representa todo el historial.</p>
+  </article>
+  <article class="panel s4-insight-card">
+    <div class="s4-insight-heading">
+      <div><p class="s4-card-kicker">ACTIVIDAD</p><h2>Últimos movimientos</h2>
+        <p>Revisa las operaciones registradas recientemente</p></div>
+      <a class="s4-text-link" href="#movimientos">Ver historial</a>
+    </div>
+    <div id="s4-actividad-reciente" class="s4-insight-list" aria-live="polite">
+      <p class="s4-empty-state">Consultando actividad...</p>
+    </div>
+  </article>
+</section>
+
+<section class="s4-home-widgets" aria-label="Vista rápida de alertas">
+  <article class="panel s4-insight-card">
+    <div class="s4-insight-heading">
+      <div><p class="s4-card-kicker">REPOSICIÓN</p><h2>Productos por atender</h2>
+        <p>Existencias iguales o inferiores al mínimo configurado</p></div>
+      <a class="s4-text-link" href="#alertas">Ver todas</a>
+    </div>
+    <div id="s4-alertas-resumen" class="s4-insight-list" aria-live="polite">
+      <p class="s4-empty-state">Consultando existencias...</p>
+    </div>
+  </article>
+</section>
+
+<section class="panel s4-alertas-panel" id="alertas">
+  <div class="s4-insight-heading">
+    <div><p class="s4-card-kicker">INVENTARIO</p><h2>Alertas de stock de tu sucursal</h2>
+      <p>Consulta productos por reponer. Los avisos por correo se incorporarán posteriormente.</p></div>
+  </div>
+  <div id="s4-alertas-empleado" class="s4-insight-list" aria-live="polite">
+    <p class="s4-empty-state">Consultando alertas...</p>
+  </div>
 </section>
 
 <section class="panel" id="movimientos">
@@ -95,5 +159,6 @@
 </div>
 <script src="js/empleado.js" type="module"></script>
 <script src="js/pwa.js" type="module"></script>
-<script src="js/sprint4-navegacion.js" defer></script></body>
+<script src="js/sprint4-navegacion.js" defer></script>
+<script src="js/sprint4-dashboard.js" defer></script></body>
 </html>
