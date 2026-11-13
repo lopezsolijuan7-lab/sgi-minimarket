@@ -162,6 +162,42 @@
 <p class="s4-small-note" id="s4-bar-total">Datos de Supabase.</p>
 </article>
 </section>
+<!-- SPRINT 4: actividad y alertas en la pantalla principal (datos reales) -->
+<section class="s4-home-widgets s4-dashboard-grid" aria-label="Actividad reciente del inventario">
+  <article class="admin-card s4-insight-card">
+    <div class="section-heading">
+      <div><p class="s4-card-kicker">OPERACIONES</p><h2>Entradas y salidas</h2>
+        <p>Unidades movilizadas en los últimos movimientos registrados</p></div>
+      <span class="s4-tag-neutral">Historial reciente</span>
+    </div>
+    <div id="s4-grafico-movimientos" class="s4-compare-chart" aria-live="polite">
+      <p class="s4-empty-state">Consultando movimientos...</p>
+    </div>
+    <p class="s4-dashboard-note">Resumen basado en un máximo de 40 movimientos de la sede seleccionada.</p>
+  </article>
+  <article class="admin-card s4-insight-card">
+    <div class="section-heading">
+      <div><p class="s4-card-kicker">ACTIVIDAD</p><h2>Últimos registros</h2>
+        <p>Movimientos realizados en el inventario</p></div>
+      <a class="s4-text-link" href="#movimientos">Ver historial</a>
+    </div>
+    <div id="s4-actividad-reciente" class="s4-insight-list" aria-live="polite">
+      <p class="s4-empty-state">Consultando actividad...</p>
+    </div>
+  </article>
+</section>
+<section class="s4-home-widgets" aria-label="Estado de reposición">
+  <article class="admin-card s4-insight-card">
+    <div class="section-heading">
+      <div><p class="s4-card-kicker">SEGUIMIENTO</p><h2>Atención prioritaria</h2>
+        <p>Vista rápida de productos que necesitan reposición</p></div>
+      <a class="s4-text-link" href="#alertas">Revisar alertas</a>
+    </div>
+    <div id="s4-alertas-resumen" class="s4-insight-list" aria-live="polite">
+      <p class="s4-empty-state">Consultando existencias...</p>
+    </div>
+  </article>
+</section>
 <!-- ALERTAS DE REPOSICIÓN -->
 <section class="admin-card" id="alertas">
 <div class="section-heading">
@@ -333,5 +369,6 @@
 <script src="js/admin-panel.js" type="module"></script>
 <script src="js/pwa.js" type="module"></script>
 <script src="js/sprint4-navegacion.js" defer></script>
-<script src="js/sprint4-graficos.js" defer></script></body>
+<script src="js/sprint4-graficos.js" defer></script>
+<script src="js/sprint4-dashboard.js" defer></script></body>
 </html>
