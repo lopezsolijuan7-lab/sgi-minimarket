@@ -290,7 +290,9 @@ body.s4-premium .quick-add.s4-button-primary {
   color:#45747e;
 }
 .s4-calendar-status.s4-error {color:#b03141;}
-body.admin-body.s4-premium[data-s4-view]:not([data-s4-view="inicio"]):not([data-s4-view="movimientos"]) .s4-admin-toolbar {
+/* El calendario administrativo pertenece exclusivamente al Panel de control.
+   En Entradas y salidas se mantiene el formulario con su historial, sin duplicar acciones. */
+body.admin-body.s4-premium[data-s4-view]:not([data-s4-view="inicio"]) .s4-admin-toolbar {
   display:none !important;
 }
 /* El empleado recibe calendario compacto dentro de su gráfico, no informes administrativos. */
