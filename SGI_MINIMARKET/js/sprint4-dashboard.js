@@ -126,14 +126,24 @@
     }
   }
 
-  function actualizarMovimientos(movimientos) {
+  function actualizarMovimientos(movimientos, metadatos = {}) {
     const datos = Array.isArray(movimientos) ? movimientos : [];
     const cantidad = $('s4-movimientos-contador');
     if (cantidad) cantidad.textContent = formato.format(datos.length);
+    const nota = $('s4-nota-movimientos');
+    if (nota) {
+      nota.textContent = metadatos.error
+        ? 'No se pudo consultar Supabase. Revisa tu conexión e inténtalo de nuevo.'
+        : (metadatos.filtrado
+          ? 'Gráfico basado en hasta ' + (metadatos.limite || 500) +
+            ' movimientos de las fechas elegidas, autorizados para esta sucursal.'
+          : 'Gráfico basado en hasta 40 movimientos recientes de la sucursal seleccionada.');
+    }
     pintarComparacion(datos);
     pintarActividad(datos);
   }
 
   document.addEventListener('sgi:inventario-actualizado', e => actualizarInventario(e.detail?.registros));
-  document.addEventListener('sgi:movimientos-actualizados', e => actualizarMovimientos(e.detail?.movimientos));
+  document.addEventListener('sgi:movimientos-actualizados', e =>
+    actualizarMovimientos(e.detail?.movimientos, e.detail || {}));
 })();
