@@ -222,7 +222,7 @@ export async function iniciarInventario(rolVista) {
       movimientosVisibles = [];
       const fila = document.createElement('tr');
       const td = crearCelda(fila,'No se pudieron consultar los movimientos: ' + error.message);
-      td.colSpan = 7; cuerpo.append(fila);
+      td.colSpan = 8; cuerpo.append(fila);
       document.dispatchEvent(new CustomEvent('sgi:movimientos-actualizados', {
         detail:{movimientos:[], limite, filtrado, error:true}
       }));
@@ -243,6 +243,15 @@ export async function iniciarInventario(rolVista) {
       crearCelda(fila,movimiento.cantidad);
       crearCelda(fila,String(movimiento.stock_anterior) + ' → ' + String(movimiento.stock_nuevo));
       crearCelda(fila,movimiento.motivo || '—');
+      const celdaBoleta = document.createElement('td');
+      const verBoleta = document.createElement('button');
+      verBoleta.type = 'button';
+      verBoleta.className = 's4-boleta-tabla-btn';
+      verBoleta.textContent = '🧾 Ver boleta';
+      verBoleta.setAttribute('aria-label','Ver boleta interna del movimiento ' + movimiento.id);
+      verBoleta.addEventListener('click',() => abrirBoletaMovimiento(movimiento.id,verBoleta));
+      celdaBoleta.append(verBoleta);
+      fila.append(celdaBoleta);
       cuerpo.append(fila);
     }
     if (!movimientosVisibles.length) {
@@ -250,7 +259,7 @@ export async function iniciarInventario(rolVista) {
       const td = crearCelda(fila,filtrado
         ? 'No hay movimientos registrados durante las fechas seleccionadas.'
         : 'No se han registrado movimientos todavía.');
-      td.colSpan = 7; cuerpo.append(fila);
+      td.colSpan = 8; cuerpo.append(fila);
     }
     if ($('s4-historial-titulo')) $('s4-historial-titulo').textContent =
       filtrado ? 'Movimientos en el período seleccionado' : 'Últimos 40 movimientos';
@@ -260,6 +269,37 @@ export async function iniciarInventario(rolVista) {
     document.dispatchEvent(new CustomEvent('sgi:movimientos-actualizados', {
       detail:{movimientos:movimientosVisibles, limite, filtrado}
     }));
+  }
+
+  async function abrirBoletaMovimiento(id, boton = null) {
+    const movimientoId = Number(id);
+    if (!Number.isSafeInteger(movimientoId) || movimientoId < 1 || !contexto) {
+      informar('No se encontró el identificador del movimiento.', true,'mensaje-movimiento');
+      return;
+    }
+    if (boton) boton.disabled = true;
+    try {
+      // Consultar el registro exacto con la sesión actual; Supabase aplica RLS.
+      const {data,error} = await supabase.from('movimientos_inventario')
+        .select('id,sucursal_id,producto_id,tipo,cantidad,stock_anterior,stock_nuevo,motivo,creado_en')
+        .eq('id',movimientoId).maybeSingle();
+      if (error) throw error;
+      const sucursal = sedesPermitidas().find(s => Number(s.id) === Number(data?.sucursal_id));
+      if (!data || !sucursal) throw new Error('Movimiento no disponible para esta sesión.');
+      const producto = catalogo.find(p => Number(p.id) === Number(data.producto_id));
+      document.dispatchEvent(new CustomEvent('sgi:boleta-abrir', {
+        detail:{movimiento:{
+          ...data,
+          sucursal_nombre:sucursal.nombre,
+          producto_nombre:producto?.nombre || 'Producto archivado',
+          producto_codigo:producto?.codigo || '—'
+        }}
+      }));
+    } catch (error) {
+      informar('No se pudo abrir la boleta: ' + error.message,true,'mensaje-movimiento');
+    } finally {
+      if (boton) boton.disabled = false;
+    }
   }
 
   function exportarMovimientosCsv() {
@@ -372,12 +412,17 @@ export async function iniciarInventario(rolVista) {
   });
   document.addEventListener('sgi:exportar-movimientos',exportarMovimientosCsv);
 
+  const ultimaBoleta = $('s4-boleta-ultima');
+  if (ultimaBoleta) ultimaBoleta.addEventListener('click', () =>
+    abrirBoletaMovimiento(ultimaBoleta.dataset.movimientoId,ultimaBoleta));
+
   if ($('buscar')) $('buscar').addEventListener('input',mostrarProductos);
   if ($('cancelar-edicion')) $('cancelar-edicion').addEventListener('click',reiniciarFormulario);
   if ($('cerrar-sesion')) $('cerrar-sesion').addEventListener('click',async () => {
     try {await cerrarSesion();} catch(error) { informar(error.message,true,vistaAdmin?'mensaje-producto':'mensaje-movimiento'); }
   });
   selectorSucursal.addEventListener('change',async () => {
+    if ($('s4-boleta-ultima')) $('s4-boleta-ultima').hidden = true;
     sucursalSeleccionada = selectorSucursal.value;
     if ($('sucursal-actual')) $('sucursal-actual').textContent = sucursalSeleccionada==='todas'
       ? 'Vista consolidada' : sedesPermitidas().find(s=>String(s.id)===sucursalSeleccionada)?.nombre||'';
@@ -442,7 +487,15 @@ export async function iniciarInventario(rolVista) {
       if (error) throw error;
       formularioMovimiento.reset();
       await cargarDatos();
-      informar(`Movimiento registrado correctamente (N.º ${data}).` ,false,'mensaje-movimiento');
+      const ultimoId = Number(data);
+      if ($('s4-boleta-ultima')) {
+        $('s4-boleta-ultima').hidden = !Number.isSafeInteger(ultimoId) || ultimoId < 1;
+        $('s4-boleta-ultima').dataset.movimientoId = String(ultimoId);
+      }
+      informar('Movimiento registrado correctamente (N.º ' + data + ').' +
+        (Number.isSafeInteger(ultimoId) && ultimoId > 0
+          ? ' Ya puedes consultar o imprimir la boleta interna.' : ''),
+        false,'mensaje-movimiento');
     } catch(error) {informar('No se pudo registrar el movimiento: '+error.message,true,'mensaje-movimiento');}
     finally {boton.disabled=false;}
   });
