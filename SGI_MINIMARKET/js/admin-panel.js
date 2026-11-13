@@ -1,7 +1,7 @@
 // Estadísticas: se calculan sobre el inventario YA FILTRADO por sede y por RLS.
 const $ = (id) => document.getElementById(id);
 const dinero = (n) => new Intl.NumberFormat("es-PE", {style:"currency",currency:"PEN"}).format(n);
-const colores=["#1688f0","#10b981","#fbbf24","#f43f5e","#8b5cf6","#06b6d4","#f97316"];
+const colores=["#087c3a","#1bb34e","#55d16b","#88dba5","#c6ebd3","#cbd5d1","#3cae83"];
 
 function mostrarEstadisticas(registros) {
   const valor = registros.reduce((s,p) => s + Number(p.precio)*Number(p.stock), 0);
