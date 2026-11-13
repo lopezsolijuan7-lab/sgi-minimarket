@@ -80,6 +80,24 @@
 5. Verificar que la boleta no permite modificar el registro y que no se expone información de otras sucursales.
 6. Verificar el uso en celular, la impresión y la recuperación después de recargar la página.
 
+## Sprint 4 — Mejoras prácticas del panel de empleado
+
+Se añadieron tres mejoras solicitadas al sistema sin ampliar permisos ni modificar la base de datos:
+
+- **Acciones rápidas independientes:** los botones «Registrar entrada» y «Registrar salida» abren el formulario existente con el tipo de movimiento preseleccionado; el usuario debe completar y confirmar el registro, que continúa usando la RPC existente.
+- **Filtro por tipo del historial:** «Todos / Entradas / Salidas» muestra u oculta filas de los movimientos ya consultados mediante Supabase; es complementario al filtro por fecha y no cambia el gráfico de entradas/salidas. Si los movimientos consultados no contienen un tipo, se muestra un estado vacío. El límite sigue siendo hasta 40 movimientos recientes o 500 para un intervalo elegido.
+- **Última consulta y actualización manual:** la hora indicada corresponde a la consulta más reciente realizada desde el navegador. El botón «Actualizar datos» vuelve a consultar catálogo, inventario, indicadores y movimientos de la sucursal autorizada, sin recargar la página ni guardar operaciones.
+- **Legibilidad:** botones, tarjetas, descripciones y menú lateral del empleado presentan letras algo mayores y mejor separación.
+
+**Archivos modificados:** `empleado.html`, `js/sprint4-navegacion.js`, `js/inventario.js` y `css/sprint4-premium.css`.
+
+**Pruebas funcionales pendientes con cuenta de empleado:**
+1. Pulsar «Registrar entrada»: comprobar que se abra Movimientos con «Entrada» seleccionado; repetir con «Registrar salida».
+2. Comprobar que los filtros de tipo funcionen en combinación con calendario y que la boleta se abra desde cualquier fila visible.
+3. Pulsar «Actualizar datos» y verificar que cambie «Última consulta» y que los indicadores muestren datos de Supabase.
+4. Comprobar que se mantienen los permisos del empleado y que no aparecen funciones del administrador.
+5. Revisar la visualización en computadora y celular.
+
 ## Validación pendiente en el navegador
 1. Iniciar sesión como administrador y como empleado con cuentas autorizadas.
 2. Confirmar que al cambiar de sucursal se actualizan los gráficos, las listas y las alertas.
