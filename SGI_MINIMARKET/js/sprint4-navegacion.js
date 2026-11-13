@@ -8,7 +8,7 @@
     ? {inicio:'Centro de control', productos:'Productos', registro:'Registrar producto',
        categorias:'Categorías', alertas:'Alertas de stock', movimientos:'Entradas y salidas',
        'administracion-sucursales':'Gestión de sucursales'}
-    : {inicio:'Inicio', productos:'Productos', movimientos:'Movimientos'};
+    : {inicio:'Inicio', productos:'Productos', movimientos:'Movimientos', alertas:'Alertas de stock'};
   const nav = document.querySelector(admin ? '.admin-nav' : '.menu-lateral nav');
   if (!nav) return;
   const etiqueta = document.getElementById('s4-titulo-vista');
