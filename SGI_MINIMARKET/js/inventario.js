@@ -93,7 +93,9 @@ export async function iniciarInventario(rolVista) {
     $('titulo-formulario').textContent = 'Editar ficha del producto';
     $('guardar-producto').textContent = 'Guardar cambios';
     $('cancelar-edicion').hidden = false;
-    location.hash = 'registro';
+    // Sprint 4: mostrar el formulario sin saltar por la página.
+    history.pushState(null, '', '#registro');
+    window.dispatchEvent(new PopStateEvent('popstate'));
   }
 
   function mostrarProductos() {
