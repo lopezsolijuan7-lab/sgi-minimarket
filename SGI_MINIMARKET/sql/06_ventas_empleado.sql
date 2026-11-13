@@ -148,64 +148,14 @@ BEGIN
 END;
 $$;
 
--- Prohibir los movimientos manuales por RPC al empleado.
--- El administrador conserva el formulario de ajustes de inventario.
-CREATE OR REPLACE FUNCTION public.registrar_movimiento(
-  p_sucursal_id bigint,
-  p_producto_id bigint,
-  p_tipo text,
-  p_cantidad integer,
-  p_motivo text
-) RETURNS bigint
-LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $$
-DECLARE
-  v_usuario uuid := (SELECT auth.uid());
-  v_anterior integer;
-  v_nuevo integer;
-  v_id bigint;
-BEGIN
-  IF v_usuario IS NULL OR NOT EXISTS (
-    SELECT 1 FROM public.usuarios u
-    WHERE u.id=v_usuario AND u.activo=true AND u.rol='administrador'
-  ) THEN
-    RAISE EXCEPTION 'Solo el administrador puede ajustar manualmente existencias';
-  END IF;
-  IF p_tipo NOT IN ('entrada','salida') OR p_tipo IS NULL
-     OR p_cantidad IS NULL OR p_cantidad < 1 OR p_cantidad > 1000000 THEN
-    RAISE EXCEPTION 'Tipo o cantidad invalida';
-  END IF;
-  IF NOT EXISTS(SELECT 1 FROM public.sucursales s WHERE s.id=p_sucursal_id AND s.activo) THEN
-    RAISE EXCEPTION 'Sucursal inexistente o inactiva';
-  END IF;
-  IF NOT EXISTS(SELECT 1 FROM public.productos p WHERE p.id=p_producto_id AND p.activo) THEN
-    RAISE EXCEPTION 'Producto inexistente o inactivo';
-  END IF;
-  INSERT INTO public.inventarios (sucursal_id,producto_id,stock,stock_minimo)
-    VALUES (p_sucursal_id,p_producto_id,0,5)
-    ON CONFLICT (sucursal_id,producto_id) DO NOTHING;
-  SELECT i.stock INTO v_anterior FROM public.inventarios i
-    WHERE i.sucursal_id=p_sucursal_id AND i.producto_id=p_producto_id
-    FOR UPDATE;
-  IF NOT FOUND THEN RAISE EXCEPTION 'Inventario no disponible'; END IF;
-  v_nuevo := CASE WHEN p_tipo='entrada' THEN v_anterior+p_cantidad
-                  ELSE v_anterior-p_cantidad END;
-  IF v_nuevo < 0 THEN RAISE EXCEPTION 'No se puede dejar el stock negativo'; END IF;
-  UPDATE public.inventarios SET stock=v_nuevo,actualizado_en=now()
-    WHERE sucursal_id=p_sucursal_id AND producto_id=p_producto_id;
-  INSERT INTO public.movimientos_inventario (
-    sucursal_id,producto_id,tipo,cantidad,stock_anterior,stock_nuevo,motivo,usuario_id
-  ) VALUES (
-    p_sucursal_id,p_producto_id,p_tipo,p_cantidad,v_anterior,v_nuevo,
-    left(coalesce(nullif(btrim(p_motivo),''),'Ajuste del administrador'),200),v_usuario
-  ) RETURNING id INTO v_id;
-  RETURN v_id;
-END;
-$$;
-
+-- Mantener public.registrar_movimiento de Sprint 4 intacta.
+-- Los permisos y el formulario de entradas/salidas existentes se preservan.
+-- Las ventas descuentan inventario exclusivamente mediante
+-- sgi_registrar_venta_empleado, con validacion y transaccion independientes.
 REVOKE ALL ON FUNCTION public.sgi_registrar_venta_empleado(uuid,jsonb,bigint,text) FROM PUBLIC,anon;
 GRANT EXECUTE ON FUNCTION public.sgi_registrar_venta_empleado(uuid,jsonb,bigint,text) TO authenticated;
-REVOKE ALL ON FUNCTION public.registrar_movimiento(bigint,bigint,text,integer,text) FROM PUBLIC,anon;
-GRANT EXECUTE ON FUNCTION public.registrar_movimiento(bigint,bigint,text,integer,text) TO authenticated;
+
+
 COMMIT;
 
 -- Comprobacion, sin crear ventas de prueba:
