@@ -116,3 +116,15 @@ Se añadieron tres mejoras solicitadas al sistema sin ampliar permisos ni modifi
 - La publicación por Netlify se debe comprobar en **Deploys** antes de anunciar que ya funciona por Internet.
 - Verificar en la URL de la rama: inicio de sesión, panel administrador/empleado, calendario, boletas, filtros y exportación; confirmar la sucursal autorizada.
 - Los avisos automáticos de correo con Resend todavía no forman parte de esta versión.
+
+## Corrección de sucursales nuevas sin inventario — vista empleado
+
+- Diagnóstico de Supabase (13/11/2026): hay 52 productos en el catálogo, pero los 52 registros de stock y 1 450 unidades pertenecen a Minimarket Central. Trujillo, Arequipa y Cusco no tienen filas en `inventarios` ni movimientos. **No es un fallo del inicio de sesión ni un error de sincronización.**
+- Los indicadores del empleado diferencian ahora el **catálogo global** (productos y categorías) del **stock de la sucursal**, que continúa en cero hasta registrar operaciones reales.
+- En «Productos» se puede consultar el catálogo aunque una sucursal no tenga inventario; las referencias sin fila de stock indican **«Pendiente de ingreso»** y presentan el stock como «—», en lugar de inventar una cantidad.
+- En «Inicio» se muestra un mensaje claro de «Sucursal sin inventario» y un enlace para registrar su primera entrada, que utiliza la RPC existente `registrar_movimiento`. Esa RPC ya crea el registro inicial de inventario cuando corresponde, con stock anterior de cero; la operación solo se guarda tras confirmar el formulario.
+- Las alertas dejan de afirmar «Todo en orden» cuando una sucursal aún no tiene inventario registrado.
+- Para utilizar alertas de reposición, el administrador debe configurar el stock mínimo para los productos que ingrese en cada nueva sede.
+- **No se modificó Supabase** ni se copiaron existencias entre sucursales.
+- Pendiente de prueba real: abrir el perfil del empleado de Trujillo en la web desplegada, verificar catálogo, registrar una entrada válida y confirmar actualización de stock, historial y boleta interna. No dar por completada esta prueba sin evidencia en el navegador.
+
