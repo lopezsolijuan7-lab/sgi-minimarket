@@ -982,3 +982,8 @@ body.empleado-body.s4-premium .s4-estado-pendiente {
   body.empleado-body.s4-premium .s4-estado-sin-inventario {align-items:stretch;}
   body.empleado-body.s4-premium .s4-estado-sin-accion {width:100%;text-align:center;}
 }
+
+/* El aviso de primera entrada pertenece solo a la pantalla de inicio. */
+body.empleado-body.s4-premium[data-s4-view]:not([data-s4-view="inicio"]) .s4-estado-sin-inventario {
+  display:none !important;
+}
