@@ -12,8 +12,7 @@
     String(fecha.getDate()).padStart(2, '0')].join('-');
 
   function estado(mensaje, error = false) {
-    const destino = $('s4-filtro-estado');
-    if (destino) {
+    for (const destino of document.querySelectorAll('[data-s4-filtro-estado]')) {
       destino.textContent = mensaje;
       destino.classList.toggle('s4-error', error);
     }
@@ -65,7 +64,7 @@
 
   if (empleado) {
     const botones = [...document.querySelectorAll('[data-s4-periodo]')];
-    const dia = $('s4-dia-empleado');
+    const dias = [...document.querySelectorAll('.s4-day-calendar')];
     function seleccionarBoton(activo) {
       botones.forEach(boton => {
         const seleccionado = boton.dataset.s4Periodo === activo;
@@ -76,7 +75,7 @@
     botones.forEach(boton => boton.addEventListener('click', () => {
       const periodo = boton.dataset.s4Periodo;
       seleccionarBoton(periodo);
-      if (dia) dia.value = '';
+      dias.forEach(input => { input.value = ''; });
       if (periodo === 'todos') {
         anunciar(null, null);
         return;
@@ -88,11 +87,13 @@
       anunciar(isoLocal(inicio), isoLocal(fin),
         periodo === 'hoy' ? 'Hoy' : 'Últimos ' + dias + ' días');
     }));
-    dia?.addEventListener('change', () => {
-      if (!dia.value) return;
+    dias.forEach(input => input.addEventListener('change', () => {
+      if (!input.value) return;
+      const valor = input.value;
+      dias.forEach(otro => { otro.value = valor; });
       seleccionarBoton('');
-      anunciar(dia.value, dia.value, 'Fecha seleccionada');
-    });
+      anunciar(valor, valor, 'Fecha seleccionada');
+    }));
     seleccionarBoton('todos');
   }
 })();
