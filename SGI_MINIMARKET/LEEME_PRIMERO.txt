@@ -1,0 +1,37 @@
+SGI MINIMARKET — Sprint 4 actualizado — paquete corregido
+
+IMPORTANTE: NO ABRAS LOS ARCHIVOS HTML DESDE EL ZIP.
+
+Tu captura anterior mostraba la ruta AppData\Local\Temp\...zip..., lo que
+indica que Windows abrio solamente el HTML. Por eso no se cargaron los CSS
+y la pagina aparecio blanca y desordenada. Todos los CSS originales
+(Sprint 4 azul y verde) se conservan en este paquete.
+
+COMO ABRIR CORRECTAMENTE EN WINDOWS
+
+1. Haz clic derecho sobre SGI_Minimarket_Sprint4_Corregido.zip.
+2. Selecciona "Extraer todo...".
+3. Entra en la carpeta extraida SGI_MINIMARKET.
+4. Ejecuta INICIAR_EN_WINDOWS.bat (requiere Python instalado).
+5. Se abrira http://127.0.0.1:5500/index.html para iniciar sesion.
+
+Otra opcion: abre SGI_MINIMARKET con VS Code y ejecuta Live Server.
+El HTML servido por HTTP permite que los modulos JavaScript y Supabase
+funcionen. Nunca ejecutes el panel usando una URL file:/// desde el ZIP.
+
+CAMBIOS Y CONSERVACION
+- Se conserva el diseno del Sprint 4, el CSS original y la portada.
+- Se conservan los productos, categorias, inventarios, usuarios y sucursales.
+- Se integraron los modulos de proveedores, compras, recepcion,
+  cajas fisicas, consultas de ventas y pagos.
+- No se modifica la base de datos por descomprimir ni ejecutar la web.
+- Si faltan tablas o RPC en Supabase, hay que revisar los scripts en sql/.
+- Antes de aplicar scripts SQL: respaldo, diagnostico y pruebas de permisos.
+- Nunca subir una service_role key o contrasenas al repositorio.
+
+PARA NETLIFY / GITHUB
+- Usa la carpeta SGI_MINIMARKET como raiz/publicacion del sitio.
+- Netlify debe servir index.html y las carpetas css/ y js/ juntas.
+- No incluyas una carpeta ZIP anidada ni abras archivos desde Temp.
+
+Revisar tambien ACTUALIZACION_SUPABASE_SPRINT3_4.md para los pasos SQL.

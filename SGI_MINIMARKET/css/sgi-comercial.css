@@ -1,0 +1,35 @@
+/* Complemento de módulos comerciales; conserva estilos originales Sprint 4. */
+.sgi-comercial {margin-top:18px;}
+.sgi-form-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:18px 0;align-items:end;}
+.sgi-form-grid label,.sgi-notas {font-weight:600;font-size:14px;display:flex;flex-direction:column;gap:6px;}
+.sgi-form-grid input,.sgi-form-grid select,.sgi-notas input {width:100%;box-sizing:border-box;border:1px solid #cbd5e1;border-radius:10px;padding:10px 12px;background:#fff;color:#172b40;font:inherit;min-height:43px;}
+.sgi-form-wide {grid-column:1/-1;}
+.sgi-form-grid .table-scroll {margin:0;}
+.sgi-action {cursor:pointer;border:0;border-radius:11px;background:#067e6e;color:white;padding:11px 16px;font-size:14px;font-weight:700;min-height:42px;}
+.sgi-action:hover {filter:brightness(1.08);}
+.sgi-action:disabled {opacity:.6;cursor:not-allowed;}
+.sgi-action.sgi-secondary {background:#e9f2f5;color:#17445b;border:1px solid #bfd3df;}
+.sgi-action.sgi-small {padding:6px 10px;min-height:32px;font-size:12px;}
+.sgi-total {align-self:center;}
+.sgi-estado {min-height:22px;color:#067e6e;font-weight:600;white-space:normal;overflow-wrap:anywhere;}
+.sgi-estado[data-error="true"] {color:#b42318;}
+.sgi-recepcion {border:1px solid #cbd5e1;background:#f8fbfd;border-radius:16px;padding:18px;margin-top:20px;}
+.sgi-recepcion[hidden] {display:none;}
+.sgi-recepcion input[type="number"] {width:85px;min-width:75px;padding:7px;border:1px solid #bacddd;border-radius:8px;}
+.sgi-notas {margin:14px 0;}
+.sgi-actions {display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;}
+.sgi-aviso {font-size:13px;line-height:1.5;color:#41556a;padding:10px;border-left:3px solid #d49c2b;background:#fffbeb;border-radius:5px;}
+.sgi-no-datos {color:#60758b;font-size:14px;}
+@media(max-width:650px){.sgi-form-grid{grid-template-columns:1fr}.sgi-recepcion{padding:10px}.sgi-comercial table{min-width:610px}.sgi-actions .sgi-action{flex:1}}
+
+/* Sprint 4 - empleado: ventas y recepcion; el administrador conserva la vista original. */
+body.empleado-body[data-s4-view]:not([data-s4-view="ventas-empleado"]) #ventas-empleado,
+body.empleado-body[data-s4-view]:not([data-s4-view="compras"]) #compras {display:none !important;}
+body.empleado-body [hidden] {display:none!important;}
+.sgi-sale-footer{align-items:center;justify-content:space-between}
+.sgi-sale-footer strong{font-size:21px;color:#0a4154}
+.sgi-pos select{max-width:100%}
+@media(max-width:760px){.sgi-sale-footer{align-items:stretch;flex-direction:column}}
+
+body.empleado-body .estadisticas {grid-template-columns:repeat(2,minmax(0,1fr));}
+@media(max-width:650px){body.empleado-body .estadisticas {grid-template-columns:1fr;}}
