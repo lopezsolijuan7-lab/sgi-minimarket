@@ -41,6 +41,10 @@
 <select aria-label="Sucursal" id="selector-sucursal"></select>
 <strong id="sucursal-actual">Cargando...</strong>
 </section>
+<div class="s4-sync-bar" aria-label="Actualización del inventario">
+  <div><span class="s4-sync-dot" aria-hidden="true"></span><span id="s4-ultima-actualizacion" role="status" aria-live="polite">Consultando inventario...</span></div>
+  <button type="button" id="s4-actualizar-datos" class="s4-sync-button">↻ Actualizar datos</button>
+</div>
 <section class="estadisticas">
 <article class="tarjeta">
 <h3>Productos registrados</h3>
@@ -67,8 +71,9 @@
     <p>Consulta productos o registra entradas y salidas en tu sucursal autorizada.</p>
   </div>
   <div class="s4-quick-actions">
-    <a class="s4-quick-action s4-quick-primary" href="#movimientos">＋ Registrar movimiento</a>
-    <a class="s4-quick-action s4-quick-outline" href="#productos">▣ Consultar productos</a>
+    <a class="s4-quick-action s4-quick-primary" data-s4-tipo="entrada" href="#movimientos">＋ Registrar entrada</a>
+    <a class="s4-quick-action s4-quick-secondary" data-s4-tipo="salida" href="#movimientos">− Registrar salida</a>
+    <a class="s4-quick-action s4-quick-outline" href="#productos">⌕ Consultar productos</a>
   </div>
 </section>
 
@@ -158,6 +163,12 @@
   <p data-s4-filtro-estado class="s4-calendar-status" role="status" aria-live="polite">Mostrando los movimientos más recientes de tu sucursal.</p>
 </div>
 <h3 id="s4-historial-titulo">Últimos 40 movimientos</h3>
+<div class="s4-tipo-filtros" role="group" aria-label="Filtrar movimientos por tipo">
+  <span class="s4-tipo-etiqueta">Tipo de operación:</span>
+  <button type="button" data-s4-filtro-tipo="todos" aria-pressed="true" class="s4-tipo-activo">Todos</button>
+  <button type="button" data-s4-filtro-tipo="entrada" aria-pressed="false">Entradas</button>
+  <button type="button" data-s4-filtro-tipo="salida" aria-pressed="false">Salidas</button>
+</div>
 <p id="s4-resumen-consulta" class="s4-dashboard-note" role="status">Consultando movimientos...</p>
 <div class="tabla-contenedor"><table><thead><tr>
 <th>Fecha</th><th>Sucursal</th><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Stock</th><th>Motivo</th><th>Boleta interna</th>
