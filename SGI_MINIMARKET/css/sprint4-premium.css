@@ -910,3 +910,75 @@ body.empleado-body.s4-premium .s4-tipo-filtros button:focus-visible {
   .s4-tipo-filtros .s4-tipo-etiqueta {flex-basis:100%;}
   body.empleado-body.s4-premium .s4-tipo-filtros button {flex:1;}
 }
+
+
+/* Sprint 4 · Sucursales recién creadas, sin inventario inicial */
+body.empleado-body.s4-premium .s4-estado-sin-inventario {
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:14px;
+  border:1px solid #a8d9bb;
+  background:linear-gradient(115deg,#f2fff6,#edf8fc);
+  border-radius:16px;
+  padding:16px 19px;
+  color:#244e37;
+  margin:0 0 17px;
+  box-shadow:0 6px 22px rgba(40,98,77,.07);
+}
+body.empleado-body.s4-premium .s4-estado-sin-inventario[hidden] {
+  display:none !important;
+}
+body.empleado-body.s4-premium .s4-estado-sin-icono {
+  flex:0 0 46px;
+  display:grid;
+  place-items:center;
+  height:46px;
+  border-radius:12px;
+  background:#d7f7e3;
+  font-size:22px;
+}
+body.empleado-body.s4-premium .s4-estado-sin-contenido {
+  flex:1 1 250px;
+}
+body.empleado-body.s4-premium .s4-estado-sin-contenido strong {
+  display:block;
+  color:#0b6240;
+  font-size:14px;
+  margin-bottom:5px;
+}
+body.empleado-body.s4-premium .s4-estado-sin-contenido p {
+  font-size:12px;
+  line-height:1.5;
+  margin:0 0 4px;
+  color:#386851;
+}
+body.empleado-body.s4-premium .s4-estado-sin-contenido small {
+  color:#678475;
+  line-height:1.5;
+  font-size:11px;
+}
+body.empleado-body.s4-premium .s4-estado-sin-accion {
+  flex:0 0 auto;
+  border-radius:10px;
+  color:white;
+  background:#058959;
+  padding:12px 15px;
+  text-decoration:none;
+  font-weight:800;
+  font-size:12px;
+}
+body.empleado-body.s4-premium .s4-estado-sin-accion:hover {
+  background:#06744b;
+}
+body.empleado-body.s4-premium .s4-estado-pendiente {
+  color:#775b20;
+  font-weight:700;
+  font-size:12px;
+  background:#fff8e9;
+  border-radius:6px;
+}
+@media(max-width:700px) {
+  body.empleado-body.s4-premium .s4-estado-sin-inventario {align-items:stretch;}
+  body.empleado-body.s4-premium .s4-estado-sin-accion {width:100%;text-align:center;}
+}
