@@ -1,0 +1,76 @@
+/* Sprint 4: interfaz más clara + navegación de una vista por opción.
+   Mantiene los formularios y las políticas de autorización de los Sprints previos. */
+body.admin-body, body.empleado-body {
+  --s4-azul:#0d2845; --s4-verde:#079b78; --s4-borde:#e1e9f2;
+  --s4-texto:#102b49; background:#f3f7fc; color:var(--s4-texto);
+}
+body.admin-body .admin-sidebar, body.empleado-body .menu-lateral {
+  background:linear-gradient(160deg,#102e50 0%,#0b2743 65%,#073d3d 100%);
+}
+body.admin-body .admin-brand strong,body.empleado-body .menu-lateral h2 {color:#fff;}
+body.admin-body .admin-nav a.active,body.empleado-body .menu-lateral nav a.active {
+  background:linear-gradient(110deg,#087b73,#06a47c);
+  box-shadow:0 6px 15px #062d3950; color:#fff;
+}
+body.empleado-body .menu-lateral nav a {transition:background .2s,color .2s;}
+body.empleado-body .menu-lateral nav a:hover {background:#225071;}
+body.admin-body .kpi-card,body.admin-body .admin-card,
+body.empleado-body .tarjeta,body.empleado-body .panel {
+  border:1px solid var(--s4-borde);
+  border-radius:18px;
+  box-shadow:0 9px 26px #122b4b0c;
+}
+body.admin-body .kpi-card {position:relative;overflow:hidden;}
+body.admin-body .kpi-card::after {
+  content:"";position:absolute;width:130px;height:130px;border-radius:50%;
+  background:#7bcef00f;right:-62px;bottom:-65px;pointer-events:none;
+}
+body.admin-body .admin-content {max-width:1600px;}
+body.admin-body .admin-card {transition:box-shadow .2s;}
+body.admin-body .admin-card:hover {box-shadow:0 12px 30px #122b4b12;}
+body.admin-body .quick-add,body.admin-body .save-btn {
+  background:linear-gradient(115deg,#079b78,#047c6e);box-shadow:0 5px 14px #007a5e25;
+}
+body.admin-body .admin-nav a:focus-visible,
+body.empleado-body .menu-lateral nav a:focus-visible {
+  outline:3px solid #6be7cb;outline-offset:3px;
+}
+.s4-route-heading {margin:10px 0 22px;}
+.s4-route-heading .s4-overline {font-size:11px;font-weight:800;letter-spacing:.15em;color:#087b73;}
+.s4-route-heading h1 {font-size:clamp(25px,3vw,34px);letter-spacing:-.035em;margin:6px 0 8px;}
+.s4-route-heading p {font-size:13px;color:#64768d;margin:0;}
+body[data-s4-view="inicio"] .s4-route-heading {display:none;}
+body.admin-body[data-s4-view]:not([data-s4-view="inicio"]) .welcome,
+body.admin-body[data-s4-view]:not([data-s4-view="inicio"]) .kpi-grid,
+body.admin-body[data-s4-view]:not([data-s4-view="inicio"]) .charts-grid,
+body.empleado-body[data-s4-view]:not([data-s4-view="inicio"]) .cabecera,
+body.empleado-body[data-s4-view]:not([data-s4-view="inicio"]) .estadisticas {display:none !important;}
+body.admin-body[data-s4-view]:not([data-s4-view="productos"]) #productos,
+body.admin-body[data-s4-view]:not([data-s4-view="registro"]) #registro,
+body.admin-body[data-s4-view]:not([data-s4-view="categorias"]) #categorias,
+body.admin-body[data-s4-view]:not([data-s4-view="alertas"]) #alertas,
+body.admin-body[data-s4-view]:not([data-s4-view="movimientos"]) #movimientos,
+body.admin-body[data-s4-view]:not([data-s4-view="administracion-sucursales"]) #administracion-sucursales,
+body.empleado-body[data-s4-view]:not([data-s4-view="productos"]) #productos,
+body.empleado-body[data-s4-view]:not([data-s4-view="movimientos"]) #movimientos {display:none !important;}
+[hidden] {display:none !important;}
+.s4-bar-chart {display:grid;gap:18px;padding:10px 0 16px;}
+.s4-bar-fila {display:grid;grid-template-columns:minmax(75px,115px) minmax(0,1fr) 58px;align-items:center;gap:12px;}
+.s4-bar-etiqueta {overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:#354c66;}
+.s4-bar-pista {height:15px;border-radius:9px;background:#eef3fa;overflow:hidden;}
+.s4-bar-relleno {height:100%;border-radius:9px;min-width:0;transition:width .3s ease;}
+.s4-bar-cantidad {font-size:12px;text-align:right;color:#112e50;}
+.s4-bar-vacio,.s4-small-note {color:#75859a;font-size:12px;}
+.s4-small-note {margin:12px 0 0;}
+body.empleado-body .contenido {width:100%;}
+body.empleado-body .menu-lateral {position:sticky;top:0;height:100vh;}
+body.empleado-body .tarjeta {min-height:135px;}
+body.empleado-body .tarjeta strong {color:#087e75;}
+body.empleado-body .s4-route-heading {margin:8px 0 22px;}
+@media(max-width:850px) {
+  body.empleado-body .menu-lateral {position:static;height:auto;}
+  .s4-bar-fila {grid-template-columns:minmax(65px,95px) minmax(0,1fr) 45px;gap:7px;}
+}
+@media(prefers-reduced-motion:reduce) {
+  .s4-bar-relleno,body.admin-body .admin-card {transition:none;}
+}
