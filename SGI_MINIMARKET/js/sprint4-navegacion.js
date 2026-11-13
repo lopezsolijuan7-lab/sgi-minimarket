@@ -40,6 +40,15 @@
     const destino = enlace.getAttribute('href').slice(1);
     if (!Object.hasOwn(nombres, destino)) return;
     evento.preventDefault();
+    // Los accesos rápidos abren el módulo correspondiente con el tipo elegido.
+    // No registran movimientos: el formulario de Supabase sigue siendo obligatorio.
+    if (destino === 'movimientos' && admin) {
+      const tipo = enlace.dataset.s4Tipo;
+      if (tipo === 'entrada' || tipo === 'salida') {
+        const selector = document.getElementById('movimiento-tipo');
+        if (selector) selector.value = tipo;
+      }
+    }
     mostrarVista(destino, true);
   });
   window.addEventListener('hashchange', () => mostrarVista(vistaDesdeURL()));
