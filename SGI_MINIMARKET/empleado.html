@@ -9,6 +9,7 @@
 <link href="css/inventario.css" rel="stylesheet"/>
 <link href="css/sprint4-ui.css" rel="stylesheet"/>
 <link href="css/sprint4-premium.css" rel="stylesheet"/>
+<link href="css/sgi-comercial.css" rel="stylesheet"/>
 <meta content="#073c34" name="theme-color"/><link href="app.webmanifest" rel="manifest"/><link href="icons/sgi-192.png" rel="icon"/></head>
 <body class="empleado-body s4-premium">
 <div class="aplicacion">
@@ -22,6 +23,8 @@
 
 <a href="#movimientos">⇄ Movimientos</a>
 <a href="#alertas">⚠ Alertas de stock</a>
+<a href="#ventas-empleado">🛒 Registrar ventas</a>
+<a href="#compras">📦 Recepción de mercadería</a>
 </nav>
 <button class="boton-salir" id="cerrar-sesion">
         Cerrar sesión
@@ -48,7 +51,7 @@
     <p id="s4-estado-inventario-detalle">Consultando las existencias de esta sucursal...</p>
     <small>El catálogo es compartido entre sucursales, pero el stock es independiente. El administrador debe definir el stock mínimo de reposición.</small>
   </div>
-  <a class="s4-estado-sin-accion" data-s4-tipo="entrada" href="#movimientos">＋ Registrar primera entrada</a>
+  <a class="s4-estado-sin-accion" href="#compras">📦 Consultar recepciones</a>
 </section>
 <div class="s4-sync-bar" aria-label="Actualización del inventario">
   <div><span class="s4-sync-dot" aria-hidden="true"></span><span id="s4-ultima-actualizacion" role="status" aria-live="polite">Consultando inventario...</span></div>
@@ -80,10 +83,10 @@
     <p>Consulta productos o registra entradas y salidas en tu sucursal autorizada.</p>
   </div>
   <div class="s4-quick-actions">
-    <a class="s4-quick-action s4-quick-primary" data-s4-tipo="entrada" href="#movimientos">＋ Registrar entrada</a>
-    <a class="s4-quick-action s4-quick-secondary" data-s4-tipo="salida" href="#movimientos">− Registrar salida</a>
-    <a class="s4-quick-action s4-quick-outline" href="#productos">⌕ Consultar productos</a>
-  </div>
+  <a class="s4-quick-action s4-quick-primary" href="#ventas-empleado">🛒 Registrar venta</a>
+  <a class="s4-quick-action s4-quick-secondary" href="#compras">📦 Confirmar recepción</a>
+  <a class="s4-quick-action s4-quick-outline" href="#productos">⌕ Consultar productos</a>
+</div>
 </section>
 
 <section class="s4-home-widgets s4-dashboard-grid" aria-label="Resumen de operaciones">
@@ -148,14 +151,7 @@
 <section class="panel" id="movimientos">
 <h2>⇄ Registrar entrada o salida</h2>
 <p>Selecciona un artículo existente. Supabase actualiza el stock y guarda el movimiento de tu sucursal.</p>
-<form class="formulario" id="formulario-movimiento">
-<label>Producto<select id="movimiento-producto" required=""></select></label>
-<label>Tipo<select id="movimiento-tipo" required="">
-<option value="entrada">Entrada</option><option value="salida">Salida</option></select></label>
-<label>Cantidad<input id="movimiento-cantidad" min="1" required="" step="1" type="number"/></label>
-<label>Motivo<input id="movimiento-motivo" maxlength="200" placeholder="Motivo (opcional)"/></label>
-<button class="boton-principal" type="submit">Registrar movimiento</button>
-</form>
+<p class="sgi-aviso">El empleado registra salidas desde «Registrar ventas» y entradas mediante «Recepción de mercadería». Los ajustes manuales son del administrador.</p>
 <p class="form-message" id="mensaje-movimiento" role="status"></p>
 <button type="button" class="s4-ver-boleta-ultima" id="s4-boleta-ultima" hidden>🧾 Ver boleta del último movimiento</button>
 <div class="s4-history-filters">
@@ -203,9 +199,69 @@
 </table>
 </div>
 </section>
+<section class="panel sgi-comercial" id="ventas-empleado">
+  <h2>🛒 Registrar venta</h2>
+  <p>Los precios y existencias se verifican en Supabase. Solo puedes vender productos disponibles en tu punto de trabajo asignado.</p>
+  <form id="sgi-form-venta" class="sgi-pos">
+    <div class="sgi-form-grid">
+      <label>Buscar / seleccionar producto
+        <select id="sgi-venta-producto" required><option value="">Cargando productos...</option></select>
+      </label>
+      <label>Cantidad
+        <input type="number" id="sgi-venta-cantidad" min="1" max="10000" step="1" value="1" required>
+      </label>
+      <div class="sgi-actions"><button id="sgi-venta-agregar" type="button" class="sgi-action">＋ Agregar al carrito</button></div>
+    </div>
+    <div class="tabla-contenedor"><table><thead><tr>
+      <th>Producto</th><th>Cantidad</th><th>Precio</th><th>Subtotal</th><th>Acción</th>
+    </tr></thead><tbody id="sgi-venta-carrito"></tbody></table></div>
+    <div class="sgi-form-grid">
+      <label>Forma de pago
+        <select id="sgi-venta-forma" required><option value="">Selecciona la forma de pago</option></select>
+      </label>
+      <label>Número de operación (Yape, Plin o transferencia)
+        <input id="sgi-venta-operacion" maxlength="100" placeholder="Referencia del pago, si corresponde">
+      </label>
+    </div>
+    <div class="sgi-actions sgi-sale-footer">
+      <strong id="sgi-venta-total">Total: S/ 0.00</strong>
+      <button class="sgi-action" type="submit">Confirmar venta y descontar stock</button>
+    </div>
+    <p id="sgi-venta-estado" role="status" class="sgi-estado"></p>
+    <p class="sgi-aviso">Registrar el pago confirma una operación ingresada manualmente; no verifica automáticamente la transferencia bancaria ni emite una boleta electrónica SUNAT.</p>
+  </form>
+  <h3>Últimas ventas registradas</h3>
+  <div class="tabla-contenedor"><table><thead><tr>
+    <th>N.º</th><th>Fecha</th><th>Total</th><th>Estado</th>
+  </tr></thead><tbody id="sgi-ventas-empleado-historial"></tbody></table></div>
+</section>
+
+<section class="panel sgi-comercial" id="compras">
+  <h2>📦 Recepción de mercadería</h2>
+  <p>Revisa las órdenes asignadas, marca lo que llegó y lo que faltó, y confirma la entrega.</p>
+  <div class="tabla-contenedor"><table><thead><tr>
+    <th>Orden</th><th>Proveedor</th><th>Fecha</th><th>Faltantes informados</th><th>Estado</th><th>Acción</th>
+  </tr></thead><tbody id="sgi-compras-lista"></tbody></table></div>
+  <p id="sgi-compra-estado" role="status" class="sgi-estado"></p>
+  <div id="sgi-panel-recepcion" class="sgi-recepcion" hidden>
+    <h3 id="sgi-recepcion-titulo">Comprobar entrega</h3>
+    <p>Marca las unidades que llegaron bien, las dañadas y las que faltaron. Los faltantes se registran y quedan pendientes; solo las buenas aumentan el stock.</p>
+    <form id="sgi-form-recepcion">
+      <div class="tabla-contenedor"><table><thead><tr>
+        <th>Producto</th><th>Costo unit.</th><th>Pedido</th><th>Ya recibido</th><th>Pendiente</th><th>Llegó bien</th><th>Dañado</th><th>Faltó</th>
+      </tr></thead><tbody id="sgi-recepcion-detalles"></tbody></table></div>
+      <label class="sgi-notas">Observaciones de entrega<input id="sgi-recepcion-notas" maxlength="500" placeholder="Ej. entregaron menos unidades"></label>
+      <div class="sgi-actions"><button type="submit" class="sgi-action">Confirmar entrega</button>
+      <button id="sgi-recepcion-cancelar" type="button" class="sgi-action sgi-secondary">Cancelar</button></div>
+    </form>
+    <p id="sgi-recepcion-estado" class="sgi-estado" role="status"></p>
+  </div>
+</section>
 </main>
 </div>
 <script src="js/empleado.js" type="module"></script>
+<script src="js/comercial.js" type="module"></script>
+<script src="js/ventas-empleado.js" type="module"></script>
 <script src="js/pwa.js" type="module"></script>
 <script src="js/sprint4-navegacion.js" defer></script>
 <script src="js/sprint4-dashboard.js" defer></script>

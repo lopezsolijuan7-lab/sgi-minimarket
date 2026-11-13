@@ -7,8 +7,10 @@
   const nombres = admin
     ? {inicio:'Centro de control', productos:'Productos', registro:'Registrar producto',
        categorias:'Categorías', alertas:'Alertas de stock', movimientos:'Entradas y salidas',
-       'administracion-sucursales':'Gestión de sucursales'}
-    : {inicio:'Inicio', productos:'Productos', movimientos:'Movimientos', alertas:'Alertas de stock'};
+       'administracion-sucursales':'Gestión de sucursales',
+       proveedores:'Proveedores',compras:'Compras y recepciones',cajas:'Cajas',ventas:'Ventas y pagos'}
+    : {inicio:'Inicio', productos:'Productos', movimientos:'Historial de movimientos',
+       alertas:'Alertas de stock', 'ventas-empleado':'Registrar ventas', compras:'Recepción de mercadería'};
   const nav = document.querySelector(admin ? '.admin-nav' : '.menu-lateral nav');
   if (!nav) return;
   const etiqueta = document.getElementById('s4-titulo-vista');

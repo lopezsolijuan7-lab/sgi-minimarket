@@ -19,7 +19,8 @@ needed={
  'index.html': ['loginForm','correo','password','btnIngresar','mostrarPassword','mensaje'],
  'administrador.html': ['selector-sucursal','tabla-productos','formulario-producto','categoria',
    'formulario-movimiento','tabla-movimientos','formulario-asignacion'],
- 'empleado.html': ['selector-sucursal','tabla-productos','formulario-movimiento','tabla-movimientos']
+ 'empleado.html': ['selector-sucursal','tabla-productos','tabla-movimientos',
+   'sgi-form-venta','sgi-form-recepcion','sgi-venta-carrito']
 }
 for file, ids in needed.items():
     contenido=(ROOT/file).read_text(encoding='utf-8')
