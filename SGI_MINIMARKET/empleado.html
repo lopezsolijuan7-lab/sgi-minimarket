@@ -41,13 +41,22 @@
 <select aria-label="Sucursal" id="selector-sucursal"></select>
 <strong id="sucursal-actual">Cargando...</strong>
 </section>
+<section id="s4-estado-inventario-sede" class="s4-estado-sin-inventario" role="status" aria-live="polite" hidden>
+  <div class="s4-estado-sin-icono" aria-hidden="true">📦</div>
+  <div class="s4-estado-sin-contenido">
+    <strong>Esta sucursal todavía no tiene inventario registrado</strong>
+    <p id="s4-estado-inventario-detalle">Consultando las existencias de esta sucursal...</p>
+    <small>El catálogo es compartido entre sucursales, pero el stock es independiente. El administrador debe definir el stock mínimo de reposición.</small>
+  </div>
+  <a class="s4-estado-sin-accion" data-s4-tipo="entrada" href="#movimientos">＋ Registrar primera entrada</a>
+</section>
 <div class="s4-sync-bar" aria-label="Actualización del inventario">
   <div><span class="s4-sync-dot" aria-hidden="true"></span><span id="s4-ultima-actualizacion" role="status" aria-live="polite">Consultando inventario...</span></div>
   <button type="button" id="s4-actualizar-datos" class="s4-sync-button">↻ Actualizar datos</button>
 </div>
 <section class="estadisticas">
 <article class="tarjeta">
-<h3>Productos registrados</h3>
+<h3>Productos del catálogo</h3>
 <strong id="total-productos">0</strong>
 </article>
 <article class="tarjeta">
@@ -59,7 +68,7 @@
 <strong id="stock-bajo">0</strong>
 </article>
 <article class="tarjeta s4-tarjeta-categorias">
-<h3>Categorías disponibles</h3>
+<h3>Categorías del catálogo</h3>
 <strong id="s4-total-categorias">0</strong>
 </article>
 </section>
