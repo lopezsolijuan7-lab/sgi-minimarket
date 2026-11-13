@@ -61,6 +61,25 @@
 7. Comprobar cambios de sucursal (si el usuario tiene más de una), permisos y visualización móvil.
 8. Probar gráficos, formularios y enlaces existentes con ambas cuentas.
 
+
+## Sprint 4 — Boleta interna de movimientos (iteración adicional)
+- Se incorporó una boleta de **control de inventario**, sin validez tributaria y distinta de una boleta de venta SUNAT.
+- Disponible para **administrador y empleado** desde la columna **Boleta interna** del historial de entradas y salidas.
+- Después de registrar correctamente un movimiento, aparece **Ver boleta del último movimiento** si la RPC devuelve un identificador válido.
+- Los campos provienen del registro real en `movimientos_inventario`: identificador `MOV-...`, fecha/hora, sucursal, producto/código, tipo, cantidad, stock anterior, stock nuevo y motivo.
+- Para abrir el comprobante se vuelve a consultar por identificador usando la sesión autenticada de Supabase, respetando **RLS** y la asignación de sucursal.
+- La vista ofrece **Imprimir / Guardar PDF** a través de la opción de impresión del navegador. No existe generación ni almacenamiento permanente de archivos PDF en Supabase.
+- Archivos: `js/sprint4-boleta.js` (nuevo), `js/inventario.js`, `administrador.html`, `empleado.html` y `css/sprint4-premium.css`.
+- No se modificaron tablas ni funciones SQL, y no se incluyeron datos ficticios o cifras de ventas.
+
+### Pruebas pendientes de la boleta
+1. Registrar una entrada de prueba y confirmar que el botón del último movimiento abre la boleta correcta.
+2. Registrar una salida de prueba y confirmar el signo de la cantidad y los stocks.
+3. Abrir boletas históricas desde el administrador y el empleado; verificar la sucursal autorizada.
+4. Elegir **Imprimir / Guardar PDF**, revisar tipografía y márgenes del documento resultante.
+5. Verificar que la boleta no permite modificar el registro y que no se expone información de otras sucursales.
+6. Verificar el uso en celular, la impresión y la recuperación después de recargar la página.
+
 ## Validación pendiente en el navegador
 1. Iniciar sesión como administrador y como empleado con cuentas autorizadas.
 2. Confirmar que al cambiar de sucursal se actualizan los gráficos, las listas y las alertas.
