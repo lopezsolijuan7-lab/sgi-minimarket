@@ -3,7 +3,7 @@
   const contenedor = document.getElementById('s4-barras-categorias');
   if (!contenedor) return;
   const nota = document.getElementById('s4-bar-total');
-  const colores = ['#0d8f75','#287ef0','#8b5cf6','#f59e0b','#06b6d4','#e97855','#3d73ba'];
+  const colores = ['#00884a','#11a959','#2cbd65','#4eca7d','#70d597','#96dfb1','#b1e3c4'];
   const formato = new Intl.NumberFormat('es-PE');
 
   document.addEventListener('sgi:inventario-actualizado', (evento) => {
