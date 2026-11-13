@@ -301,10 +301,10 @@ body.empleado-body[data-s4-view]:not([data-s4-view="alertas"]) #alertas {
   .s4-compare-fill,.s4-quick-action {transition:none;}
 }
 
-/* sprint4-mejorado: vistas comerciales independientes */
+/* Panel comercial: cada módulo mantiene su pantalla independiente. */
 body.admin-body[data-s4-view]:not([data-s4-view="proveedores"]) #proveedores,
 body.admin-body[data-s4-view]:not([data-s4-view="compras"]) #compras,
 body.admin-body[data-s4-view]:not([data-s4-view="cajas"]) #cajas,
 body.admin-body[data-s4-view]:not([data-s4-view="ventas"]) #ventas,
-body.empleado-body[data-s4-view]:not([data-s4-view="ventas-empleado"]) #ventas-empleado,
-body.empleado-body[data-s4-view]:not([data-s4-view="compras"]) #compras {display:none !important;}
+body.empleado-body[data-s4-view]:not([data-s4-view="compras"]) #compras,
+body.empleado-body[data-s4-view]:not([data-s4-view="ventas-empleado"]) #ventas-empleado {display:none !important;}
