@@ -8,6 +8,7 @@
 <title>SGI MINIMARKET | Administración</title>
 <link href="css/inventario.css" rel="stylesheet"/>
 <link href="css/admin-profesional.css" rel="stylesheet"/>
+<link href="css/sprint4-ui.css" rel="stylesheet"/>
 <meta content="#073c34" name="theme-color"/><link href="app.webmanifest" rel="manifest"/><link href="icons/sgi-192.png" rel="icon"/></head>
 <body class="admin-body">
 <div class="admin-layout">
@@ -72,6 +73,7 @@
 <select aria-label="Sucursal" id="selector-sucursal"></select>
 <strong id="sucursal-actual">Cargando...</strong>
 </section>
+<div class="s4-route-heading" aria-live="polite"><p class="s4-overline">SGI MINIMARKET · SPRINT 4</p><h1 id="s4-titulo-vista">Centro de control</h1><p>Trabaja en cada módulo sin desplazarte por toda la página.</p></div>
 <!-- BIENVENIDA -->
 <section class="welcome">
 <div>
@@ -153,20 +155,11 @@
               </div>
 </div>
 </article>
-<!-- PRODUCTOS MÁS VENDIDOS -->
-<article class="admin-card">
-<div class="section-heading">
-<div>
-<h2>Módulo de ventas (planificado)</h2>
-<p>
-                  Clasificación según las ventas registradas
-                </p>
-</div>
-<span class="mini-tag">Ventas</span>
-</div>
-<div class="horizontal-chart" id="grafico-vendidos">
-              Cargando información...
-            </div>
+<!-- SPRINT 4: GRAFICO DE BARRAS CON DATOS REALES -->
+<article class="admin-card" aria-label="Gráfico de barras de inventario por categoría">
+<div class="section-heading"><div><h2>📊 Stock por categoría</h2><p>Comparación de unidades disponibles en la sucursal seleccionada</p></div><span class="mini-tag">Datos reales</span></div>
+<div class="s4-bar-chart" id="s4-barras-categorias" aria-live="polite"><p class="s4-bar-vacio">Cargando inventario...</p></div>
+<p class="s4-small-note" id="s4-bar-total">Datos de Supabase.</p>
 </article>
 </section>
 <!-- ALERTAS DE REPOSICIÓN -->
@@ -338,5 +331,7 @@
 <!-- ARCHIVOS JAVASCRIPT -->
 <script src="js/administrador.js" type="module"></script>
 <script src="js/admin-panel.js" type="module"></script>
-<script src="js/pwa.js" type="module"></script></body>
+<script src="js/pwa.js" type="module"></script>
+<script src="js/sprint4-navegacion.js" defer></script>
+<script src="js/sprint4-graficos.js" defer></script></body>
 </html>
