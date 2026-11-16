@@ -1,538 +1,423 @@
-
 /* ==========================================
-   SGI MINIMARKET
-   SISTEMA DE GESTIÓN DE INVENTARIO
-
-   SPRINT 1 - LOGIN MEJORADO
-   Dragon Ball + One Piece
+   SGI MINIMARKET - UI MODERNA (RAMA DISENO-UI)
 ========================================== */
 
-/* CONFIGURACIÓN GENERAL */
+@import url('https://googleapis.com');
+
+:root {
+  --primario: #059669;
+  --primario-oscuro: #047857;
+  --primario-claro: #10b981;
+  --fondo-oscuro: #062822;
+  --texto-oscuro: #0f172a;
+  --texto-gris: #475569;
+  --borde-suave: #e2e8f0;
+}
 
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: Arial, sans-serif;
-
-  background: linear-gradient(
-    120deg,
-    #0c1b31,
-    #075b34
-  );
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: radial-gradient(circle at top left, #0d4a3e, #051b24 70%);
+  color: var(--texto-oscuro);
+  -webkit-font-smoothing: antialiased;
 }
 
 /* ==========================================
-   LOGIN - FONDO PRINCIPAL
+   DISTRIBUCIÓN PRINCIPAL DEL LOGIN
 ========================================== */
 
 body.pagina-login {
-  margin: 0;
-  min-height: 100vh;
-  display: block;
-  font-family: Arial, sans-serif;
-
-  background: linear-gradient(
-    120deg,
-    #0c1b31,
-    #075b34
-  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
-
-/* ==========================================
-   DISTRIBUCIÓN DEL LOGIN
-========================================== */
 
 .login-layout {
-  width: min(1400px, 96%);
-  min-height: 88vh;
-  margin: 4vh auto;
-
+  width: min(1220px, 100%);
+  min-height: 82vh;
   display: grid;
-
-  grid-template-columns:
-    minmax(0, 1.15fr)
-    minmax(380px, 0.85fr);
-
+  grid-template-columns: 1.15fr 0.85fr;
   border-radius: 24px;
   overflow: hidden;
-
-  box-shadow:
-    0 20px 70px rgba(0, 0, 0, 0.35);
+  background: #ffffff;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 /* ==========================================
-   SECCIÓN IZQUIERDA
-   GOKU Y LUFFY EN EL ALMACÉN
+   PANEL IZQUIERDO (PRESENTACIÓN)
 ========================================== */
 
-
 .presentacion {
-  color: white;
-  padding: 55px;
-
-  background-image:
-    linear-gradient(
-      90deg,
-      rgba(0, 15, 25, 0.45),
-      rgba(0, 35, 30, 0.15)
-    ),
-    url("../img/minimarket-anime.png");
-
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-
+  position: relative;
+  color: #ffffff;
+  padding: 56px 48px;
+  background: 
+    linear-gradient(145deg, rgba(6, 55, 45, 0.92), rgba(10, 25, 47, 0.95)),
+    url("../img/minimarket.jpg") center/cover no-repeat;
   display: flex;
   align-items: center;
 }
 
-
 .presentacion-contenido {
   width: 100%;
-  max-width: 600px;
+  max-width: 540px;
 }
-
-/* LOGOTIPO */
 
 .marca {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
+  margin-bottom: 24px;
 }
 
 .marca-icono {
-  font-size: 55px;
+  font-size: 36px;
+  background: rgba(255, 255, 255, 0.12);
+  width: 60px;
+  height: 60px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .marca h1 {
-  color: white;
-  font-size: clamp(27px, 3vw, 43px);
-  margin: 10px 0;
+  font-size: clamp(24px, 2.5vw, 32px);
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #ffffff;
 }
 
 .marca h1 span {
-  color: #20e6a4;
+  color: #34d399;
 }
 
-/* TÍTULOS DE PRESENTACIÓN */
+.presentacion-etiqueta {
+  display: inline-block;
+  padding: 6px 14px;
+  background: rgba(52, 211, 153, 0.16);
+  color: #6ee7b7;
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
 
 .presentacion h2 {
-  color: white;
-  font-size: 23px;
-  margin: 15px 0;
+  font-size: clamp(26px, 2.8vw, 36px);
+  font-weight: 700;
+  line-height: 1.2;
+  color: #ffffff;
+  margin-bottom: 16px;
 }
 
 .frase {
-  font-size: 19px;
+  font-size: 16px;
   line-height: 1.6;
-  margin: 30px 0;
+  color: #cbd5e1;
+  margin-bottom: 36px;
 }
 
-/* FUNCIONES DEL INVENTARIO */
+/* TARJETAS DE FUNCIONES */
 
 .funciones {
-  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .funcion {
   display: flex;
-  gap: 18px;
   align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
 
-  padding: 18px 0;
-
-  border-bottom:
-    1px solid rgba(255, 255, 255, 0.15);
+.funcion:hover {
+  transform: translateX(6px);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .funcion > span {
-  font-size: 32px;
+  font-size: 26px;
+  background: rgba(16, 185, 129, 0.2);
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  flex-shrink: 0;
 }
 
 .funcion h3 {
-  margin: 0 0 7px;
-  font-size: 18px;
-  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 4px;
 }
 
 .funcion p {
-  margin: 0;
-  color: #e2e8f0;
-  font-size: 14px;
-}
-
-/* DECORACIÓN DRAGON BALL Y ONE PIECE */
-
-.anime-decoracion {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 35px;
-}
-
-.anime-decoracion span {
-  padding: 12px 17px;
-
-  background:
-    rgba(255, 255, 255, 0.15);
-
-  border:
-    1px solid rgba(255, 255, 255, 0.25);
-
-  border-radius: 30px;
-
-  color: white;
   font-size: 13px;
-  font-weight: bold;
-
-  backdrop-filter: blur(5px);
+  color: #cbd5e1;
+  line-height: 1.4;
 }
 
 /* ==========================================
-   FORMULARIO DEL LOGIN
+   PANEL DERECHO (FORMULARIO LOGIN)
 ========================================== */
 
 .login-container {
-  background: white;
-  width: 420px;
-  max-width: 92%;
-
-  padding: 40px 35px;
-  border-radius: 16px;
-
-  text-align: center;
-}
-
-/* FORMULARIO DEL NUEVO DISEÑO */
-
-.pagina-login .login-container {
-  width: 100%;
-  max-width: none;
-
-  padding: 45px 38px;
-  border-radius: 0;
-
-  background:
-    rgba(255, 255, 255, 0.98);
-
+  background: #ffffff;
+  padding: 48px 44px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  text-align: center;
 }
 
-/* LOGOTIPO DEL LOGIN */
+.login-interior {
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+}
 
 .logo {
-  font-size: 55px;
-  margin-bottom: 10px;
+  font-size: 38px;
+  width: 68px;
+  height: 68px;
+  margin: 0 auto 14px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
 }
 
-h1 {
-  color: #08652e;
-  font-size: 25px;
-  margin: 10px 0;
+.login-marca {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--texto-oscuro);
+  letter-spacing: -0.3px;
 }
 
-.pagina-login .login-container h1 {
-  color: #10243c;
-  font-size: 29px;
+.login-marca span {
+  color: var(--primario);
 }
-
-.pagina-login .login-container h1 span {
-  color: #078748;
-}
-
-/* SUBTÍTULOS */
 
 .subtitulo {
-  color: #587095;
-  margin-bottom: 28px;
+  font-size: 13px;
+  color: var(--texto-gris);
+  margin-top: 2px;
+  margin-bottom: 24px;
 }
 
-h2 {
-  color: #14213d;
-  margin-bottom: 25px;
+#titulo-login {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--texto-oscuro);
+  margin-bottom: 6px;
 }
 
 .login-descripcion {
-  color: #64748b;
   font-size: 14px;
-  line-height: 1.6;
-  margin-bottom: 30px;
+  color: var(--texto-gris);
+  margin-bottom: 28px;
 }
 
-/* ==========================================
-   CAMPOS DEL FORMULARIO
-========================================== */
+/* FORMULARIO E INPUTS */
 
 form {
   text-align: left;
 }
 
-.pagina-login form {
-  width: 100%;
-}
-
 label {
   display: block;
-  font-weight: bold;
-
-  margin-bottom: 8px;
-  color: #14213d;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 6px;
 }
 
 input {
   width: 100%;
-  padding: 14px;
-
-  margin-bottom: 16px;
-
-  border: 1px solid #c8d4e3;
-  border-radius: 8px;
-
-  font-size: 15px;
+  padding: 13px 16px;
+  margin-bottom: 18px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--texto-oscuro);
+  background: #f8fafc;
+  border: 1.5px solid var(--borde-suave);
+  border-radius: 12px;
+  transition: all 0.2s ease;
 }
 
-.pagina-login input {
-  width: 100%;
-  padding: 16px;
-
-  border-radius: 10px;
-  border: 1px solid #cbd5e1;
-
-  background: #f8fbff;
+input::placeholder {
+  color: #94a3b8;
 }
 
 input:focus {
-  outline: 2px solid #078b44;
+  outline: none;
+  background: #ffffff;
+  border-color: var(--primario);
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
 }
 
-.pagina-login input:focus {
-  outline: 2px solid #10b981;
-  outline-offset: 1px;
-}
-
-/* ==========================================
-   MOSTRAR Y OCULTAR CONTRASEÑA
-========================================== */
+/* BOTÓN MOSTRAR CONTRASEÑA ARREGLADO */
 
 .password-container {
   position: relative;
+  margin-bottom: 18px;
 }
 
 .password-container input {
-  padding-right: 58px;
+  margin-bottom: 0;
+  padding-right: 84px;
 }
 
-.pagina-login .mostrar-password {
+.mostrar-password {
   position: absolute;
-
-  right: 9px;
-  top: 7px;
-
-  width: 44px;
-  height: 44px;
-
-  padding: 0;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: auto;
+  height: auto;
+  padding: 6px 10px;
   margin: 0;
-
-  background: transparent;
+  background: #e2e8f0;
   color: #334155;
-
   border: none;
   border-radius: 8px;
-
-  font-size: 21px;
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.2s ease;
 }
 
-.pagina-login .mostrar-password:hover {
-  background: #e5edf5;
+.mostrar-password:hover {
+  background: #cbd5e1;
 }
 
-/* ==========================================
-   BOTÓN DE INICIO DE SESIÓN
-========================================== */
+/* BOTÓN PRINCIPAL */
 
-button {
+button[type="submit"],
+#btnIngresar {
   width: 100%;
-  padding: 15px;
-
-  margin-top: 8px;
-
+  padding: 14px;
+  margin-top: 6px;
   border: none;
-  border-radius: 8px;
-
-  background: #14813b;
-  color: white;
-
-  font-size: 16px;
-  font-weight: bold;
-
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--primario), var(--primario-oscuro));
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 10px 20px -8px rgba(5, 150, 105, 0.6);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
 }
 
-button:hover {
-  background: #09612d;
+button[type="submit"]:hover,
+#btnIngresar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 24px -8px rgba(5, 150, 105, 0.75);
 }
 
 button:disabled {
   opacity: 0.65;
-  cursor: wait;
-}
-
-.pagina-login #btnIngresar {
-  background: linear-gradient(
-    90deg,
-    #087d3e,
-    #06a65a
-  );
-
-  padding: 17px;
-  margin-top: 12px;
-
-  border-radius: 10px;
-
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
-}
-
-.pagina-login #btnIngresar:hover {
-  transform: translateY(-2px);
-
-  box-shadow:
-    0 8px 20px rgba(0, 128, 70, 0.25);
-}
-
-.pagina-login #btnIngresar:disabled {
+  cursor: not-allowed;
   transform: none;
 }
 
-/* ==========================================
-   MENSAJES DEL SISTEMA
-========================================== */
+/* MENSAJES Y PIE */
 
 #mensaje {
   text-align: center;
-  font-size: 14px;
-  margin-top: 15px;
-  min-height: 18px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 14px;
+  min-height: 20px;
 }
 
-/* AVISO DE SEGURIDAD */
-
 .aviso-seguridad {
-  background: #e9f9f1;
-  color: #086548;
-
-  padding: 20px 12px;
-
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+  padding: 12px;
   border-radius: 12px;
-
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: 500;
   margin-top: 20px;
 }
 
 .pie {
-  margin-top: 25px;
+  margin-top: 20px;
   font-size: 12px;
-  color: #617391;
-}
-
-.pagina-login .pie {
-  margin-top: 25px;
+  color: #94a3b8;
 }
 
 /* ==========================================
-   PANEL ADMINISTRADOR Y EMPLEADO
-   CONSERVAMOS LOS ESTILOS ORIGINALES
+   COMPATIBILIDAD CON OTRAS VISTAS
 ========================================== */
 
 .dashboard {
-  background: white;
-
-  padding: 35px;
-  border-radius: 14px;
-
-  width: 500px;
-  max-width: 92%;
-
+  background: #ffffff;
+  padding: 36px;
+  border-radius: 20px;
+  width: min(520px, 92%);
+  margin: 40px auto;
   text-align: center;
-}
-
-.dashboard p {
-  color: #344054;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
 /* ==========================================
-   ADAPTACIÓN A TABLETS
+   RESPONSIVE (TABLETS Y CELULARES)
 ========================================== */
 
 @media (max-width: 900px) {
-
   .login-layout {
     grid-template-columns: 1fr;
-    width: min(550px, 94%);
-    margin: 20px auto;
+    max-width: 500px;
   }
 
   .presentacion {
-    padding: 30px;
-    min-height: 280px;
+    padding: 32px 28px;
   }
 
   .presentacion .funciones {
     display: none;
   }
 
-  .pagina-login .login-container {
-    padding: 35px 25px;
+  .login-container {
+    padding: 36px 28px;
   }
-
 }
 
-/* ==========================================
-   ADAPTACIÓN A CELULARES
-========================================== */
-
 @media (max-width: 480px) {
-
-  .marca h1 {
-    font-size: 25px;
+  body.pagina-login {
+    padding: 12px;
   }
 
   .presentacion {
-    padding: 22px;
-    min-height: 230px;
+    padding: 24px 20px;
   }
 
-  .presentacion h2 {
-    font-size: 18px;
+  .login-container {
+    padding: 28px 20px;
   }
-
-  .frase {
-    font-size: 15px;
-  }
-
-  .pagina-login .login-container {
-    padding: 30px 20px;
-  }
-
-  .pagina-login .login-container h1 {
-    font-size: 24px;
-  }
-
-  .anime-decoracion span {
-    font-size: 11px;
-    padding: 9px 12px;
-  }
-
 }
