@@ -156,6 +156,116 @@
   ">▶</button>
 </div>
 
+<!-- Reproductor NOIR JAZZ LOUNGE funcional con efecto opaco/claro -->
+<style>
+  /* Oculta el reproductor viejo que redirige a YouTube */
+  a[href*="youtube"], a[href*="youtu.be"] {
+    display: none !important;
+  }
+
+  /* Estilo del reproductor nuevo: opaco en reposo, claro al pasar el cursor */
+  #reproductorNoir {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    background-color: #1c1f26;
+    color: #ffffff;
+    border-radius: 16px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    font-family: sans-serif;
+    opacity: 0.35;
+    transition: opacity 0.3s ease, transform 0.2s ease;
+  }
+
+  #reproductorNoir:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+</style>
+
+<audio id="musicaFondo" loop>
+  <source src="img/jazz-timer.mp3" type="audio/mpeg">
+</audio>
+
+<div id="reproductorNoir" onclick="toggleMusica()">
+  <div>
+    <div style="font-size: 10px; color: #f59e0b; font-weight: bold; letter-spacing: 1px;">NOIR JAZZ LOUNGE</div>
+    <div style="font-size: 14px; font-weight: bold;">Just One More Drink</div>
+    <div style="font-size: 11px; color: #9ca3af;">Late Night Sax & Piano</div>
+  </div>
+  <button type="button" id="btnIcono" style="
+    background-color: #10b981;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    font-size: 16px;
+    cursor: pointer;
+  ">▶</button>
+</div>
+
+<!-- Reproductor NOIR JAZZ LOUNGE funcional con efecto opaco/claro -->
+<style>
+  /* Oculta el reproductor viejo que redirige a YouTube */
+  a[href*="youtube"], a[href*="youtu.be"] {
+    display: none !important;
+  }
+
+  /* Estilo del reproductor nuevo: opaco en reposo, claro al pasar el cursor */
+  #reproductorNoir {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    background-color: #1c1f26;
+    color: #ffffff;
+    border-radius: 16px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    font-family: sans-serif;
+    opacity: 0.35;
+    transition: opacity 0.3s ease, transform 0.2s ease;
+  }
+
+  #reproductorNoir:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+</style>
+
+<audio id="musicaFondo" loop>
+  <source src="img/jazz-timer.mp3" type="audio/mpeg">
+</audio>
+
+<div id="reproductorNoir" onclick="toggleMusica()">
+  <div>
+    <div style="font-size: 10px; color: #f59e0b; font-weight: bold; letter-spacing: 1px;">NOIR JAZZ LOUNGE</div>
+    <div style="font-size: 14px; font-weight: bold;">Just One More Drink</div>
+    <div style="font-size: 11px; color: #9ca3af;">Late Night Sax & Piano</div>
+  </div>
+  <button type="button" id="btnIcono" style="
+    background-color: #10b981;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    font-size: 16px;
+    cursor: pointer;
+  ">▶</button>
+</div>
+
 <script>
   const audio = document.getElementById("musicaFondo");
   const icono = document.getElementById("btnIcono");
