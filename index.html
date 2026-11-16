@@ -6,10 +6,20 @@
   <meta name="theme-color" content="#090d16">
   <link rel="manifest" href="app.webmanifest">
   <link rel="icon" type="image/png" href="icons/sgi-192.png">
-  <link rel="stylesheet" href="css/style.css?v=7">
+  <link rel="stylesheet" href="css/style.css?v=8">
   <title>Iniciar sesión | SGI Minimarket</title>
 </head>
 <body class="pagina-login">
+  <!-- ANIMACIÓN DE BIENVENIDA -->
+  <div class="splash-bienvenida" id="splashBienvenida" aria-hidden="true">
+    <div class="splash-contenido">
+      <div class="splash-icono">🛒</div>
+      <div class="splash-titulo">SGI <span>MINIMARKET</span></div>
+      <p class="splash-texto">Preparando tu espacio de trabajo...</p>
+      <div class="splash-barra"><div class="splash-progreso"></div></div>
+    </div>
+  </div>
+
   <div id="fondo-emojis" aria-hidden="true"></div>
 
   <main class="login-layout">
@@ -91,7 +101,6 @@
     </section>
   </main>
 
-  <!-- REPRODUCTOR ESTÉTICO TIPO SPOTIFY EN LA ESQUINA -->
   <aside class="jazz-player-card" id="jazzPlayerCard" aria-label="Reproductor Jazz Noir">
     <div class="jazz-vinyl" id="jazzVinyl">
       <div class="vinyl-center">🎷</div>
@@ -106,7 +115,7 @@
       <button type="button" class="jazz-play-btn" id="jazzPlayBtn" title="Reproducir / Pausar ambiente">
         <svg id="iconPlay" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
       </button>
-      <a href="https://youtu.be/7gtIh5dF9Xk" target="_blank" rel="noopener" class="jazz-yt-link" title="Abrir audio completo en YouTube">
+      <a href="https://youtu.be" target="_blank" rel="noopener" class="jazz-yt-link" title="Abrir audio completo en YouTube">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
       </a>
     </div>
