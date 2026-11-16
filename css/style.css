@@ -1,7 +1,41 @@
 /* ==========================================
-   FONDO DE EMOJIS REBOTANDO Y REPRODUCTOR JAZZ
+   SGI MINIMARKET - ESTÉTICA PREMIUM + JAZZ
 ========================================== */
 
+@import url('https://googleapis.com');
+
+:root {
+  --primario: #10b981;
+  --primario-oscuro: #059669;
+  --fondo-oscuro: #031514;
+  --texto-oscuro: #0f172a;
+  --texto-gris: #64748b;
+  --borde-suave: #e2e8f0;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body.pagina-login {
+  min-height: 100vh;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--fondo-oscuro);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.25) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(6, 78, 59, 0.4) 0px, transparent 55%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  position: relative;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* FONDO DE EMOJIS REBOTANDO */
 #fondo-emojis {
   position: fixed;
   inset: 0;
@@ -14,13 +48,330 @@
   position: absolute;
   top: 0;
   left: 0;
-  opacity: 0.35;
-  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
+  opacity: 0.45;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
   user-select: none;
   will-change: transform;
 }
 
-/* Reproductor flotante de Jazz en esquina inferior derecha */
+/* TARJETA PRINCIPAL */
+.login-layout {
+  position: relative;
+  z-index: 1;
+  width: min(1140px, 100%);
+  min-height: 740px;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  border-radius: 28px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.7);
+}
+
+/* PANEL IZQUIERDO */
+.presentacion {
+  color: #ffffff;
+  padding: 52px 48px;
+  background: linear-gradient(155deg, rgba(6, 46, 40, 0.86) 0%, rgba(4, 24, 28, 0.94) 100%);
+  display: flex;
+  align-items: center;
+}
+
+.presentacion-contenido {
+  width: 100%;
+  max-width: 500px;
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.marca-icono {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.1));
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  color: #34d399;
+  font-size: 24px;
+  display: grid;
+  place-items: center;
+}
+
+.marca h1 {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  color: #ffffff;
+}
+
+.marca h1 span {
+  color: #34d399;
+}
+
+.presentacion-etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  background: rgba(16, 185, 129, 0.14);
+  color: #6ee7b7;
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+
+.presentacion h2 {
+  font-size: clamp(28px, 3vw, 36px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.8px;
+  color: #ffffff;
+  margin-bottom: 16px;
+}
+
+.frase {
+  font-size: 15px;
+  line-height: 1.65;
+  color: #94a3b8;
+  margin-bottom: 34px;
+}
+
+.funciones {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.funcion {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 18px;
+  transition: all 0.25s ease;
+}
+
+.funcion:hover {
+  transform: translateX(6px);
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(52, 211, 153, 0.35);
+}
+
+.funcion > span {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  font-size: 20px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.funcion h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #f8fafc;
+  margin-bottom: 3px;
+}
+
+.funcion p {
+  font-size: 13px;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+/* PANEL DERECHO */
+.login-container {
+  background: #ffffff;
+  padding: 48px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.login-interior {
+  width: 100%;
+  max-width: 365px;
+  margin: 0 auto;
+}
+
+.logo {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 14px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  border: 1px solid #a7f3d0;
+  color: var(--primario-oscuro);
+  font-size: 28px;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.25);
+}
+
+.login-marca {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--texto-oscuro);
+}
+
+.login-marca span {
+  color: var(--primario-oscuro);
+}
+
+.subtitulo {
+  font-size: 12px;
+  color: var(--texto-gris);
+  margin-top: 2px;
+  margin-bottom: 24px;
+}
+
+#titulo-login {
+  font-size: 25px;
+  font-weight: 800;
+  color: var(--texto-oscuro);
+  margin-bottom: 6px;
+}
+
+.login-descripcion {
+  font-size: 14px;
+  color: var(--texto-gris);
+  margin-bottom: 26px;
+}
+
+form {
+  text-align: left;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 7px;
+}
+
+.input-icon-wrap {
+  position: relative;
+  margin-bottom: 18px;
+}
+
+.input-icon-wrap > i {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  font-size: 16px;
+  pointer-events: none;
+}
+
+input {
+  width: 100%;
+  padding: 13px 16px 13px 42px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--texto-oscuro);
+  background: #f8fafc;
+  border: 1.5px solid var(--borde-suave);
+  border-radius: 14px;
+  transition: all 0.2s ease;
+}
+
+input:focus {
+  outline: none;
+  background: #ffffff;
+  border-color: var(--primario);
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+}
+
+.password-container input {
+  padding-right: 86px;
+}
+
+.mostrar-password {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 6px 11px;
+  background: #e2e8f0;
+  color: #334155;
+  border: none;
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#btnIngresar {
+  width: 100%;
+  padding: 14px 20px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 12px 24px -8px rgba(5, 150, 105, 0.65);
+  transition: transform 0.2s ease;
+}
+
+#btnIngresar:hover {
+  transform: translateY(-2px);
+}
+
+#mensaje {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 14px;
+  min-height: 20px;
+}
+
+.aviso-seguridad {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+  padding: 11px 14px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 16px;
+}
+
+.pie {
+  margin-top: 18px;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* REPRODUCTOR FLOTANTE DE JAZZ */
 .jazz-widget {
   position: fixed;
   bottom: 18px;
@@ -37,41 +388,22 @@
   align-items: center;
   gap: 8px;
   padding: 10px 16px;
-  background: rgba(6, 46, 40, 0.9);
+  background: rgba(6, 46, 40, 0.92);
   backdrop-filter: blur(12px);
   color: #ecfdf5;
-  border: 1px solid rgba(52, 211, 153, 0.4);
+  border: 1px solid rgba(52, 211, 153, 0.45);
   border-radius: 999px;
   font-family: inherit;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
   transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .jazz-toggle:hover {
   transform: translateY(-2px);
   background: rgba(5, 150, 105, 0.95);
-}
-
-.jazz-pulse {
-  font-size: 16px;
-  animation: latidoJazz 2s infinite ease-in-out;
-}
-
-@keyframes latidoJazz {
-  0%, 100% { transform: scale(1) rotate(0deg); }
-  50% { transform: scale(1.18) rotate(-8deg); }
-}
-
-#jazzChevron {
-  font-size: 12px;
-  transition: transform 0.25s ease;
-}
-
-.jazz-widget.abierto #jazzChevron {
-  transform: rotate(180deg);
 }
 
 .jazz-player-box {
@@ -82,10 +414,22 @@
   background: #04181c;
   border: 0 solid rgba(52, 211, 153, 0.35);
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
-  transition: height 0.3s ease, border-width 0.3s ease;
+  transition: height 0.3s ease;
 }
 
 .jazz-widget.abierto .jazz-player-box {
   height: 158px;
   border-width: 1px;
+}
+
+@media (max-width: 920px) {
+  .login-layout {
+    grid-template-columns: 1fr;
+    max-width: 480px;
+    min-height: auto;
+  }
+
+  .presentacion .funciones {
+    display: none;
+  }
 }
