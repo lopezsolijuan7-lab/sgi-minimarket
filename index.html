@@ -3,52 +3,444 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#073c34">
+  <meta name="theme-color" content="#042f2e">
   <meta name="description" content="Sistema de Gestión de Inventario SGI Minimarket: productos, sucursales y movimientos.">
   <link rel="manifest" href="app.webmanifest">
   <link rel="icon" type="image/png" href="icons/sgi-192.png">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://jsdelivr.net">
   <title>Iniciar sesión | SGI Minimarket</title>
+
+  <style>
+    @import url('https://googleapis.com');
+
+    :root {
+      --primario: #10b981;
+      --primario-oscuro: #059669;
+      --fondo-oscuro: #031514;
+      --texto-oscuro: #0f172a;
+      --texto-gris: #64748b;
+      --borde-suave: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body.pagina-login {
+      min-height: 100vh;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--fondo-oscuro);
+      background-image:
+        radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.25) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(6, 78, 59, 0.4) 0px, transparent 55%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      position: relative;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* FONDO DE EMOJIS REBOTANDO */
+    #fondo-emojis {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .emoji-rebote {
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0.45;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+      user-select: none;
+      will-change: transform;
+    }
+
+    /* TARJETA PRINCIPAL */
+    .login-layout {
+      position: relative;
+      z-index: 1;
+      width: min(1140px, 100%);
+      min-height: 740px;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      border-radius: 28px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.7);
+    }
+
+    /* PANEL IZQUIERDO */
+    .presentacion {
+      color: #ffffff;
+      padding: 52px 48px;
+      background: linear-gradient(155deg, rgba(6, 46, 40, 0.86) 0%, rgba(4, 24, 28, 0.94) 100%);
+      display: flex;
+      align-items: center;
+    }
+
+    .presentacion-contenido { width: 100%; max-width: 500px; }
+
+    .marca {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .marca-icono {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.1));
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      color: #34d399;
+      font-size: 24px;
+      display: grid;
+      place-items: center;
+    }
+
+    .marca h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.6px;
+      color: #ffffff;
+    }
+
+    .marca h1 span { color: #34d399; }
+
+    .presentacion-etiqueta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      background: rgba(16, 185, 129, 0.14);
+      color: #6ee7b7;
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+
+    .presentacion h2 {
+      font-size: clamp(28px, 3vw, 36px);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.8px;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    .frase {
+      font-size: 15px;
+      line-height: 1.65;
+      color: #94a3b8;
+      margin-bottom: 34px;
+    }
+
+    .funciones { display: flex; flex-direction: column; gap: 14px; }
+
+    .funcion {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 18px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 18px;
+      transition: all 0.25s ease;
+    }
+
+    .funcion:hover {
+      transform: translateX(6px);
+      background: rgba(255, 255, 255, 0.09);
+      border-color: rgba(52, 211, 153, 0.35);
+    }
+
+    .funcion > span {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      font-size: 20px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .funcion h3 { font-size: 15px; font-weight: 700; color: #f8fafc; margin-bottom: 3px; }
+    .funcion p { font-size: 13px; color: #94a3b8; line-height: 1.4; }
+
+    /* PANEL DERECHO */
+    .login-container {
+      background: #ffffff;
+      padding: 48px 44px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .login-interior { width: 100%; max-width: 365px; margin: 0 auto; }
+
+    .logo {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 14px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+      border: 1px solid #a7f3d0;
+      color: var(--primario-oscuro);
+      font-size: 28px;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.25);
+    }
+
+    .login-marca { font-size: 17px; font-weight: 800; color: var(--texto-oscuro); }
+    .login-marca span { color: var(--primario-oscuro); }
+    .subtitulo { font-size: 12px; color: var(--texto-gris); margin-top: 2px; margin-bottom: 24px; }
+    #titulo-login { font-size: 25px; font-weight: 800; color: var(--texto-oscuro); margin-bottom: 6px; }
+    .login-descripcion { font-size: 14px; color: var(--texto-gris); margin-bottom: 26px; }
+
+    form { text-align: left; }
+    label { display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 7px; }
+
+    .input-icon-wrap { position: relative; margin-bottom: 18px; }
+    .input-icon-wrap > i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px 16px 13px 42px;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--texto-oscuro);
+      background: #f8fafc;
+      border: 1.5px solid var(--borde-suave);
+      border-radius: 14px;
+      transition: all 0.2s ease;
+    }
+
+    input:focus {
+      outline: none;
+      background: #ffffff;
+      border-color: var(--primario);
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+    }
+
+    .password-container input { padding-right: 86px; }
+
+    .mostrar-password {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 6px 11px;
+      background: #e2e8f0;
+      color: #334155;
+      border: none;
+      border-radius: 9px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    #btnIngresar {
+      width: 100%;
+      padding: 14px 20px;
+      margin-top: 8px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 12px 24px -8px rgba(5, 150, 105, 0.65);
+      transition: transform 0.2s ease;
+    }
+
+    #btnIngresar:hover { transform: translateY(-2px); }
+
+    #mensaje { text-align: center; font-size: 13px; font-weight: 600; margin-top: 14px; min-height: 20px; }
+
+    .aviso-seguridad {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #f0fdf4;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+      padding: 11px 14px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 16px;
+    }
+
+    .pie { margin-top: 18px; font-size: 12px; color: #94a3b8; }
+
+    /* WIDGET JAZZ ESQUINA INFERIOR DERECHA */
+    .jazz-widget {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+
+    .jazz-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: rgba(6, 46, 40, 0.92);
+      backdrop-filter: blur(12px);
+      color: #ecfdf5;
+      border: 1px solid rgba(52, 211, 153, 0.45);
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+    }
+
+    .jazz-player-box {
+      width: 280px;
+      height: 0;
+      overflow: hidden;
+      border-radius: 16px;
+      background: #04181c;
+      border: 0 solid rgba(52, 211, 153, 0.35);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
+      transition: height 0.3s ease;
+    }
+
+    .jazz-widget.abierto .jazz-player-box {
+      height: 158px;
+      border-width: 1px;
+    }
+
+    @media (max-width: 920px) {
+      .login-layout { grid-template-columns: 1fr; max-width: 480px; min-height: auto; }
+      .presentacion .funciones { display: none; }
+    }
+  </style>
 </head>
 <body class="pagina-login">
+  <div id="fondo-emojis" aria-hidden="true"></div>
+
   <main class="login-layout">
     <section class="presentacion" aria-label="Sistema de Gestión de Inventario SGI Minimarket">
       <div class="presentacion-contenido">
-        <div class="marca"><span class="marca-icono" aria-hidden="true">🛒</span><h1>SGI <span>MINIMARKET</span></h1></div>
-        <div class="presentacion-etiqueta">Inventario multisucursal</div>
-        <h2>Todo tu inventario, en un solo lugar.</h2>
-        <p class="frase">Consulta las existencias, registra movimientos y supervisa los productos de cada sucursal.</p>
-        <div class="funciones">
-          <div class="funcion"><span aria-hidden="true">📦</span><div><h3>Catálogo organizado</h3><p>Productos y categorías centralizados.</p></div></div>
-          <div class="funcion"><span aria-hidden="true">📊</span><div><h3>Stock por sucursal</h3><p>Entradas, salidas y alertas de reposición.</p></div></div>
-          <div class="funcion"><span aria-hidden="true">🔐</span><div><h3>Acceso protegido</h3><p>Permisos diferenciados para cada empleado.</p></div></div>
-        </div>
-      </div>
-    </section>
-    <section class="login-container" aria-labelledby="titulo-login">
-      <div class="login-interior">
-        <div class="logo" aria-hidden="true">🛒</div>
-        <p class="login-marca">SGI <span>MINIMARKET</span></p>
-        <p class="subtitulo">Sistema de Gestión de Inventario</p>
-        <h2 id="titulo-login">Iniciar sesión</h2>
-        <p class="login-descripcion">Ingresa con tu cuenta autorizada de Supabase.</p>
-        <form id="loginForm" autocomplete="on">
-          <label for="correo">Correo electrónico</label>
-          <input id="correo" name="email" type="email" placeholder="correo@empresa.com" autocomplete="username" inputmode="email" required>
-          <label for="password">Contraseña</label>
-          <div class="password-container">
-            <input id="password" name="password" type="password" placeholder="Ingresa tu contraseña" autocomplete="current-password" required>
-            <button id="mostrarPassword" type="button" class="mostrar-password" aria-label="Mostrar contraseña" aria-pressed="false">Mostrar</button>
-          </div>
-          <button type="submit" id="btnIngresar">Ingresar al sistema</button>
-          <p id="mensaje" role="status" aria-live="polite"></p>
-        </form>
-        <div class="aviso-seguridad">🔒 Uso exclusivo para personal autorizado</div>
-        <p class="pie">SGI Minimarket © 2026 · Aplicación web</p>
-      </div>
-    </section>
-  </main>
-  <script type="module" src="js/login.js"></script>
-  <script type="module" src="js/pwa.js"></script>
-</body>
-</html>
+        <div class="marca">
+          <div class="marca-icono" aria-hidden="true"><i class="bi bi-shop"></i></div>
+
+SGI MINIMARKET
+
+ Inventario multisucursal inteligente
+Todo el control de tu tienda, en un solo lugar.
+Consulta existencias en tiempo real, registra movimientos y supervisa el rendimiento de cada sucursal con precisión.
+
+
+
+Catálogo organizadoProductos, precios y categorías centralizados.
+
+
+
+Stock por sucursalEntradas, salidas y alertas automáticas de reposición.
+
+
+
+Acceso protegidoRoles y permisos diferenciados para tu equipo.
+
+
+
+SGI MINIMARKET
+Sistema de Gestión de Inventario
+Bienvenido de nuevo
+Ingresa tus credenciales autorizadas para continuar.
+Correo electrónico
+
+
+Contraseña
+
+
+Mostrar
+
+Ingresar al sistema
+
+
+ Acceso encriptado para personal autorizado
+SGI Minimarket © 2026 · Plataforma Web
+
+🎷Cafe Jazz
+
+
+
+
+(function() {
+const contenedor = document.getElementById('fondo-emojis');
+const emojis = ['🛒', '😺', '😸', '🧑‍💼', '👩‍💼', '📦', '🍎', '🥐', '🥛', '🏷️', '💳', '🧃'];
+const particulas = [];
+for (let i = 0; i < 18; i++) {
+const el = document.createElement('span');
+el.className = 'emoji-rebote';
+el.textContent = emojis[i % emojis.length];
+contenedor.appendChild(el);
+const size = 28 + Math.random() * 18;
+el.style.fontSize = size + 'px';
+particulas.push({
+el,
+x: Math.random() * (window.innerWidth - 60),
+y: Math.random() * (window.innerHeight - 60),
+vx: (Math.random() < 0.5 ? -1 : 1) * (0.8 + Math.random() * 0.9),
+vy: (Math.random() < 0.5 ? -1 : 1) * (0.8 + Math.random() * 0.9),
+size
+});
+}
+function animar() {
+const maxW = window.innerWidth;
+const maxH = window.innerHeight;
+for (const p of particulas) {
+p.x += p.vx;
+p.y += p.vy;
+if (p.x <= 0) { p.x = 0; p.vx *= -1; }
+else if (p.x + p.size >= maxW) { p.x = maxW - p.size; p.vx *= -1; }
+if (p.y <= 0) { p.y = 0; p.vy *= -1; }
+else if (p.y + p.size >= maxH) { p.y = maxH - p.size; p.vy *= -1; }
+p.el.style.transform = translate3d(${p.x}px, ${p.y}px, 0);
+}
+requestAnimationFrame(animar);
+}
+animar();
+})();
+document.getElementById('jazzToggle').addEventListener('click', () => {
+document.getElementById('jazzWidget').classList.toggle('abierto');
+});
