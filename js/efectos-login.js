@@ -1,3 +1,12 @@
+// Pantalla de bienvenida suave al cargar
+window.addEventListener('DOMContentLoaded', () => {
+  const splash = document.getElementById('splashBienvenida');
+  if (splash) {
+    setTimeout(() => splash.classList.add('oculto'), 1450);
+  }
+});
+
+// Emojis rebotando en el fondo
 (function() {
   const contenedor = document.getElementById('fondo-emojis');
   if (!contenedor) return;
@@ -36,7 +45,7 @@
   animar();
 })();
 
-// Reproductor estético conectado a Just One More Drink - Jazz Noir (7gtIh5dF9Xk)
+// Reproductor Noir Jazz Lounge
 const playerCard = document.getElementById('jazzPlayerCard');
 const playBtn = document.getElementById('jazzPlayBtn');
 const iconPlay = document.getElementById('iconPlay');
@@ -53,7 +62,7 @@ if (playBtn && playerCard) {
       if (window.location.protocol.startsWith('http')) {
         ytHolder.innerHTML = '<iframe width="1" height="1" src="https://youtube.com" allow="autoplay"></iframe>';
       } else {
-        window.open('https://youtu.be/7gtIh5dF9Xk', '_blank', 'noopener');
+        window.open('https://youtu.be', '_blank', 'noopener');
       }
     } else {
       iconPlay.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"/>';
