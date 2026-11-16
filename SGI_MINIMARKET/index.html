@@ -1,189 +1,38 @@
-<!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#042f2e">
-  <meta name="description" content="Sistema de Gestión de Inventario SGI Minimarket: productos, sucursales y movimientos.">
-  <link rel="manifest" href="app.webmanifest">
-  <link rel="icon" type="image/png" href="icons/sgi-192.png">
-  <link rel="stylesheet" href="https://jsdelivr.net">
-  <link rel="stylesheet" href="css/style.css?v=3">
-  <title>Iniciar sesión | SGI Minimarket</title>
-</head>
-<body class="pagina-login">
-  <!-- FONDO ANIMADO DE EMOJIS REBOTANDO -->
-  <div id="fondo-emojis" aria-hidden="true"></div>
+<!-- Reproductor de música ambiental flotante -->
+<audio id="musicaFondo" loop>
+  <source src="img/jazz-timer.mp3" type="audio/mpeg">
+</audio>
 
-  <main class="login-layout">
-    <section class="presentacion" aria-label="Sistema de Gestión de Inventario SGI Minimarket">
-      <div class="presentacion-contenido">
-        <div class="marca">
-          <div class="marca-icono" aria-hidden="true"><i class="bi bi-shop"></i></div>
-          <h1>SGI <span>MINIMARKET</span></h1>
-        </div>
-        
-        <div class="presentacion-etiqueta">
-          <i class="bi bi-stars"></i> Inventario multisucursal inteligente
-        </div>
-        
-        <h2>Todo el control de tu tienda, en un solo lugar.</h2>
-        <p class="frase">Consulta existencias en tiempo real, registra movimientos y supervisa el rendimiento de cada sucursal con precisión.</p>
-        
-        <div class="funciones">
-          <div class="funcion">
-            <span aria-hidden="true"><i class="bi bi-box-seam"></i></span>
-            <div>
-              <h3>Catálogo organizado</h3>
-              <p>Productos, precios y categorías centralizados.</p>
-            </div>
-          </div>
-          
-          <div class="funcion">
-            <span aria-hidden="true"><i class="bi bi-graph-up-arrow"></i></span>
-            <div>
-              <h3>Stock por sucursal</h3>
-              <p>Entradas, salidas y alertas automáticas de reposición.</p>
-            </div>
-          </div>
-          
-          <div class="funcion">
-            <span aria-hidden="true"><i class="bi bi-shield-lock"></i></span>
-            <div>
-              <h3>Acceso protegido</h3>
-              <p>Roles y permisos diferenciados para tu equipo.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+<button id="btnMusica" onclick="toggleMusica()" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  background-color: #1f2937;
+  color: #ffffff;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-family: sans-serif;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+">
+  🎵 Activar música
+</button>
 
-    <section class="login-container" aria-labelledby="titulo-login">
-      <div class="login-interior">
-        <div class="logo" aria-hidden="true"><i class="bi bi-cart-check-fill"></i></div>
-        <p class="login-marca">SGI <span>MINIMARKET</span></p>
-        <p class="subtitulo">Sistema de Gestión de Inventario</p>
-        
-        <h2 id="titulo-login">Bienvenido de nuevo</h2>
-        <p class="login-descripcion">Ingresa tus credenciales autorizadas para continuar.</p>
-        
-        <form id="loginForm" autocomplete="on">
-          <label for="correo">Correo electrónico</label>
-          <div class="input-icon-wrap">
-            <i class="bi bi-envelope"></i>
-            <input id="correo" name="email" type="email" placeholder="nombre@minimarket.com" autocomplete="username" inputmode="email" required>
-          </div>
+<script>
+  const audio = document.getElementById("musicaFondo");
+  const boton = document.getElementById("btnMusica");
+  audio.volume = 0.4;
 
-          <label for="password">Contraseña</label>
-          <div class="password-container input-icon-wrap">
-            <i class="bi bi-lock"></i>
-            <input id="password" name="password" type="password" placeholder="••••••••" autocomplete="current-password" required>
-            <button id="mostrarPassword" type="button" class="mostrar-password" aria-label="Mostrar contraseña" aria-pressed="false">Mostrar</button>
-          </div>
-
-          <button type="submit" id="btnIngresar">
-            <span>Ingresar al sistema</span>
-            <i class="bi bi-arrow-right"></i>
-          </button>
-          <p id="mensaje" role="status" aria-live="polite"></p>
-        </form>
-
-        <div class="aviso-seguridad">
-          <i class="bi bi-shield-check"></i> Acceso encriptado para personal autorizado
-        </div>
-        <p class="pie">SGI Minimarket © 2026 · Plataforma Web</p>
-      </div>
-    </section>
-  </main>
-
-  <!-- REPRODUCTOR FLOTANTE DE JAZZ EN LA ESQUINA -->
-  <div class="jazz-widget" id="jazzWidget">
-    <button type="button" class="jazz-toggle" id="jazzToggle" title="Música Jazz ambiental">
-      <span class="jazz-pulse">🎷</span>
-      <span class="jazz-label">Cafe Jazz</span>
-      <i class="bi bi-chevron-up" id="jazzChevron"></i>
-    </button>
-    <div class="jazz-player-box" id="jazzPlayerBox">
-      <iframe 
-        width="280" 
-        height="158" 
-        src="https://youtube.com" 
-        title="Cafe Jazz Playlist" 
-        frameborder="0" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen>
-      </iframe>
-    </div>
-  </div>
-
-  <!-- SCRIPT PARA LOS EMOJIS REBOTANDO Y EL WIDGET DE JAZZ -->
-  <script>
-    // 1. Emojis de Minimarket rebotando contra las paredes
-    (function() {
-      const contenedor = document.getElementById('fondo-emojis');
-      const emojis = ['🛒', '😺', '😸', '🧑‍💼', '👩‍💼', '📦', '🍎', '🥐', '🥛', '🏷️', '💳', '🧃'];
-      const particulas = [];
-      const cantidad = 18;
-
-      for (let i = 0; i < cantidad; i++) {
-        const el = document.createElement('span');
-        el.className = 'emoji-rebote';
-        el.textContent = emojis[i % emojis.length];
-        contenedor.appendChild(el);
-
-        const size = 26 + Math.random() * 18;
-        el.style.fontSize = size + 'px';
-
-        particulas.push({
-          el,
-          x: Math.random() * (window.innerWidth - 60),
-          y: Math.random() * (window.innerHeight - 60),
-          vx: (Math.random() < 0.5 ? -1 : 1) * (0.7 + Math.random() * 0.9),
-          vy: (Math.random() < 0.5 ? -1 : 1) * (0.7 + Math.random() * 0.9),
-          size
-        });
-      }
-
-      function animar() {
-        const maxW = window.innerWidth;
-        const maxH = window.innerHeight;
-
-        for (const p of particulas) {
-          p.x += p.vx;
-          p.y += p.vy;
-
-          if (p.x <= 0) {
-            p.x = 0;
-            p.vx *= -1;
-          } else if (p.x + p.size >= maxW) {
-            p.x = maxW - p.size;
-            p.vx *= -1;
-          }
-
-          if (p.y <= 0) {
-            p.y = 0;
-            p.vy *= -1;
-          } else if (p.y + p.size >= maxH) {
-            p.y = maxH - p.size;
-            p.vy *= -1;
-          }
-
-          p.el.style.transform = `translate3d(${p.x}px, ${p.y}px, 0)`;
-        }
-        requestAnimationFrame(animar);
-      }
-      animar();
-    })();
-
-    // 2. Abrir / Minimizar reproductor de Jazz
-    const jazzWidget = document.getElementById('jazzWidget');
-    const jazzToggle = document.getElementById('jazzToggle');
-    jazzToggle.addEventListener('click', () => {
-      jazzWidget.classList.toggle('abierto');
-    });
-  </script>
-
-  <script type="module" src="js/login.js"></script>
-  <script type="module" src="js/pwa.js"></script>
-</body>
-</html>
+  function toggleMusica() {
+    if (audio.paused) {
+      audio.play();
+      boton.innerHTML = "⏸️ Pausar música";
+    } else {
+      audio.pause();
+      boton.innerHTML = "🎵 Activar música";
+    }
+  }
+</script>
