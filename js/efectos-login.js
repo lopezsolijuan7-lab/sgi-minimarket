@@ -3,19 +3,19 @@
   if (!contenedor) return;
   const emojis = ['🛒', '😺', '😸', '🧑‍💼', '👩‍💼', '📦', '🍎', '🥐', '🥛', '🏷️', '💳', '🧃'];
   const particulas = [];
-  for (let i = 0; i < 18; i++) {
+  for (let i = 0; i < 16; i++) {
     const el = document.createElement('span');
     el.className = 'emoji-rebote';
     el.textContent = emojis[i % emojis.length];
     contenedor.appendChild(el);
-    const size = 28 + Math.random() * 18;
+    const size = 26 + Math.random() * 16;
     el.style.fontSize = size + 'px';
     particulas.push({
       el,
       x: Math.random() * (window.innerWidth - 60),
       y: Math.random() * (window.innerHeight - 60),
-      vx: (Math.random() < 0.5 ? -1 : 1) * (0.8 + Math.random() * 0.9),
-      vy: (Math.random() < 0.5 ? -1 : 1) * (0.8 + Math.random() * 0.9),
+      vx: (Math.random() < 0.5 ? -1 : 1) * (0.75 + Math.random() * 0.8),
+      vy: (Math.random() < 0.5 ? -1 : 1) * (0.75 + Math.random() * 0.8),
       size
     });
   }
@@ -36,9 +36,28 @@
   animar();
 })();
 
-const jazzBtn = document.getElementById('jazzToggle');
-if (jazzBtn) {
-  jazzBtn.addEventListener('click', () => {
-    document.getElementById('jazzWidget').classList.toggle('abierto');
+// Reproductor estético conectado a Just One More Drink - Jazz Noir (7gtIh5dF9Xk)
+const playerCard = document.getElementById('jazzPlayerCard');
+const playBtn = document.getElementById('jazzPlayBtn');
+const iconPlay = document.getElementById('iconPlay');
+const ytHolder = document.getElementById('yt-hidden-holder');
+let sonando = false;
+
+if (playBtn && playerCard) {
+  playBtn.addEventListener('click', () => {
+    sonando = !sonando;
+    playerCard.classList.toggle('sonando', sonando);
+
+    if (sonando) {
+      iconPlay.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+      if (window.location.protocol.startsWith('http')) {
+        ytHolder.innerHTML = '<iframe width="1" height="1" src="https://youtube.com" allow="autoplay"></iframe>';
+      } else {
+        window.open('https://youtu.be/7gtIh5dF9Xk', '_blank', 'noopener');
+      }
+    } else {
+      iconPlay.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"/>';
+      ytHolder.innerHTML = '';
+    }
   });
 }
