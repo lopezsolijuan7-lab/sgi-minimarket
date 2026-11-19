@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sgi-minimarket-recursos-v1';
+const CACHE_NAME = 'sgi-minimarket-recursos-v2';
 const IMAGENES = ['./icons/sgi-192.png','./icons/sgi-512.png','./img/minimarket.jpg'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(IMAGENES)).then(() => self.skipWaiting()));
