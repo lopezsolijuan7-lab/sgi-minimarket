@@ -10,6 +10,8 @@
 <link href="css/sprint4-ui.css" rel="stylesheet"/>
 <link href="css/sprint4-premium.css" rel="stylesheet"/>
 <link href="css/sgi-comercial.css" rel="stylesheet"/>
+<link href="css/sgi-renovado.css" rel="stylesheet"/>
+<link href="css/sgi-s5.css" rel="stylesheet"/>
 <meta content="#073c34" name="theme-color"/><link href="app.webmanifest" rel="manifest"/><link href="icons/sgi-192.png" rel="icon"/></head>
 <body class="empleado-body s4-premium">
 <div class="aplicacion">
@@ -21,10 +23,11 @@
 <a href="#inicio">🏠 Inicio</a>
 <a href="#productos">📦 Productos</a>
 
-<a href="#movimientos">⇄ Movimientos</a>
+<a href="#movimientos">🕘 Historial de movimientos</a>
 <a href="#ventas-empleado">🛒 Registrar ventas</a>
 <a href="#compras">📦 Recepción de mercadería</a>
 <a href="#alertas">⚠ Alertas de stock</a>
+<a href="#mi-cuenta">🔐 Mi cuenta</a>
 </nav>
 <button class="boton-salir" id="cerrar-sesion">
         Cerrar sesión
@@ -38,20 +41,15 @@
 </div>
 <span class="etiqueta">Empleado</span>
 </header>
-<div class="s4-route-heading" aria-live="polite"><p class="s4-overline">SGI MINIMARKET · SPRINT 4</p><h1 id="s4-titulo-vista">Inicio</h1><p>Consulta tu módulo sin desplazarte por todas las secciones.</p></div>
-<section class="panel selector-sede">
-<label for="selector-sucursal">Sucursal autorizada</label>
-<select aria-label="Sucursal" id="selector-sucursal"></select>
-<strong id="sucursal-actual">Cargando...</strong>
-</section>
+<div class="s4-route-heading" aria-live="polite"><p class="s4-overline">MI ESPACIO DE TRABAJO</p><h1 id="s4-titulo-vista">Inicio</h1></div>
 <section id="s4-estado-inventario-sede" class="s4-estado-sin-inventario" role="status" aria-live="polite" hidden>
   <div class="s4-estado-sin-icono" aria-hidden="true">📦</div>
   <div class="s4-estado-sin-contenido">
-    <strong>Esta sucursal todavía no tiene inventario registrado</strong>
+    <strong>Aún no hay existencias registradas</strong>
     <p id="s4-estado-inventario-detalle">Consultando las existencias de esta sucursal...</p>
-    <small>El catálogo es compartido entre sucursales, pero el stock es independiente. El administrador debe definir el stock mínimo de reposición.</small>
+    
   </div>
-  <a class="s4-estado-sin-accion" data-s4-tipo="entrada" href="#movimientos">＋ Registrar primera entrada</a>
+  <a class="s4-estado-sin-accion" href="#productos">Ver catálogo</a>
 </section>
 <div class="s4-sync-bar" aria-label="Actualización del inventario">
   <div><span class="s4-sync-dot" aria-hidden="true"></span><span id="s4-ultima-actualizacion" role="status" aria-live="polite">Consultando inventario...</span></div>
@@ -63,7 +61,7 @@
 <strong id="total-productos">0</strong>
 </article>
 <article class="tarjeta">
-<h3>Unidades disponibles</h3>
+<h3>Productos con existencias</h3>
 <strong id="total-unidades">0</strong>
 </article>
 <article class="tarjeta">
@@ -80,12 +78,12 @@
   <div>
     <p class="s4-card-kicker">ACCESOS RÁPIDOS</p>
     <h2>Tu trabajo, a un clic</h2>
-    <p>Consulta productos o registra entradas y salidas en tu sucursal autorizada.</p>
+    <p>Registra ventas, confirma recepciones y consulta el inventario de tu lugar de trabajo.</p>
   </div>
   <div class="s4-quick-actions">
-    <a class="s4-quick-action s4-quick-primary" data-s4-tipo="entrada" href="#movimientos">＋ Registrar entrada</a>
-    <a class="s4-quick-action s4-quick-secondary" data-s4-tipo="salida" href="#movimientos">− Registrar salida</a>
-    <a class="s4-quick-action s4-quick-outline" href="#productos">⌕ Consultar productos</a>
+    <a class="s4-quick-action s4-quick-primary" href="#ventas-empleado">🛒 Nueva venta</a>
+    <a class="s4-quick-action s4-quick-secondary" href="#compras">📦 Confirmar recepción</a>
+    <a class="s4-quick-action s4-quick-outline" href="#movimientos">🕘 Ver historial</a>
   </div>
 </section>
 
@@ -94,7 +92,7 @@
     <div class="s4-insight-heading">
       <div><p class="s4-card-kicker">MOVIMIENTOS</p><h2>Entradas y salidas</h2>
         <p>Consulta las operaciones registradas en tu sucursal por fecha</p></div>
-      <span class="s4-tag-neutral">Datos reales</span>
+      <span class="s4-tag-neutral">Mi sucursal</span>
     </div>
     <div class="s4-employee-calendar" aria-label="Filtros de fecha">
       <div class="s4-periodos" role="group" aria-label="Período de movimientos">
@@ -141,7 +139,7 @@
 <section class="panel s4-alertas-panel" id="alertas">
   <div class="s4-insight-heading">
     <div><p class="s4-card-kicker">INVENTARIO</p><h2>Alertas de stock de tu sucursal</h2>
-      <p>Consulta productos por reponer. Los avisos por correo se incorporarán posteriormente.</p></div>
+      <p>Identifica productos que necesitan reposición.</p></div>
   </div>
   <div id="s4-alertas-empleado" class="s4-insight-list" aria-live="polite">
     <p class="s4-empty-state">Consultando alertas...</p>
@@ -149,18 +147,9 @@
 </section>
 
 <section class="panel" id="movimientos">
-<h2>⇄ Registrar entrada o salida</h2>
-<p>Selecciona un artículo existente. Supabase actualiza el stock y guarda el movimiento de tu sucursal.</p>
-<form class="formulario" id="formulario-movimiento">
-<label>Producto<select id="movimiento-producto" required=""></select></label>
-<label>Tipo<select id="movimiento-tipo" required="">
-<option value="entrada">Entrada</option><option value="salida">Salida</option></select></label>
-<label>Cantidad<input id="movimiento-cantidad" min="1" required="" step="1" type="number"/></label>
-<label>Motivo<input id="movimiento-motivo" maxlength="200" placeholder="Motivo (opcional)"/></label>
-<button class="boton-principal" type="submit">Registrar movimiento</button>
-</form>
-<p class="form-message" id="mensaje-movimiento" role="status"></p>
-<button type="button" class="s4-ver-boleta-ultima" id="s4-boleta-ultima" hidden>🧾 Ver boleta del último movimiento</button>
+<h2>🕘 Historial de movimientos</h2>
+<p>Consulta entradas y salidas registradas en tu sucursal.</p>
+<p class="form-message" id="mensaje-movimiento" role="status" aria-live="polite"></p>
 <div class="s4-history-filters">
   <strong>📅 Calendario del historial</strong>
   <div class="s4-periodos" role="group" aria-label="Período del historial">
@@ -196,6 +185,7 @@
 <th>Código</th>
 <th>Producto</th>
 <th>Categoría</th>
+<th>Unidad</th>
 <th>Precio</th>
 <th>Sucursal</th>
 <th>Stock</th>
@@ -205,6 +195,18 @@
 <tbody id="tabla-productos"></tbody>
 </table>
 </div>
+</section>
+<section class="panel sgi-account-panel" id="mi-cuenta">
+  <h2>🔐 Mi cuenta</h2>
+  <p>Actualiza tu contraseña para mantener tu cuenta protegida. Tu sucursal es asignada únicamente por el administrador.</p>
+  <form id="sgi-form-cambiar-mi-clave" class="sgi-staff-form">
+    <label>Contraseña actual<input id="sgi-clave-actual" type="password" autocomplete="current-password" required /></label>
+    <label>Contraseña nueva<input id="sgi-clave-nueva" type="password" autocomplete="new-password" minlength="12" maxlength="128" required /></label>
+    <label>Confirmar contraseña nueva<input id="sgi-clave-nueva-confirmar" type="password" autocomplete="new-password" minlength="12" maxlength="128" required /></label>
+    <button class="sgi-action" type="submit">Cambiar mi contraseña</button>
+  </form>
+  <p id="sgi-cambiar-mi-clave-estado" class="form-message" role="status"></p>
+  <p class="sgi-help">¿No recuerdas tu contraseña? Cierra sesión y usa «Olvidé mi contraseña» en la pantalla de acceso.</p>
 </section>
 <section class="panel sgi-comercial" id="ventas-empleado">
   <h2>🛒 Registrar venta</h2>
@@ -267,6 +269,7 @@
 </main>
 </div>
 <script src="js/empleado.js" type="module"></script>
+<script src="js/mi-cuenta.js" type="module"></script>
 <script src="js/comercial.js" type="module"></script>
 <script src="js/ventas-empleado.js" type="module"></script>
 <script src="js/pwa.js" type="module"></script>
