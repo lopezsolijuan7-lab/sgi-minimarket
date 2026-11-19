@@ -10,11 +10,10 @@ function mostrarEstadisticas(registros) {
   for(const p of registros) {
     const nombre=p.categoria||"Sin categoría";
     const categoria=agrupados.get(nombre)||{nombre,unidades:0,productos:new Set()};
-    categoria.unidades+=Number(p.stock);
     categoria.productos.add(p.id);
     agrupados.set(nombre,categoria);
   }
-  const lista=[...agrupados.values()].sort((a,b)=>b.unidades-a.unidades);
+  const lista=[...agrupados.values()].map(item=>({...item,unidades:item.productos.size})).sort((a,b)=>b.unidades-a.unidades);
   const total=lista.reduce((s,i)=>s+i.unidades,0);
   if ($("dona-total")) $("dona-total").textContent=total.toLocaleString("es-PE");
   const dona=$("grafico-dona"), leyenda=$("leyenda-categorias"),resumen=$("resumen-categorias");
@@ -41,7 +40,7 @@ function mostrarEstadisticas(registros) {
       const item=document.createElement("div");item.className="category-tile";
       const titulo=document.createElement("strong");titulo.textContent=cat.nombre;
       const detalles=document.createElement("span");
-      detalles.textContent=`${cat.productos.size} productos · ${cat.unidades} unidades`;
+      detalles.textContent=`${cat.productos.size} producto(s) con inventario`;
       item.append(titulo,detalles);resumen.append(item);
     }
   });
@@ -62,7 +61,7 @@ function mostrarEstadisticas(registros) {
       const nombre=document.createElement("span");
       nombre.textContent=`${p.sucursal_nombre} · ${p.codigo} · ${p.nombre}`;
       const detalle=document.createElement("strong");
-      detalle.textContent=`${p.stock===0?"AGOTADO":"STOCK BAJO"} · ${p.stock} / mínimo ${p.stock_minimo}`;
+      detalle.textContent=`${p.stock===0?"AGOTADO":"STOCK BAJO"} · ${p.stock} ${p.unidad_medida||"UND"} / mínimo ${p.stock_minimo} ${p.unidad_medida||"UND"}`;
       fila.append(nombre,detalle);alertas.append(fila);
     }
   }
@@ -71,5 +70,5 @@ function mostrarEstadisticas(registros) {
 const fecha=$("fecha-actual");
 if(fecha) fecha.textContent=new Intl.DateTimeFormat("es-PE",{dateStyle:"long"}).format(new Date());
 if($("grafico-vendidos")) $("grafico-vendidos").textContent=
-  "El registro de ventas no forma parte de los Sprints 0–2. Gráfico pendiente.";
+  "Las ventas aparecerán aquí cuando se registren operaciones.";
 document.addEventListener("sgi:inventario-actualizado",e=>mostrarEstadisticas(e.detail.registros||[]));
