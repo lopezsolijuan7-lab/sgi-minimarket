@@ -44,8 +44,8 @@
       info.append(elemento('small', '', (producto.sucursal_nombre || 'Sucursal') +
         ' · ' + (producto.stock === 0 ? 'Agotado' : 'Stock bajo')));
       const cifra = elemento('span', 's4-insight-value s4-text-warning',
-        formato.format(numero(producto.stock)) + ' / ' + formato.format(numero(producto.stock_minimo)));
-      cifra.title = 'Unidades disponibles / stock mínimo';
+        formato.format(numero(producto.stock)) + ' / ' + formato.format(numero(producto.stock_minimo)) + ' ' + (producto.unidad_medida || 'UND'));
+      cifra.title = 'Cantidad disponible / stock mínimo';
       fila.append(icono, info, cifra);
       destino.append(fila);
     }
@@ -78,10 +78,8 @@
       mensajeVacio(destino, 'Todavía no hay movimientos para mostrar.');
       return;
     }
-    const entrada = movimientos.filter(m => m.tipo === 'entrada')
-      .reduce((total, m) => total + numero(m.cantidad), 0);
-    const salida = movimientos.filter(m => m.tipo === 'salida')
-      .reduce((total, m) => total + numero(m.cantidad), 0);
+    const entrada = movimientos.filter(m => m.tipo === 'entrada').length;
+    const salida = movimientos.filter(m => m.tipo === 'salida').length;
     const mayor = Math.max(entrada, salida, 1);
     for (const [tipo, cantidad, clase] of [
       ['Entradas', entrada, 's4-fill-entrada'], ['Salidas', salida, 's4-fill-salida']
@@ -89,12 +87,12 @@
       const fila = elemento('div', 's4-compare-row');
       const cabecera = elemento('div', 's4-compare-label');
       cabecera.append(elemento('span', '', tipo));
-      cabecera.append(elemento('strong', '', formato.format(cantidad) + ' uds.'));
+      cabecera.append(elemento('strong', '', formato.format(cantidad) + ' movimientos'));
       const pista = elemento('div', 's4-compare-track');
       const barra = elemento('div', 's4-compare-fill ' + clase);
       barra.style.width = (cantidad / mayor * 100).toFixed(1) + '%';
       barra.setAttribute('role', 'meter');
-      barra.setAttribute('aria-label', tipo + ': ' + formato.format(cantidad) + ' unidades');
+      barra.setAttribute('aria-label', tipo + ': ' + formato.format(cantidad) + ' operaciones');
       barra.setAttribute('aria-valuemin', '0');
       barra.setAttribute('aria-valuemax', String(mayor));
       barra.setAttribute('aria-valuenow', String(cantidad));
@@ -131,7 +129,7 @@
         (esEntrada ? 'Entrada' : 'Salida') + ' · ' + fecha));
       const cantidad = elemento('strong', 's4-insight-value ' +
         (esEntrada ? 's4-text-positive' : 's4-text-negative'),
-        (esEntrada ? '+' : '−') + formato.format(numero(movimiento.cantidad)));
+        (esEntrada ? '+' : '−') + formato.format(numero(movimiento.cantidad)) + ' ' + (movimiento.unidad_medida || 'UND'));
       cantidad.title = 'Unidades ' + (esEntrada ? 'ingresadas' : 'retiradas');
       fila.append(icono, texto, cantidad);
       destino.append(fila);
