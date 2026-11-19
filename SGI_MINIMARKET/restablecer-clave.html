@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Restablecer contraseña | SGI Minimarket</title>
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/sgi-s5.css">
+</head><body class="sgi-reset-page">
+<main class="sgi-reset-card">
+  <div class="sgi-reset-icon" aria-hidden="true">🔐</div>
+  <p class="sgi-reset-brand">SGI MINIMARKET</p>
+  <h1>Restablecer contraseña</h1>
+  <p>Después de abrir el enlace enviado a tu correo, establece una contraseña segura.</p>
+  <form id="sgi-reset-form">
+    <label>Nueva contraseña <input id="sgi-reset-password" type="password" autocomplete="new-password" minlength="12" maxlength="128" required /></label>
+    <label>Confirmar contraseña <input id="sgi-reset-confirmar" type="password" autocomplete="new-password" minlength="12" maxlength="128" required /></label>
+    <button id="sgi-reset-btn" type="submit" disabled>Guardar contraseña</button>
+  </form>
+  <p id="sgi-reset-status" role="status" aria-live="polite">Verificando enlace de recuperación…</p>
+  <p id="sgi-reset-exito" hidden><a href="index.html">Volver al inicio de sesión</a></p>
+  <p><a href="index.html">Regresar al inicio</a></p>
+</main><script type="module" src="js/restablecer-clave.js"></script></body></html>
