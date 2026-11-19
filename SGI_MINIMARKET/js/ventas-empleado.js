@@ -39,7 +39,7 @@ function mostrarCarrito() {
     if (!p) continue;
     const fila = document.createElement('tr');
     crearCelda(fila, p.nombre);
-    crearCelda(fila, item.cantidad);
+    crearCelda(fila, String(item.cantidad) + ' ' + (p.unidad_medida || 'UND'));
     crearCelda(fila, dinero(p.precio));
     crearCelda(fila, dinero(p.precio * item.cantidad));
     const td = document.createElement('td');
@@ -68,7 +68,7 @@ async function cargarProductos() {
     throw new Error('El administrador todavía no te ha asignado un punto de trabajo.');
   }
   const [resProductos, resStock] = await Promise.all([
-    supabase.from('productos').select('id,codigo,nombre,precio,activo').eq('activo',true).order('nombre').limit(1000),
+    supabase.from('productos').select('id,codigo,nombre,precio,activo,unidad_medida').eq('activo',true).order('nombre').limit(1000),
     supabase.from('inventarios').select('producto_id,stock').eq('sucursal_id',sede).limit(1000)
   ]);
   if (resProductos.error) throw resProductos.error;
@@ -78,7 +78,7 @@ async function cargarProductos() {
   productoSelect.replaceChildren();
   opcion(productoSelect,'','Seleccionar producto disponible');
   for (const p of productos.filter(p => p.stock > 0)) {
-    opcion(productoSelect,p.id,`${p.codigo} · ${p.nombre} · ${dinero(p.precio)} · Disponible: ${p.stock}`);
+    opcion(productoSelect,p.id,`${p.codigo} · ${p.nombre} · ${dinero(p.precio)} · Disponible: ${p.stock} ${p.unidad_medida || 'UND'}`);
   }
   mostrarCarrito();
 }
