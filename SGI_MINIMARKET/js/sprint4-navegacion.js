@@ -9,10 +9,11 @@
        categorias:'Categorías', alertas:'Alertas de stock', movimientos:'Entradas y salidas',
        'administracion-sucursales':'Gestión de sucursales',
        proveedores:'Proveedores', compras:'Compras y recepciones',
+       empleados:'Empleados',
        cajas:'Cajas por sucursal', ventas:'Ventas y pagos'}
     : {inicio:'Inicio', productos:'Productos', movimientos:'Movimientos',
        alertas:'Alertas de stock', 'ventas-empleado':'Registrar ventas',
-       compras:'Recepción de mercadería'};
+       compras:'Recepción de mercadería', 'mi-cuenta':'Mi cuenta'};
   const nav = document.querySelector(admin ? '.admin-nav' : '.menu-lateral nav');
   if (!nav) return;
   const etiqueta = document.getElementById('s4-titulo-vista');
