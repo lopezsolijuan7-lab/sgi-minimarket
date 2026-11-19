@@ -28,9 +28,10 @@
     escrito('s4-boleta-tipo', tipo);
     escrito('s4-boleta-codigo', movimiento.producto_codigo || '—');
     escrito('s4-boleta-producto', movimiento.producto_nombre || 'Producto archivado');
-    escrito('s4-boleta-cantidad', (esEntrada ? '+' : '−') + numero(movimiento.cantidad) + ' unidades');
-    escrito('s4-boleta-anterior', numero(movimiento.stock_anterior) + ' unidades');
-    escrito('s4-boleta-nuevo', numero(movimiento.stock_nuevo) + ' unidades');
+    const medida = ['UND','KG','G','L','PAQ','CJA'].includes(movimiento.unidad_medida) ? movimiento.unidad_medida : 'UND';
+    escrito('s4-boleta-cantidad', (esEntrada ? '+' : '−') + numero(movimiento.cantidad) + ' ' + medida);
+    escrito('s4-boleta-anterior', numero(movimiento.stock_anterior) + ' ' + medida);
+    escrito('s4-boleta-nuevo', numero(movimiento.stock_nuevo) + ' ' + medida);
     escrito('s4-boleta-motivo', movimiento.motivo || 'Sin motivo registrado');
     const indicador = $('s4-boleta-tipo');
     if (indicador) indicador.className = esEntrada ? 's4-boleta-tipo s4-boleta-entrada' : 's4-boleta-tipo s4-boleta-salida';
