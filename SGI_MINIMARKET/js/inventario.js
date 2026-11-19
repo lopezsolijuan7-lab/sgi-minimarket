@@ -39,7 +39,7 @@ export async function iniciarInventario(rolVista) {
   const vistaAdmin = rolVista === 'administrador';
   const formulario = $('formulario-producto'); // solo existe en el panel administrador
   const formularioMovimiento = $('formulario-movimiento');
-  const selectorSucursal = $('selector-sucursal');
+  const selectorSucursal = vistaAdmin ? $('selector-sucursal') : null;
 
   function informar(texto, error = false, destino = 'mensaje-producto') {
     const nodo = $(destino);
@@ -56,6 +56,12 @@ export async function iniciarInventario(rolVista) {
 
   function seleccionarSucursal(preferencia = '') {
     const sedes = sedesPermitidas();
+    if (!vistaAdmin) {
+      const asignada = Number(contexto?.perfil?.sucursal_id);
+      sucursalSeleccionada = sedes.some(s => Number(s.id) === asignada) ? String(asignada) : '';
+      return;
+    }
+    if (!selectorSucursal) return;
     selectorSucursal.replaceChildren();
     if (vistaAdmin && sedes.length > 1) opcion(selectorSucursal, 'todas', 'Todas las sucursales');
     for (const sede of sedes) opcion(selectorSucursal, sede.id, sede.nombre);
@@ -66,10 +72,14 @@ export async function iniciarInventario(rolVista) {
       ? 'Vista consolidada' : sedes.find(s => String(s.id) === sucursalSeleccionada)?.nombre || 'Sin sucursal';
   }
 
+  const unidades = new Set(['UND','KG','G','L','PAQ','CJA']);
+  const unidad = item => unidades.has(item?.unidad_medida) ? item.unidad_medida : 'UND';
   function reiniciarFormulario() {
     if (!formulario) return;
     editandoId = null;
     formulario.reset();
+    if ($('unidad-medida')) $('unidad-medida').value = 'UND';
+    if ($('codigo')) { $('codigo').readOnly = true; $('codigo').value = ''; $('codigo').placeholder = 'Automático al guardar'; }
     if ($('titulo-formulario')) $('titulo-formulario').textContent = 'Registrar producto';
     if ($('guardar-producto')) $('guardar-producto').textContent = 'Guardar producto';
     if ($('cancelar-edicion')) $('cancelar-edicion').hidden = true;
@@ -82,9 +92,11 @@ export async function iniciarInventario(rolVista) {
   function editarProducto(producto) {
     if (!vistaAdmin || !contexto.esGeneral || !formulario) return;
     editandoId = producto.id;
+    $('codigo').readOnly = false;
     $('codigo').value = producto.codigo;
     $('nombre').value = producto.nombre;
     $('categoria').value = String(producto.categoria_id);
+    $('unidad-medida').value = unidad(producto);
     $('precio').value = producto.precio;
     for (const id of ['stock','stock-minimo']) {
       const campo = $(id);
@@ -120,9 +132,10 @@ export async function iniciarInventario(rolVista) {
       crearCelda(fila, producto.codigo);
       crearCelda(fila, producto.nombre);
       crearCelda(fila, producto.categoria);
+      crearCelda(fila, unidad(producto));
       crearCelda(fila, dinero(producto.precio));
       crearCelda(fila, producto.sucursal_nombre);
-      crearCelda(fila, producto.sinInventario ? '—' : producto.stock);
+      crearCelda(fila, producto.sinInventario ? '—' : String(producto.stock) + ' ' + unidad(producto));
       const estado = crearCelda(fila, producto.sinInventario ? 'Pendiente de ingreso' :
         (producto.stock === 0 ? 'Agotado' :
         (producto.stock <= producto.stock_minimo ? 'Stock bajo' : 'Disponible')));
@@ -165,7 +178,7 @@ export async function iniciarInventario(rolVista) {
     if (!filtrados.length) {
       const fila = document.createElement('tr');
       const td = crearCelda(fila, 'No hay productos que coincidan con tu búsqueda.');
-      td.colSpan = vistaAdmin ? 8 : 7;
+      td.colSpan = vistaAdmin ? 9 : 8;
       cuerpo.append(fila);
     }
   }
@@ -173,7 +186,7 @@ export async function iniciarInventario(rolVista) {
   function actualizarIndicadores() {
     if ($('total-productos')) $('total-productos').textContent = String(
       vistaAdmin ? new Set(registros.map(p => p.id)).size : catalogo.filter(p => p.activo).length);
-    if ($('total-unidades')) $('total-unidades').textContent = String(registros.reduce((s,p) => s + p.stock, 0));
+    if ($('total-unidades')) $('total-unidades').textContent = String(registros.filter(p => p.stock > 0).length);
     if ($('stock-bajo')) $('stock-bajo').textContent = String(registros.filter(p => p.stock <= p.stock_minimo).length);
     const aviso = $('s4-estado-inventario-sede');
     if (aviso) {
@@ -295,9 +308,11 @@ export async function iniciarInventario(rolVista) {
       return;
     }
     const nombreProducto = new Map(catalogo.map(p => [Number(p.id),p.nombre]));
+    const unidadProducto = new Map(catalogo.map(p => [Number(p.id),unidad(p)]));
     const nombreSede = new Map(sedesPermitidas().map(s => [Number(s.id),s.nombre]));
     movimientosVisibles = (data || []).map(m => ({...m,
       producto_nombre:nombreProducto.get(Number(m.producto_id)) || 'Producto archivado',
+      unidad_medida:unidadProducto.get(Number(m.producto_id)) || 'UND',
       sucursal_nombre:nombreSede.get(Number(m.sucursal_id)) || 'Sucursal'
     }));
     for (const movimiento of movimientosVisibles) {
@@ -307,8 +322,8 @@ export async function iniciarInventario(rolVista) {
       crearCelda(fila,movimiento.sucursal_nombre);
       crearCelda(fila,movimiento.producto_nombre);
       crearCelda(fila,movimiento.tipo === 'entrada' ? 'Entrada' : 'Salida');
-      crearCelda(fila,movimiento.cantidad);
-      crearCelda(fila,String(movimiento.stock_anterior) + ' → ' + String(movimiento.stock_nuevo));
+      crearCelda(fila,String(movimiento.cantidad) + ' ' + movimiento.unidad_medida);
+      crearCelda(fila,String(movimiento.stock_anterior) + ' → ' + String(movimiento.stock_nuevo) + ' ' + movimiento.unidad_medida);
       crearCelda(fila,movimiento.motivo || '—');
       const celdaBoleta = document.createElement('td');
       const verBoleta = document.createElement('button');
@@ -360,7 +375,8 @@ export async function iniciarInventario(rolVista) {
           ...data,
           sucursal_nombre:sucursal.nombre,
           producto_nombre:producto?.nombre || 'Producto archivado',
-          producto_codigo:producto?.codigo || '—'
+          producto_codigo:producto?.codigo || '—',
+          unidad_medida:unidad(producto)
         }}
       }));
     } catch (error) {
@@ -377,7 +393,7 @@ export async function iniciarInventario(rolVista) {
       if (estado) estado.textContent = 'No hay movimientos visibles para exportar.';
       return;
     }
-    const campos = ['Fecha','Sucursal','Producto','Tipo','Cantidad','Stock anterior','Stock nuevo','Motivo'];
+    const campos = ['Fecha','Sucursal','Producto','Tipo','Cantidad','Unidad','Stock anterior','Stock nuevo','Motivo'];
     const escapar = valor => {
       let texto = String(valor ?? '');
       // Evita fórmulas cuando se abre el CSV en una hoja de cálculo.
@@ -386,7 +402,7 @@ export async function iniciarInventario(rolVista) {
     };
     const filas = movimientosVisibles.map(m => [
       new Date(m.creado_en).toLocaleString('es-PE'),m.sucursal_nombre,
-      m.producto_nombre,m.tipo,m.cantidad,m.stock_anterior,m.stock_nuevo,m.motivo || ''
+      m.producto_nombre,m.tipo,m.cantidad,m.unidad_medida,m.stock_anterior,m.stock_nuevo,m.motivo || ''
     ]);
     const csv = '\uFEFF' + [campos,...filas].map(fila => fila.map(escapar).join(';')).join('\r\n');
     const url = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
@@ -408,7 +424,7 @@ export async function iniciarInventario(rolVista) {
       const ids = sedesPermitidas().map(s => Number(s.id));
       // Catálogo global; existencias separadas en inventarios (NO en productos).
       const [datosCatalogo,datosCategorias,datosInventario] = await Promise.all([
-        todosDe('productos','id,codigo,nombre,categoria_id,precio,activo'),
+        todosDe('productos','id,codigo,nombre,categoria_id,precio,activo,unidad_medida'),
         todosDe('categorias','id,nombre,activo'),
         ids.length ? todosDe('inventarios','id,producto_id,sucursal_id,stock,stock_minimo') : Promise.resolve([])
       ]);
@@ -448,34 +464,23 @@ export async function iniciarInventario(rolVista) {
 
   async function administrarSedes() {
     const seccion = $('administracion-sucursales');
-    if (!seccion || !contexto.esGeneral) return;
-    const [{data:sedes,error:errorSedes},{data:usuarios,error:errorUsuarios}] = await Promise.all([
-      supabase.from('sucursales').select('id,codigo,nombre,direccion,activo').order('id'),
-      supabase.from('usuarios').select('id,nombre,rol,sucursal_id,activo').order('nombre')
-    ]);
-    if (errorSedes||errorUsuarios) {
-      informar('No se pudieron consultar los usuarios/sucursales: '+(errorSedes||errorUsuarios).message,true,'mensaje-sucursales');
+    if (!seccion || !contexto?.esGeneral) return;
+    const {data:sedes,error} = await supabase.from('sucursales')
+      .select('id,codigo,nombre,direccion,activo').order('id');
+    if (error) {
+      informar('No se pudieron consultar las sucursales: ' + error.message,true,'mensaje-sucursales');
       return;
     }
-    const tablaSedes=$('tabla-sucursales'),tablaAsignaciones=$('tabla-asignaciones');
-    const selectUsuarios=$('asignacion-usuario'),selectSedes=$('asignacion-sucursal');
-    tablaSedes.replaceChildren();tablaAsignaciones.replaceChildren();
-    selectUsuarios.replaceChildren();selectSedes.replaceChildren();
-    for (const sede of sedes||[]) {
-      if (sede.activo) opcion(selectSedes,sede.id,sede.nombre);
-      const fila=document.createElement('tr');
-      crearCelda(fila,sede.codigo);crearCelda(fila,sede.nombre);
-      crearCelda(fila,sede.direccion||'—');crearCelda(fila,sede.activo?'Activa':'Inactiva');
-      tablaSedes.append(fila);
-    }
-    for (const usuario of (usuarios||[]).filter(u => u.rol==='empleado')) {
-      if (usuario.activo) opcion(selectUsuarios,usuario.id,usuario.nombre);
-      const fila=document.createElement('tr');
-      crearCelda(fila,usuario.nombre);
-      crearCelda(fila,(sedes||[]).find(s=>Number(s.id)===Number(usuario.sucursal_id))?.nombre||'Sin sucursal');
-      crearCelda(fila,'Empleado');
-      crearCelda(fila,usuario.activo?'Activo':'Inactivo');
-      tablaAsignaciones.append(fila);
+    const tabla = $('tabla-sucursales');
+    if (!tabla) return;
+    tabla.replaceChildren();
+    for (const sede of sedes || []) {
+      const fila = document.createElement('tr');
+      crearCelda(fila,sede.codigo);
+      crearCelda(fila,sede.nombre);
+      crearCelda(fila,sede.direccion || '—');
+      crearCelda(fila,sede.activo ? 'Activa' : 'Inactiva');
+      tabla.append(fila);
     }
   }
 
@@ -538,7 +543,7 @@ export async function iniciarInventario(rolVista) {
   if ($('cerrar-sesion')) $('cerrar-sesion').addEventListener('click',async () => {
     try {await cerrarSesion();} catch(error) { informar(error.message,true,vistaAdmin?'mensaje-producto':'mensaje-movimiento'); }
   });
-  selectorSucursal.addEventListener('change',async () => {
+  if (selectorSucursal) selectorSucursal.addEventListener('change',async () => {
     if ($('s4-boleta-ultima')) $('s4-boleta-ultima').hidden = true;
     sucursalSeleccionada = selectorSucursal.value;
     if ($('sucursal-actual')) $('sucursal-actual').textContent = sucursalSeleccionada==='todas'
@@ -554,16 +559,21 @@ export async function iniciarInventario(rolVista) {
       codigo:$('codigo').value.trim().toUpperCase(),
       nombre:$('nombre').value.trim(),
       categoria_id:Number($('categoria').value),
-      precio:Number($('precio').value)
+      precio:Number($('precio').value),
+      unidad_medida:$('unidad-medida').value
     };
-    if (!datos.codigo || !datos.nombre || !Number.isSafeInteger(datos.categoria_id) || datos.categoria_id<=0 ||
-        !Number.isFinite(datos.precio) || datos.precio<0) {
+    if ((editandoId !== null && !datos.codigo) || !datos.nombre || !Number.isSafeInteger(datos.categoria_id) || datos.categoria_id<=0 ||
+        !Number.isFinite(datos.precio) || datos.precio<0 || !unidades.has(datos.unidad_medida)) {
       informar('Completa todos los datos del producto.',true);return;
     }
     const boton=formulario.querySelector('button[type=submit]');boton.disabled=true;
     try {
       if (editandoId !== null) {
-        const {error} = await supabase.from('productos').update(datos).eq('id',editandoId);
+        const {error} = await supabase.rpc('sgi_actualizar_producto_ficha',{
+          p_id:editandoId,p_codigo:datos.codigo,p_nombre:datos.nombre,
+          p_categoria_id:datos.categoria_id,p_precio:datos.precio,
+          p_unidad_medida:datos.unidad_medida
+        });
         if (error) throw error;
         informar('Ficha de producto modificada.');
       } else {
@@ -573,9 +583,10 @@ export async function iniciarInventario(rolVista) {
         if (![inicial,minimo].every(v=>Number.isSafeInteger(v)&&v>=0))
           throw new Error('El stock inicial y mínimo deben ser enteros no negativos.');
         // Función transaccional de sql/03_compatibilidad_web.sql: catálogo + stock + historial.
-        const {error} = await supabase.rpc('crear_producto_con_stock',{
+        const {error} = await supabase.rpc('sgi_crear_producto_con_unidad',{
           p_codigo:datos.codigo,p_nombre:datos.nombre,p_categoria_id:datos.categoria_id,
-          p_precio:datos.precio,p_sucursal_id:sucursal,p_stock_inicial:inicial,p_stock_minimo:minimo
+          p_precio:datos.precio,p_sucursal_id:sucursal,p_stock_inicial:inicial,p_stock_minimo:minimo,
+          p_unidad_medida:datos.unidad_medida
         });
         if (error) throw error;
       }
@@ -630,19 +641,9 @@ export async function iniciarInventario(rolVista) {
       informar('Sucursal registrada.',false,'mensaje-sucursales');
       contexto=await obtenerContexto(); seleccionarSucursal(sucursalSeleccionada);
       await administrarSedes();await cargarDatos();
+      document.dispatchEvent(new Event('sgi:sucursales-actualizadas'));
     }
   });
-  if ($('formulario-asignacion')) $('formulario-asignacion').addEventListener('submit',async evento => {
-    evento.preventDefault();if(!contexto.esGeneral)return;
-    const usuarioId=$('asignacion-usuario').value;
-    const sede=Number($('asignacion-sucursal').value);
-    if(!usuarioId||!Number.isSafeInteger(sede)||sede<1)return;
-    const {error}=await supabase.from('usuarios').update({sucursal_id:sede})
-      .eq('id',usuarioId).eq('rol','empleado');
-    if(error) informar(error.message,true,'mensaje-sucursales');
-    else {informar('Sucursal del empleado actualizada.',false,'mensaje-sucursales');await administrarSedes();}
-  });
-
   try {
     contexto=await obtenerContexto();
     if (vistaAdmin!==contexto.esGeneral) {
@@ -653,11 +654,13 @@ export async function iniciarInventario(rolVista) {
     if ($('admin-sidebar-descripcion')) $('admin-sidebar-descripcion').textContent='Control de sucursales';
     if ($('tipo-admin')) $('tipo-admin').textContent='Administrador general';
     if ($('administracion-sucursales')) $('administracion-sucursales').hidden=!contexto.esGeneral;
+    if ($('empleados')) $('empleados').hidden=!contexto.esGeneral;
     seleccionarSucursal();
     await cargarDatos();
     if (vistaAdmin) await administrarSedes();
   } catch(error) {
     informar('No fue posible iniciar el panel: '+error.message,true, vistaAdmin?'mensaje-producto':'mensaje-movimiento');
+    if ($('nombre-usuario')) $('nombre-usuario').textContent = 'No fue posible cargar tu sesión: ' + error.message;
     console.error(error);
     if (/sesión no está activa/i.test(error.message)) location.replace('index.html');
   }
