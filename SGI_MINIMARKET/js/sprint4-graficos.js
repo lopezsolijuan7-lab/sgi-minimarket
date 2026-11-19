@@ -11,10 +11,11 @@
     const categorias = new Map();
     for (const producto of registros) {
       const nombre = String(producto.categoria || 'Sin categoría');
-      const unidades = Math.max(0, Number(producto.stock) || 0);
-      categorias.set(nombre, (categorias.get(nombre) || 0) + unidades);
+      const conjunto = categorias.get(nombre) || new Set();
+      conjunto.add(Number(producto.id));
+      categorias.set(nombre,conjunto);
     }
-    const orden = [...categorias].sort((a,b)=>b[1]-a[1]).slice(0,7);
+    const orden = [...categorias].map(([nombre,ids])=>[nombre,ids.size]).sort((a,b)=>b[1]-a[1]).slice(0,7);
     const maximo = Math.max(1,...orden.map(([,unidades])=>unidades));
     contenedor.replaceChildren();
     if (!orden.length) {
@@ -37,7 +38,7 @@
         barra.style.width = (unidades / maximo * 100).toFixed(2) + '%';
         barra.style.backgroundColor = colores[indice % colores.length];
         barra.setAttribute('role','meter');
-        barra.setAttribute('aria-label', nombre + ': ' + formato.format(unidades) + ' unidades');
+        barra.setAttribute('aria-label', nombre + ': ' + formato.format(unidades) + ' productos');
         barra.setAttribute('aria-valuemin','0');
         barra.setAttribute('aria-valuemax',String(maximo));
         barra.setAttribute('aria-valuenow',String(unidades));
@@ -49,6 +50,6 @@
         contenedor.append(fila);
       });
     }
-    if (nota) nota.textContent = 'Unidades disponibles por categoría en la selección actual. Datos de Supabase.';
+    if (nota) nota.textContent = 'Referencias de productos por categoría. Cada producto se cuenta una sola vez.';
   });
 })();
