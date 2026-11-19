@@ -55,6 +55,42 @@ formulario.addEventListener('submit', async evento => {
   }
 });
 
+// La recuperación por correo se gestiona por Supabase Auth, sin enviar contraseñas.
+const recuperarForm = document.getElementById('sgi-form-recuperar');
+const enlaceRecuperar = document.getElementById('sgi-abrir-recuperacion');
+const cerrarRecuperar = document.getElementById('sgi-cerrar-recuperacion');
+function mostrarRecuperacion(mostrar) {
+  formulario.hidden = mostrar;
+  recuperarForm.hidden = !mostrar;
+  enlaceRecuperar.hidden = mostrar;
+  if (mostrar) {
+    document.getElementById('sgi-recuperar-email').value = correo.value.trim();
+    document.getElementById('sgi-recuperar-email').focus();
+    informar('');
+  }
+}
+enlaceRecuperar.addEventListener('click', () => mostrarRecuperacion(true));
+cerrarRecuperar.addEventListener('click', () => mostrarRecuperacion(false));
+recuperarForm.addEventListener('submit', async evento => {
+  evento.preventDefault();
+  if (!recuperarForm.reportValidity()) return;
+  const boton = document.getElementById('sgi-enviar-recuperacion');
+  const estado = document.getElementById('sgi-recuperacion-estado');
+  boton.disabled = true;
+  estado.textContent = 'Enviando solicitud...';
+  estado.dataset.error = 'false';
+  try {
+    const email = document.getElementById('sgi-recuperar-email').value.trim().toLowerCase();
+    const redirectTo = new URL('restablecer-clave.html', window.location.href).href;
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+    if (error) throw error;
+    estado.textContent = 'Si el correo está registrado, recibirás un enlace para cambiar la contraseña. Revisa también correo no deseado.';
+  } catch (error) {
+    estado.dataset.error = 'true';
+    estado.textContent = 'No se pudo enviar el enlace: ' + (error.message || 'Error de conexión');
+  } finally { boton.disabled = false; }
+});
+
 // Si el usuario regresa al login con sesión vigente, no pedir contraseña otra vez.
 async function comprobarSesion() {
   try {
