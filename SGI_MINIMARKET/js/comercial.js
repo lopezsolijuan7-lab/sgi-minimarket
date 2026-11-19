@@ -66,13 +66,13 @@ function nombreSede(id) { return sucursales.find(s => Number(s.id) === Number(id
 function nombreProveedor(id) { return proveedores.find(p => Number(p.id) === Number(id))?.razon_social || `Proveedor ${id}`; }
 function nombreProducto(id) { return catalogo.find(p => Number(p.id) === Number(id))?.nombre || `Producto ${id}`; }
 function errorBD(error, archivo) {
-  return `${error.message}. Si aún no aplicaste la migración, revisa sql/${archivo} en Supabase SQL Editor.`;
+  return `No se pudo completar la operación: ${error.message}`;
 }
 
 async function cargarCatalogo() {
   const [pr, pd] = await Promise.all([
-    supabase.from('proveedores').select('id,ruc,razon_social,contacto,activo').order('razon_social').limit(500),
-    supabase.from('productos').select('id,codigo,nombre,activo').order('nombre').limit(1000)
+    supabase.from('proveedores').select('id,ruc,razon_social,contacto,telefono,correo,direccion,activo').order('razon_social').limit(500),
+    supabase.from('productos').select('id,codigo,nombre,activo,unidad_medida').order('nombre').limit(1000)
   ]);
   if (pr.error) throw pr.error;
   if (pd.error) throw pd.error;
@@ -89,7 +89,7 @@ async function cargarCatalogo() {
   if (selectProducto) {
     const antiguo = selectProducto.value;
     selectProducto.replaceChildren(); opcion(selectProducto, '', 'Seleccionar producto');
-    catalogo.filter(p => p.activo).forEach(p => opcion(selectProducto, p.id, `${p.codigo} · ${p.nombre}`));
+    catalogo.filter(p => p.activo).forEach(p => opcion(selectProducto, p.id, `${p.codigo} · ${p.nombre} (${p.unidad_medida || 'UND'})`));
     selectProducto.value = antiguo;
   }
   const tbody = $('sgi-prov-lista');
@@ -98,10 +98,36 @@ async function cargarCatalogo() {
     for (const p of proveedores) {
       const tr = document.createElement('tr');
       celda(tr, p.ruc || '—'); celda(tr, p.razon_social); celda(tr, p.contacto || '—');
-      celda(tr, p.activo ? 'Activo' : 'Inactivo'); tbody.append(tr);
+      celda(tr, p.activo ? 'Activo' : 'Inactivo');
+      const td = document.createElement('td');
+      td.append(boton('✏️ Editar', () => abrirEdicionProveedor(p), true));
+      tr.append(td); tbody.append(tr);
     }
-    if (!proveedores.length) vacio(tbody, 4, 'Aún no hay proveedores registrados.');
+    if (!proveedores.length) vacio(tbody, 5, 'Aún no hay proveedores registrados.');
   }
+}
+let proveedorEditandoId = null;
+function limpiarProveedor() {
+  proveedorEditandoId = null;
+  $('sgi-prov-editar-id').value = '';
+  $('sgi-form-proveedor').reset();
+  $('sgi-prov-guardar').textContent = 'Guardar proveedor';
+  $('sgi-prov-cancelar').hidden = true;
+}
+function abrirEdicionProveedor(p) {
+  if (!esAdmin) return;
+  proveedorEditandoId = p.id;
+  $('sgi-prov-editar-id').value = p.id;
+  for (const [campo,valor] of Object.entries({
+    'sgi-prov-ruc':p.ruc,'sgi-prov-razon':p.razon_social,
+    'sgi-prov-contacto':p.contacto,'sgi-prov-telefono':p.telefono,
+    'sgi-prov-correo':p.correo,'sgi-prov-direccion':p.direccion
+  })) $(campo).value = valor || '';
+  $('sgi-prov-activo').value = String(Boolean(p.activo));
+  $('sgi-prov-guardar').textContent = 'Guardar cambios';
+  $('sgi-prov-cancelar').hidden = false;
+  mensaje('sgi-prov-estado', 'Editando a ' + p.razon_social);
+  document.getElementById('sgi-form-proveedor').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function dibujarCarrito() {
@@ -110,7 +136,8 @@ function dibujarCarrito() {
   tbody.replaceChildren();
   for (const item of carrito) {
     const tr = document.createElement('tr');
-    celda(tr, nombreProducto(item.producto_id)); celda(tr, item.cantidad);
+    const p = catalogo.find(p => Number(p.id) === Number(item.producto_id));
+    celda(tr, nombreProducto(item.producto_id)); celda(tr, String(item.cantidad) + ' ' + (p?.unidad_medida || 'UND'));
     celda(tr, moneda(item.costo_unitario)); celda(tr, moneda(item.cantidad * item.costo_unitario));
     const td = document.createElement('td');
     td.append(boton('Quitar', () => {
@@ -300,11 +327,20 @@ async function enviarProveedor(evento) {
       p_contacto: $('sgi-prov-contacto').value.trim(), p_telefono: $('sgi-prov-telefono').value.trim(),
       p_correo: $('sgi-prov-correo').value.trim(), p_direccion: $('sgi-prov-direccion').value.trim()
     };
-    const { data, error } = await supabase.rpc('sgi_registrar_proveedor', args);
-    if (error) throw error;
-    $('sgi-form-proveedor').reset();
+    let resultado;
+    if (proveedorEditandoId !== null) {
+      resultado = await supabase.rpc('sgi_actualizar_proveedor', {
+        p_id:proveedorEditandoId, ...args,
+        p_activo:$('sgi-prov-activo').value === 'true'
+      });
+    } else {
+      resultado = await supabase.rpc('sgi_registrar_proveedor', args);
+    }
+    if (resultado.error) throw resultado.error;
+    const edicion = proveedorEditandoId !== null;
+    limpiarProveedor();
     await cargarCatalogo();
-    mensaje('sgi-prov-estado', `Proveedor #${data} registrado.`);
+    mensaje('sgi-prov-estado', edicion ? 'Proveedor actualizado correctamente.' : 'Proveedor #' + resultado.data + ' registrado.');
   } catch (error) { mensaje('sgi-prov-estado', error.message, true); }
   finally { submit.disabled = false; }
 }
@@ -447,6 +483,7 @@ async function inicializar() {
     });
     if($('sgi-form-compra')) $('sgi-form-compra').addEventListener('submit',enviarCompra);
     if($('sgi-form-proveedor')) $('sgi-form-proveedor').addEventListener('submit',enviarProveedor);
+    $('sgi-prov-cancelar')?.addEventListener('click',()=>{limpiarProveedor(); mensaje('sgi-prov-estado','Edición cancelada.');});
     if($('sgi-form-caja')) $('sgi-form-caja').addEventListener('submit',enviarCaja);
     if($('sgi-form-recepcion')) $('sgi-form-recepcion').addEventListener('submit',enviarRecepcion);
     if($('sgi-recepcion-cancelar')) $('sgi-recepcion-cancelar').addEventListener('click',cancelarRecepcion);
@@ -469,7 +506,7 @@ async function inicializar() {
       // Para mostrar el nombre del producto al recibir, basta el catálogo global.
       try {
         const [p,pr]=await Promise.all([
-          supabase.from('productos').select('id,codigo,nombre,activo').order('nombre').limit(1000),
+          supabase.from('productos').select('id,codigo,nombre,activo,unidad_medida').order('nombre').limit(1000),
           supabase.from('proveedores').select('id,razon_social,activo').order('razon_social').limit(500)
         ]);
         if(p.error) throw p.error;if(pr.error) throw pr.error;
