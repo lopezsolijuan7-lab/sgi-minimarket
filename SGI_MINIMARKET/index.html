@@ -41,13 +41,24 @@
             <button id="mostrarPassword" type="button" class="mostrar-password" aria-label="Mostrar contraseña" aria-pressed="false">Mostrar</button>
           </div>
           <button type="submit" id="btnIngresar">Ingresar al sistema</button>
+          <button type="button" class="sgi-recovery-link" id="sgi-abrir-recuperacion">¿Olvidaste tu contraseña?</button>
           <p id="mensaje" role="status" aria-live="polite"></p>
+        </form>
+        <form id="sgi-form-recuperar" class="sgi-recovery-form" hidden>
+          <h3>Recuperar acceso</h3>
+          <p>Te enviaremos un enlace al correo de tu cuenta para que establezcas una nueva contraseña.</p>
+          <label for="sgi-recuperar-email">Correo electrónico</label>
+          <input id="sgi-recuperar-email" type="email" maxlength="254" required autocomplete="email" placeholder="correo@empresa.com" />
+          <button type="submit" id="sgi-enviar-recuperacion">Enviar enlace de recuperación</button>
+          <button type="button" id="sgi-cerrar-recuperacion" class="sgi-recovery-link">Volver al inicio de sesión</button>
+          <p id="sgi-recuperacion-estado" role="status" aria-live="polite"></p>
         </form>
         <div class="aviso-seguridad">🔒 Uso exclusivo para personal autorizado</div>
         <p class="pie">SGI Minimarket © 2026 · Aplicación web</p>
       </div>
     </section>
   </main>
+  <link rel="stylesheet" href="css/sgi-s5.css">
   <script type="module" src="js/login.js"></script>
   <script type="module" src="js/pwa.js"></script>
 </body>
