@@ -38,3 +38,17 @@ Queda la validación integral en navegador con ambas cuentas, pruebas de roles/R
 - `ACTUALIZACION_SUPABASE_SPRINT3_4.md`: estructura de base de datos y scripts.
 - `ESTADO_INTEGRACION_SPRINT4_MEJORADO.md`: histórico de la iteración anterior, no reemplaza el estado aquí descrito.
 - `tests/`: scripts de verificación estática; no sustituyen las pruebas funcionales con usuarios autenticados.
+
+
+## Sprint 5 — Integración final y pruebas (19/11/2026)
+El equipo entregó el archivo `sgi-minimarket-sprint5.zip` para integrarlo en una rama independiente de GitHub, `sprint5-final`. Esta versión amplía la interfaz con:
+- Gestión de empleados, activación, asignación, cambio de contraseña y altas seguras mediante dos Edge Functions.
+- Recuperación de contraseña con correo de Supabase Auth y una nueva página de restablecimiento.
+- Unidades de medida en productos y reportes; código automático de productos y edición de proveedores mediante RPC.
+- Nuevos estilos visuales para administrador y empleado, conservando compras, recepciones, ventas, calendario, boletas internas y exportación CSV.
+
+**Verificación local:** se revisaron las pruebas estáticas aportadas en el ZIP. La rama conserva código y archivos de configuración, pero subirlos a GitHub no ejecuta SQL ni despliega las Edge Functions.
+
+**Antes de considerarlo terminado en producción:** respaldar Supabase, revisar e instalar `sql/07_permisos_inventario_admin.sql` y `sql/08_unidades_proveedores.sql` según el alcance aprobado, desplegar las Edge Functions, configurar recuperación de correo y probar ambos roles con sesiones reales. Ver `INSTALACION_ACTUALIZACION.md`.
+
+**Precisión:** las boletas internas de inventario no son comprobantes SUNAT; las referencias de pago no verifican una transferencia bancaria.
