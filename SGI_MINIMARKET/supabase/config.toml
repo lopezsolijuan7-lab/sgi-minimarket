@@ -1,0 +1,5 @@
+[functions.crear-empleado]
+verify_jwt = true
+
+[functions.actualizar-clave-empleado]
+verify_jwt = true
